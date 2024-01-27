@@ -11,7 +11,10 @@
   },
   "dependencies": {
     "react": "18.2.0",
-    "react-native": "0.73.2"
+    "react-native": "0.73.2",
+    "react-native-dropdown-select-list": "^2.0.5",
+    "react-native-keyboard-aware-scroll-view": "^0.9.5",
+    "react-native-shadow-2": "^7.0.8"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

@@ -1,0 +1,12 @@
+export const AVATAR = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.appspot.com/o/avt.png?alt=media&token=4d78d6ff-96e0-4c3e-bc8a-1ada70e08743'
+export const IMAGE = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.appspot.com/o/gai1.jpg?alt=media&token=91ffe321-c2f8-47da-ad5b-3fe11663fb77'
+export const EDIT = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.appspot.com/o/conma.png?alt=media&token=f7f3714c-e44b-481e-a24b-e4282ec4d498'
+export const LIBRARY = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.appspot.com/o/mayanh.png?alt=media&token=b1f30685-3df2-4ac8-8ff6-f51bf485179e'
+export const TAKE_A_PHOTO = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.appspot.com/o/chup.png?alt=media&token=67e2b0e6-f790-437b-b42c-d4e41e522412'
+export const DOWN = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.appspot.com/o/down.png?alt=media&token=53ca4524-a30f-4ceb-8b23-f9467efd4fb5'
+export const MENU = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.appspot.com/o/menu.png?alt=media&token=5f0cb809-37ac-4311-a280-cc7c52e63b5d'
+export const SEND = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.appspot.com/o/s.png?alt=media&token=2dbe5522-1aa8-45d0-8267-ea25246432bf'
+export const COMMENT = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.appspot.com/o/bl.png?alt=media&token=1b52e663-772b-48b0-bf26-be4c730016a6'
+export const HEART = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.appspot.com/o/timm.png?alt=media&token=6b2d27f1-c1bf-4371-b4c8-96511d1cab2b'
+export const LINE = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.appspot.com/o/line.png?alt=media&token=598aa827-ea22-4a1d-a547-e6629ebd1165'
+
