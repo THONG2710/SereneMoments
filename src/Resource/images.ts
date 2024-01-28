@@ -9,4 +9,11 @@ export const SEND = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.ap
 export const COMMENT = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.appspot.com/o/bl.png?alt=media&token=1b52e663-772b-48b0-bf26-be4c730016a6'
 export const HEART = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.appspot.com/o/timm.png?alt=media&token=6b2d27f1-c1bf-4371-b4c8-96511d1cab2b'
 export const LINE = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.appspot.com/o/line.png?alt=media&token=598aa827-ea22-4a1d-a547-e6629ebd1165'
+export const HELLO='https://firebasestorage.googleapis.com/v0/b/serenemoments-6cdcb.appspot.com/o/img_Welcome.png?alt=media&token=f7d8efaa-434b-4f3f-b54d-8af617c16b84'
+export const EMAIL='https://firebasestorage.googleapis.com/v0/b/serenemoments-6cdcb.appspot.com/o/email.png?alt=media&token=c24438ba-3d55-4ad1-9154-0bbc43a67799'
+export const FACEBOOK='https://firebasestorage.googleapis.com/v0/b/serenemoments-6cdcb.appspot.com/o/fb.png?alt=media&token=df2883fb-406e-4606-b908-195cc936e3aa'
+export const USER='https://firebasestorage.googleapis.com/v0/b/serenemoments-6cdcb.appspot.com/o/user.png?alt=media&token=c51cd19e-6f62-4e66-9b09-0623a76cdcd3'
+export const REGISTER='https://firebasestorage.googleapis.com/v0/b/serenemoments-6cdcb.appspot.com/o/img_Login.png?alt=media&token=031d10c6-c5ee-4e27-b8b7-f9e1dd8c2077'
+export const KEYREGISTER='https://firebasestorage.googleapis.com/v0/b/serenemoments-6cdcb.appspot.com/o/img_keyLogin.png?alt=media&token=7bfd592f-791f-4575-baf2-7e8c7ce421a0'
+export const EMAILREGISTER='https://firebasestorage.googleapis.com/v0/b/serenemoments-6cdcb.appspot.com/o/img_EmailLogin.png?alt=media&token=9e767bbf-1788-47ae-b754-0998337ea784'
 
