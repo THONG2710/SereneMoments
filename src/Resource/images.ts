@@ -20,3 +20,7 @@ export const LOGOUT = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.
 export const DELETE = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.appspot.com/o/deleteAcount.png?alt=media&token=9f10e8db-db56-470c-ad3c-10ce4c26b82f'
 export const WARNING = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.appspot.com/o/warning.png?alt=media&token=5ac821f2-b52a-452d-8955-fe5fd44d5fe1'
 export const SETTING2 = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.appspot.com/o/setting2.png?alt=media&token=5fb1ee3b-1275-486a-9dd4-26ab13bdb62'
+export const IC_MAIL = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.appspot.com/o/icmail.png?alt=media&token=3b3bdf64-4cbe-4135-a660-f55f5370d6b5'
+export const IC_USER = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.appspot.com/o/icuser.png?alt=media&token=d64a7096-c19f-4352-b5ef-2851b25d3a79'
+export const IC_BACK = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.appspot.com/o/icback.png?alt=media&token=3367a4e2-d581-4527-a045-35c09ade082b'
+export const IC_PHONE = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.appspot.com/o/icphone.png?alt=media&token=6732d43b-3b8d-4c2a-aab3-fc764782b515'

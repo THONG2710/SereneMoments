@@ -91,7 +91,7 @@ const Profile = () => {
         <TouchableOpacity style={styles.itemContentThree}>
           <View style={styles.itemContentLeft}>
             <Image style={styles.imageItem} source={{ uri: DELETE }}></Image>
-            <Text style={styles.textItem}>Xóa tài khoản</Text>
+            <Text style={[styles.textItem,{color:'red'}]}>Xóa tài khoản</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -263,7 +263,8 @@ const styles = StyleSheet.create({
   {
     marginLeft: 10,
     color: '#176B87',
-    fontWeight: '500'
+    fontWeight: '500',
+    
   },
 
   imageItem:
