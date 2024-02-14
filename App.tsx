@@ -6,7 +6,7 @@ import EditProfile from './src/Screen/EditProfile/EditProfile';
 
 function App(): JSX.Element {
   return (
-    <EditProfile></EditProfile>
+    <Profile/>
   ); 
 }
 

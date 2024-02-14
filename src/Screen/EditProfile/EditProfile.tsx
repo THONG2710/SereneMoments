@@ -215,7 +215,10 @@ const styles = StyleSheet.create({
     btnEdit:
     {
         backgroundColor:'#66A7FF',
-        borderRadius:20
+        borderRadius:20,
+        height: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
 
     textUpdate:
