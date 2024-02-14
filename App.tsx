@@ -5,6 +5,7 @@ import Login from './src/Screen/Authentication/Login/Login';
 import Register from './src/Screen/Authentication/Register/Register';
 import ChangePass from './src/Screen/Authentication/ChangePass/ChangePass';
 import LoginEmail from './src/Screen/Authentication/LoginEmail/LoginEmail';
+import AuthenticationNavigation from './src/Navigation/AuthenticationNavigation';
 
 function App(): JSX.Element {
   return (
@@ -12,7 +13,8 @@ function App(): JSX.Element {
     // <Login></Login>
     // <Register></Register>
     // <ChangePass></ChangePass>
-    <LoginEmail></LoginEmail>
+    // <LoginEmail></LoginEmail>
+    <AuthenticationNavigation/>
   ); 
 }
 
