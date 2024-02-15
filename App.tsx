@@ -8,6 +8,7 @@ import LoginEmail from './src/Screen/Authentication/LoginWithAccount/LoginWithAc
 import AuthenticationNavigation from './src/Navigation/AuthenticationNavigation';
 import AuthorizedNavigation from './src/Navigation/AuthorizedNavigation';
 import Profile from './src/Screen/AccountScreen/Profile/Profile';
+import RootNavigation from './src/Navigation/RootNavigation';
 
 function App(): JSX.Element {
   return (
@@ -17,8 +18,9 @@ function App(): JSX.Element {
     // <ChangePass></ChangePass>
     // <LoginEmail></LoginEmail>
     // <AuthenticationNavigation/>
-    <AuthorizedNavigation/>
+    // <AuthorizedNavigation/>
     // <Profile/>
+    <RootNavigation/>
   ); 
 }
 

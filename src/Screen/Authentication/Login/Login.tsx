@@ -13,6 +13,10 @@ const Login: React.FC<LoginProps> = props => {
   const onRegister = () => {
     navigation.navigate('RegisterScreen');
   };
+
+  const onLogin = () => {
+    navigation.navigate('AuthorizedNavigation');
+  };
   
   return (
     <View style={styles.container}>
@@ -23,7 +27,7 @@ const Login: React.FC<LoginProps> = props => {
           source={require('../../../Resource/images/img_logo.png')}
         />
       </View>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={onLogin}>
         <View style={styles.btnLogin}>
           <Image
             style={styles.imgIcon}
@@ -32,7 +36,7 @@ const Login: React.FC<LoginProps> = props => {
           <Text style={styles.txtBtn}>Đăng nhập bằng gmail</Text>
         </View>
       </TouchableOpacity>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={onLogin}>
         <View style={styles.btnLogin}>
           <Image
             style={styles.imgIcon}

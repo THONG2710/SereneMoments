@@ -14,15 +14,13 @@ const tab = createBottomTabNavigator<AuthorizedParamlist>();
 
 const AuthorizedNavigation: React.FC = () => {
   return (
-    <NavigationContainer>
-      <tab.Navigator screenOptions={{headerShown: false}}>
-        <tab.Screen name="ListDiariesScreen" component={ListDiariesScreen} />
-        <tab.Screen name="MomentScreen" component={MomentScreen} />
-        <tab.Screen name="TodoListScreen" component={TodoListScreen} />
-        <tab.Screen name="ChatScreen" component={ChatScreen} />
-        <tab.Screen name="AccountScreen" component={AccountScreen} />
-      </tab.Navigator>
-    </NavigationContainer>
+    <tab.Navigator screenOptions={{headerShown: false}}>
+      <tab.Screen name="ListDiariesScreen" component={ListDiariesScreen} />
+      <tab.Screen name="MomentScreen" component={MomentScreen} />
+      <tab.Screen name="TodoListScreen" component={TodoListScreen} />
+      <tab.Screen name="ChatScreen" component={ChatScreen} />
+      <tab.Screen name="AccountScreen" component={AccountScreen} />
+    </tab.Navigator>
   );
 };
 

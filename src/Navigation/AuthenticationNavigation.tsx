@@ -1,16 +1,16 @@
-import {NavigationContainer} from '@react-navigation/native';
 import Login from '../Screen/Authentication/Login/Login';
 import {createStackNavigator} from '@react-navigation/stack';
 import ChangePass from '../Screen/Authentication/ChangePass/ChangePass';
 import LoginWithAccount from '../Screen/Authentication/LoginWithAccount/LoginWithAccount';
 import Register from '../Screen/Authentication/Register/Register';
 import {AuthenticationParamlist} from '../StoryBoard/AuthenticationStoryboard';
+import React from 'react';
+import AuthorizedNavigation from './AuthorizedNavigation';
 
 const stack = createStackNavigator<AuthenticationParamlist>();
 
-const AuthenticationNavigation = () => {
+const AuthenticationNavigation: React.FC = () => {
   return (
-    <NavigationContainer>
       <stack.Navigator
         screenOptions={{
           headerShown: false,
@@ -19,8 +19,8 @@ const AuthenticationNavigation = () => {
         <stack.Screen name="ChangePasswordScreen" component={ChangePass} />
         <stack.Screen name="LoginWithAccount" component={LoginWithAccount} />
         <stack.Screen name="RegisterScreen" component={Register} />
+        <stack.Screen name="AuthorizedNavigation" component={AuthorizedNavigation} />
       </stack.Navigator>
-    </NavigationContainer>
   );
 };
 

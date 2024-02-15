@@ -10,6 +10,10 @@ const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
     navigation.navigate('ChangePasswordScreen');
   };
 
+  const onLogin = () => {
+    navigation.navigate('AuthorizedNavigation');
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.sayHello}>Xin chào.</Text>
@@ -34,7 +38,7 @@ const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
         />
         <TextInput style={styles.txtBtn} secureTextEntry={true}></TextInput>
       </View>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={onLogin}>
         <View style={styles.btnLogin}>
           <Text style={styles.txtBtn2}>Đăng nhập</Text>
         </View>

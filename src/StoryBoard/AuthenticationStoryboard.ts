@@ -3,4 +3,5 @@ export type AuthenticationParamlist = {
     ChangePasswordScreen: undefined,
     LoginWithAccount: undefined,
     RegisterScreen: undefined,
+    AuthorizedNavigation: undefined,
 }
