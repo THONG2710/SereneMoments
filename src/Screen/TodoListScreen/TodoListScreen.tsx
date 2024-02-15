@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const ChatScreen = () => {
+const TodoListScreen = () => {
   return (
     <View>
-      <Text>ChatScreen</Text>
+      <Text>TodoListScreen</Text>
     </View>
   )
 }
 
-export default ChatScreen
+export default TodoListScreen
 
 const styles = StyleSheet.create({})

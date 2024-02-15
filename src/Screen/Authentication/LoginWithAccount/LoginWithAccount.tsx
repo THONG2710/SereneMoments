@@ -1,23 +1,19 @@
 import {View, Text, Image, TextInput, TouchableOpacity} from 'react-native';
 import React from 'react';
 import styles from './styles';
-import {RegisterProps} from './type';
+import {LoginWithAccountProps} from './type';
 
-const Register: React.FC<RegisterProps> = props => {
+const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
   const {navigation} = props;
 
-  const onRegisterAccount = () => {
-    navigation.navigate('LoginWithAccount');
-  };
-
-  const onLogin = () => {
-    navigation.goBack();
+  const onForgotPassword = () => {
+    navigation.navigate('ChangePasswordScreen');
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.sayHello}>Xin chào.</Text>
-      <Text style={styles.sayHello2}>Đăng ký ngay !! ^.^</Text>
+      <Text style={styles.sayHello2}>Đăng nhập vào Semo ^.^</Text>
       <View style={styles.containerImg}>
         <Image
           style={styles.img}
@@ -38,26 +34,19 @@ const Register: React.FC<RegisterProps> = props => {
         />
         <TextInput style={styles.txtBtn} secureTextEntry={true}></TextInput>
       </View>
-      <View style={styles.btnRegister}>
-        <Image
-          style={styles.imgIcon}
-          source={require('../../../Resource/images/icon_key.png')}
-        />
-        <TextInput style={styles.txtBtn} secureTextEntry={true}></TextInput>
-      </View>
-      <TouchableOpacity onPress={onRegisterAccount}>
+      <TouchableOpacity>
         <View style={styles.btnLogin}>
-          <Text style={styles.txtBtn2}>Đăng ký</Text>
+          <Text style={styles.txtBtn2}>Đăng nhập</Text>
         </View>
       </TouchableOpacity>
       <View style={styles.containerNote}>
-        <Text style={styles.txtNote}>Bạn đã sẵn sàng tạo tài khoản ?</Text>
-        <TouchableOpacity onPress={onLogin}>
-          <Text style={styles.btnNote}>Đăng nhập</Text>
+        <Text style={styles.txtNote}>Quên mật khẩu ?</Text>
+        <TouchableOpacity onPress={onForgotPassword}>
+          <Text style={styles.btnNote}>Bấm vào đây</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 };
 
-export default Register;
+export default LoginWithAccount;

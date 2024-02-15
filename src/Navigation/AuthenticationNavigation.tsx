@@ -1,19 +1,27 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import { NavigationContainer } from '@react-navigation/native'
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import {NavigationContainer} from '@react-navigation/native';
 import Login from '../Screen/Authentication/Login/Login';
+import {createStackNavigator} from '@react-navigation/stack';
+import ChangePass from '../Screen/Authentication/ChangePass/ChangePass';
+import LoginWithAccount from '../Screen/Authentication/LoginWithAccount/LoginWithAccount';
+import Register from '../Screen/Authentication/Register/Register';
+import {AuthenticationParamlist} from '../StoryBoard/AuthenticationStoryboard';
 
-const tab = createBottomTabNavigator();
+const stack = createStackNavigator<AuthenticationParamlist>();
 
 const AuthenticationNavigation = () => {
   return (
     <NavigationContainer>
-      <tab.Navigator>
-        <tab.Screen name='LoginScreen' component={Login}/>
-      </tab.Navigator>
+      <stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}>
+        <stack.Screen name="LoginScreen" component={Login} />
+        <stack.Screen name="ChangePasswordScreen" component={ChangePass} />
+        <stack.Screen name="LoginWithAccount" component={LoginWithAccount} />
+        <stack.Screen name="RegisterScreen" component={Register} />
+      </stack.Navigator>
     </NavigationContainer>
-  )
-}
+  );
+};
 
-export default AuthenticationNavigation
+export default AuthenticationNavigation;
