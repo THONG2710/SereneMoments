@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "193796832270",
+    "project_id": "serenemoments-6cdcb",
+    "storage_bucket": "serenemoments-6cdcb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:193796832270:android:8aa0f439d79e711643105f",
+        "android_client_info": {
+          "package_name": "com.serenemoments"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBoCG6kVTdkQ7Qv8tY3MdAoh_a1z3ZjeWg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
