@@ -24,3 +24,4 @@ export const IC_MAIL = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca
 export const IC_USER = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.appspot.com/o/icuser.png?alt=media&token=d64a7096-c19f-4352-b5ef-2851b25d3a79'
 export const IC_BACK = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.appspot.com/o/icback.png?alt=media&token=3367a4e2-d581-4527-a045-35c09ade082b'
 export const IC_PHONE = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.appspot.com/o/icphone.png?alt=media&token=6732d43b-3b8d-4c2a-aab3-fc764782b515'
+export const IC_WARN = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.appspot.com/o/warn.png?alt=media&token=2fcc9920-938c-41db-a3d0-961550ee6e1f'
