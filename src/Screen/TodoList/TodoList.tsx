@@ -53,8 +53,10 @@ const TodoList = () => {
                 </View>
             </View>
             {/* CENTER */}
+            
             <View style={styles.center}>
                 <Text style={styles.textUnfinished}>Chưa hoàn thành</Text>
+                {/* TASK UNFINISHED */}
                 <View style={styles.itemTask}>
                     {dataToDoList.map(item => (
                         !checked.includes(item.task) && (
@@ -68,6 +70,8 @@ const TodoList = () => {
                         )
                     ))}
                 </View>
+                
+                {/* TASK FINISHED */}
                 <View style={styles.finishTitle}>
                     <Text style={styles.textFinished}>Đã hoàn thành</Text>
                     <Image source={{ uri: IC_DOWN }} style={styles.downFinish}></Image>
@@ -82,7 +86,9 @@ const TodoList = () => {
                     ))}
                 </View>
             </View>
+
             {/* FOOTER */}
+            {/* ADD TODOLIST */}
             <View style={styles.footer}>
                 <View style={styles.addTodo}>
                     <TouchableOpacity style={styles.checkbox}></TouchableOpacity>
