@@ -25,3 +25,6 @@ export const IC_USER = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca
 export const IC_BACK = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.appspot.com/o/icback.png?alt=media&token=3367a4e2-d581-4527-a045-35c09ade082b'
 export const IC_PHONE = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.appspot.com/o/icphone.png?alt=media&token=6732d43b-3b8d-4c2a-aab3-fc764782b515'
 export const IC_WARN = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.appspot.com/o/warn.png?alt=media&token=2fcc9920-938c-41db-a3d0-961550ee6e1f'
+export const IMG_TODO = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.appspot.com/o/imgtodo.png?alt=media&token=12431ae3-bf71-42a8-8421-d2d5ba62b6ad'
+export const IC_DOWN = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.appspot.com/o/ic_down.png?alt=media&token=3037cbf6-d671-4e02-a920-1e1cb689f0f1'
+export const IC_CHECKED = 'https://firebasestorage.googleapis.com/v0/b/gotour-72bca.appspot.com/o/ic_check.png?alt=media&token=ad9ec626-8015-4f35-9373-78af09f40ee4'
