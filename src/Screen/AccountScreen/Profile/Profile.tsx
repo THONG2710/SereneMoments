@@ -1,7 +1,18 @@
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
+import { ProfileProps } from './type';
+import { useAppDispatch, useAppSelector } from '../../../Redux/Hook';
+import { SET_ISLOGGED } from '../../../Redux/Action/AuthenticationActions';
 
-const Profile = () => {
+const Profile: React.FC<ProfileProps> = (props) => {
+  const {navigation} = props;
+  const useDispatch = useAppDispatch();
+
+  const onLogout = () => {
+    useDispatch(SET_ISLOGGED(false));
+    navigation.getParent()?.goBack();
+  }
+
   return (
     //CONTAINER
     <View style={styles.container}>
@@ -98,7 +109,7 @@ const Profile = () => {
             style={styles.imgTitle}
             source={require('../../../Resource/images/icon_warning.png')}></Image>
         </View>
-        <TouchableOpacity style={styles.itemContentOne}>
+        <TouchableOpacity style={styles.itemContentOne} onPress={onLogout}>
           <View style={styles.itemContentLeft}>
             <Image
               style={styles.imageItem}

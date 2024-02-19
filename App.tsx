@@ -9,6 +9,8 @@ import AuthenticationNavigation from './src/Navigation/AuthenticationNavigation'
 import AuthorizedNavigation from './src/Navigation/AuthorizedNavigation';
 import Profile from './src/Screen/AccountScreen/Profile/Profile';
 import RootNavigation from './src/Navigation/RootNavigation';
+import ItemMoment from './src/Screen/MomentScreen/Component/ItemMoment';
+import TakeAMoment from './src/Screen/MomentScreen/Component/TakeAMoment';
 
 function App(): JSX.Element {
   return (
@@ -21,6 +23,9 @@ function App(): JSX.Element {
     // <AuthorizedNavigation/>
     // <Profile/>
     <RootNavigation/>
+    // <HomeScreen/>
+    // <ItemMoment/>
+    // <TakeAMoment/>
   ); 
 }
 

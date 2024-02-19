@@ -12,6 +12,7 @@ import ButtonIcon from '../../../Components/Buttons/ButtonIcon';
 import {Shadow} from 'react-native-shadow-2';
 import ItemOption from '../components/ItemOption';
 import ButtonText from '../../../Components/Buttons/ButtonText';
+import {CreateDiaryProps} from './type';
 
 const listOptions = [
   {
@@ -36,8 +37,14 @@ const listOptions = [
   },
 ];
 
-const CreateDiaryScreen = () => {
+const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
+  const {navigation} = props;
   const [status, setStatus] = useState('');
+
+  const onBack = () => {
+    navigation.goBack();
+  };
+
   const setStatusFilter = (status: string) => {
     setStatus(status);
   };
@@ -82,6 +89,7 @@ const CreateDiaryScreen = () => {
             <ButtonIcon
               styles={styles.hdr_btnClose}
               url={require('../../../Resource/images/icon_add.png')}
+              onPress={onBack}
             />
           </View>
         </View>
@@ -90,14 +98,12 @@ const CreateDiaryScreen = () => {
       {/* body */}
       <View style={styles.body}>
         <Shadow distance={7} offset={[5, 5]} style={styles.bodyShadow}>
-          <View style={styles.customize}>
-
-          </View>
+          <View style={styles.customize}></View>
         </Shadow>
       </View>
       {/* footer */}
       <View style={styles.footer}>
-        <ButtonText label='Lưu'/>
+        <ButtonText label="Lưu" />
       </View>
     </View>
   );

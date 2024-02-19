@@ -58,6 +58,7 @@ export const styles = StyleSheet.create({
     hdr_btnClose: {
         width: 30,
         height: 30,
+        transform: [{rotate: '45deg'}],
     },
 
     // =========== options =================

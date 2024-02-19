@@ -1,17 +1,32 @@
 import {View, Text, Image, TextInput, TouchableOpacity} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './styles';
 import {LoginWithAccountProps} from './type';
+import {ID_ADRESS, postData} from '../../../Service/RequestMethod';
+import {useAppDispatch, useAppSelector} from '../../../Redux/Hook';
+import {SET_ISLOGGED} from '../../../Redux/Action/AuthenticationActions';
 
 const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
   const {navigation} = props;
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [password, setPassword] = useState('');
+  const is_logged = useAppSelector(state => state.Authentication.isLogged);
+  const usdispath = useAppDispatch();
 
   const onForgotPassword = () => {
     navigation.navigate('ChangePasswordScreen');
   };
 
-  const onLogin = () => {
-    navigation.navigate('AuthorizedNavigation');
+  const onLogin = async () => {
+    const data = {phoneNumber: phoneNumber, password: password};
+    const res = await postData(
+      'http://' + ID_ADRESS + ':3000/api/users/loginWithPhoneNumber',
+      data,
+    );
+    if (res.result) {
+      usdispath(SET_ISLOGGED(true));
+      navigation.navigate('AuthorizedNavigation');
+    }
   };
 
   return (
@@ -29,14 +44,19 @@ const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
           style={styles.imgIcon}
           source={require('../../../Resource/images/icon_email2.png')}
         />
-        <TextInput style={styles.txtBtn}></TextInput>
+        <TextInput
+          onChangeText={setPhoneNumber}
+          style={styles.txtBtn}></TextInput>
       </View>
       <View style={styles.btnRegister}>
         <Image
           style={styles.imgIcon}
           source={require('../../../Resource/images/icon_key.png')}
         />
-        <TextInput style={styles.txtBtn} secureTextEntry={true}></TextInput>
+        <TextInput
+          onChangeText={setPassword}
+          style={styles.txtBtn}
+          secureTextEntry={true}></TextInput>
       </View>
       <TouchableOpacity onPress={onLogin}>
         <View style={styles.btnLogin}>

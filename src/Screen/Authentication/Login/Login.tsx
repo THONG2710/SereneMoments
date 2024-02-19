@@ -1,10 +1,19 @@
 import {View, Text, Image, TouchableOpacity} from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from './styles';
 import {LoginProps} from './type';
+import { useAppSelector } from '../../../Redux/Hook';
 
 const Login: React.FC<LoginProps> = props => {
   const {navigation} = props;
+  const is_logged = useAppSelector(state => state.Authentication.isLogged);
+
+  useEffect(() => {
+    console.log(is_logged);
+    
+    is_logged ? navigation.navigate('AuthorizedNavigation') : null
+  }, [])
+  
 
   const onLoginWithAccount = () => {
     navigation.navigate('LoginWithAccount');

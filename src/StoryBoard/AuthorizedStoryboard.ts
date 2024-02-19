@@ -1,5 +1,5 @@
 export type AuthorizedParamlist = {
-    ListDiariesScreen: undefined,
+    HomeScreen: undefined,
     MomentScreen: undefined,
     TodoListScreen: undefined,
     ChatScreen: undefined,
