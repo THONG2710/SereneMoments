@@ -1,12 +1,12 @@
-import Login from '../Screen/Authentication/Login/Login';
 import {createStackNavigator} from '@react-navigation/stack';
-import ChangePass from '../Screen/Authentication/ChangePass/ChangePass';
-import LoginWithAccount from '../Screen/Authentication/LoginWithAccount/LoginWithAccount';
-import Register from '../Screen/Authentication/Register/Register';
 import {AuthenticationParamlist} from '../StoryBoard/AuthenticationStoryboard';
 import React, { useEffect } from 'react';
 import AuthorizedNavigation from './AuthorizedNavigation';
 import {useAppSelector} from '../Redux/Hook';
+import Login from '../Screen/Authentication/Login/Login';
+import ChangePass from '../Screen/Authentication/ChangePass/ChangePass';
+import LoginWithAccount from '../Screen/Authentication/LoginWithAccount/LoginWithAccount';
+import Register from '../Screen/Authentication/Register/Register';
 
 const stack = createStackNavigator<AuthenticationParamlist>();
 

@@ -40,10 +40,11 @@ const styles = StyleSheet.create({
         marginTop:10,
         elevation: 5,
         shadowColor: '#000',
+        paddingHorizontal: 15,
     },
     imgIcon:{
-        width:25,
-        height:24,
+        width:30,
+        height:30,
     },
     txtBtn:{
         marginLeft:10,
@@ -82,6 +83,11 @@ const styles = StyleSheet.create({
         color:'black',
         marginLeft:5
 
+    },
+
+    icon_eye: {
+        width: 25,
+        height: 25,
     }
 
 })

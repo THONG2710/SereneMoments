@@ -5,6 +5,7 @@ import {LoginWithAccountProps} from './type';
 import {ID_ADRESS, postData} from '../../../Service/RequestMethod';
 import {useAppDispatch, useAppSelector} from '../../../Redux/Hook';
 import {SET_ISLOGGED} from '../../../Redux/Action/AuthenticationActions';
+import ButtonIcon from '../../../Components/Buttons/ButtonIcon';
 
 const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
   const {navigation} = props;
@@ -12,6 +13,11 @@ const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
   const [password, setPassword] = useState('');
   const is_logged = useAppSelector(state => state.Authentication.isLogged);
   const usdispath = useAppDispatch();
+  const [isVisible, setIsvisible] = useState(false);
+
+  const onChangeVisiblePassword = () => {
+    setIsvisible(!isVisible);
+  };
 
   const onForgotPassword = () => {
     navigation.navigate('ChangePasswordScreen');
@@ -42,21 +48,32 @@ const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
       <View style={styles.btnRegister}>
         <Image
           style={styles.imgIcon}
-          source={require('../../../Resource/images/icon_email2.png')}
+          source={require('../../../Resource/images/icon_phone.png')}
         />
         <TextInput
+          placeholder="Số điện thoại"
           onChangeText={setPhoneNumber}
           style={styles.txtBtn}></TextInput>
       </View>
       <View style={styles.btnRegister}>
         <Image
-          style={styles.imgIcon}
+          style={{width: 25, height: 25}}
           source={require('../../../Resource/images/icon_key.png')}
         />
         <TextInput
           onChangeText={setPassword}
           style={styles.txtBtn}
-          secureTextEntry={true}></TextInput>
+          placeholder="Mật khẩu"
+          secureTextEntry={!isVisible}></TextInput>
+        <ButtonIcon
+          styles={styles.icon_eye}
+          onPress={onChangeVisiblePassword}
+          url={
+            isVisible
+              ? require('../../../Resource/images/visible.png')
+              : require('../../../Resource/images/hidden.png')
+          }
+        />
       </View>
       <TouchableOpacity onPress={onLogin}>
         <View style={styles.btnLogin}>
