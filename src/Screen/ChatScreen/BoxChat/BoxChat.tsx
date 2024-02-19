@@ -7,44 +7,45 @@ import {
   TextInput,
 } from 'react-native';
 import React from 'react';
+import { BoxChatScreenProps } from './type';
 
-const BoxChatScreen = (props) => {
+const BoxChatScreen:React.FC<BoxChatScreenProps> = (props) => {
   
   const {navigation} = props;
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.viewButton}>
-        <TouchableOpacity onPress={() => navigation.navigate('chat')}>
+        <TouchableOpacity onPress={() => navigation.navigate('Chat')}>
           <Image
-            source={require('../SereneMoments/assets/images/btn_back.png')}></Image>
+            source={require('../../../Resource/images/btn_back.png')}></Image>
         </TouchableOpacity>
         <TouchableOpacity>
           <Image
-            source={require('../SereneMoments/assets/images/title_name.png')}></Image>
+            source={require('../../../Resource/images/title_name.png')}></Image>
         </TouchableOpacity>
         <TouchableOpacity>
           <Image
-            source={require('../SereneMoments/assets/images/btn_menu.png')}></Image>
+            source={require('../../../Resource/images/btn_menu.png')}></Image>
         </TouchableOpacity>
       </TouchableOpacity>
       <View style={styles.boxView}>
         <Image
-          source={require('../SereneMoments/assets/images/message_1.png')}
+          source={require('../../../Resource/images/message_1.png')}
           style={styles.text1}></Image>
         <Image
-          source={require('../SereneMoments/assets/images/message_2.png')}
+          source={require('../../../Resource/images/message_2.png')}
           style={styles.text2}></Image>
         <Image
-          source={require('../SereneMoments/assets/images/reply.png')}
+          source={require('../../../Resource/images/reply.png')}
           style={styles.text3}></Image>
         <Image
-          source={require('../SereneMoments/assets/images/message_3.png')}
+          source={require('../../../Resource/images/message_3.png')}
           style={styles.text4}></Image>
       </View>
       <TouchableOpacity style={styles.viewButton1}>
         <TouchableOpacity>
           <Image
-            source={require('../SereneMoments/assets/images/btn_send.png')}></Image>
+            source={require('../../../Resource/images/btn_send.png')}></Image>
         </TouchableOpacity>
 
         <TextInput
@@ -53,7 +54,7 @@ const BoxChatScreen = (props) => {
 
         <TouchableOpacity>
           <Image
-            source={require('../SereneMoments/assets/images/btn_url.png')}></Image>
+            source={require('../../../Resource/images/btn_url.png')}></Image>
         </TouchableOpacity>
       </TouchableOpacity>
     </View>

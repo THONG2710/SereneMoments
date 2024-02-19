@@ -1,14 +1,21 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import {StyleSheet, Text, View} from 'react-native';
+import React from 'react';
+import {createStackNavigator} from '@react-navigation/stack';
+import {ChatParamlist} from '../../StoryBoard/ChatStoryboard';
+import BoxChatScreen from './BoxChat/BoxChat';
+import Chat from './Chat/Chat';
+
+const stack = createStackNavigator<ChatParamlist>();
 
 const ChatScreen = () => {
   return (
-    <View>
-      <Text>ChatScreen</Text>
-    </View>
-  )
-}
+    <stack.Navigator screenOptions={{headerShown: false}}>
+      <stack.Screen name="Chat" component={Chat} />
+      <stack.Screen name="BoxChatScreen" component={BoxChatScreen} />
+    </stack.Navigator>
+  );
+};
 
-export default ChatScreen
+export default ChatScreen;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});

@@ -10,8 +10,9 @@ import {
   Alert,
 } from 'react-native';
 import React from 'react';
+import {ChatScreenProps} from './type';
 
-const chatScreen = props => {
+const Chat: React.FC<ChatScreenProps> = props => {
   const {navigation} = props;
   const pressHandler = () => {
     Alert.alert(
@@ -36,11 +37,12 @@ const chatScreen = props => {
       </View>
       <TouchableOpacity
         style={styles.viewButton}
-        onPress={() => navigation.navigate('BoxChat')}
+        onPress={() => navigation.navigate('BoxChatScreen')}
         onLongPress={() => pressHandler()}>
         <Image
-          source={require('./assets/images/Ellipse3.png')}
-          style={styles.image6}></Image>
+          source={require('../../../Resource/images/Ellipse3.png')}
+          // style={styles.image6}
+        ></Image>
         <TouchableOpacity>
           <Text style={styles.text1}>Nguyễn Ngọc Bảo Sơn</Text>
           <Text style={styles.text2}>Xin chào</Text>
@@ -49,10 +51,11 @@ const chatScreen = props => {
 
       <TouchableOpacity
         style={styles.viewButton2}
-        onPress={() => navigation.navigate('BoxChat')}>
+        onPress={() => navigation.navigate('BoxChatScreen')}>
         <Image
-          source={require('./assets/images/Ellipse3.png')}
-          style={styles.image6}></Image>
+          source={require('../../../Resource/images/Ellipse3.png')}
+          // style={styles.image6}
+        ></Image>
         <TouchableOpacity>
           <Text style={styles.text1}>Nguyễn Ngọc Bảo Sơn</Text>
           <Text style={styles.text2}>Xin chào</Text>
@@ -61,10 +64,11 @@ const chatScreen = props => {
 
       <TouchableOpacity
         style={styles.viewButton3}
-        onPress={() => navigation.navigate('BoxChat')}>
+        onPress={() => navigation.navigate('BoxChatScreen')}>
         <Image
-          source={require('./assets/images/Ellipse3.png')}
-          style={styles.image6}></Image>
+          source={require('../../../Resource/images/Ellipse3.png')}
+          // style={styles.image6}
+        ></Image>
         <TouchableOpacity>
           <Text style={styles.text1}>Nguyễn Ngọc Bảo Sơn</Text>
           <Text style={styles.text2}>Xin chào</Text>
@@ -74,7 +78,7 @@ const chatScreen = props => {
   );
 };
 
-export default chatScreen;
+export default Chat;
 
 const styles = StyleSheet.create({
   container: {
