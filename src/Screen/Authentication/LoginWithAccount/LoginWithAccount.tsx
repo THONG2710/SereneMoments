@@ -1,4 +1,4 @@
-import {View, Text, Image, TextInput, TouchableOpacity} from 'react-native';
+import {View, Text, Image, TextInput, TouchableOpacity, Alert} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import styles from './styles';
 import {LoginWithAccountProps} from './type';
@@ -6,6 +6,7 @@ import {ID_ADRESS, postData} from '../../../Service/RequestMethod';
 import {useAppDispatch, useAppSelector} from '../../../Redux/Hook';
 import {SET_ISLOGGED} from '../../../Redux/Action/AuthenticationActions';
 import ButtonIcon from '../../../Components/Buttons/ButtonIcon';
+import LoadingDialog from '../../../Components/Dialogs/LoadingDialog';
 
 const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
   const {navigation} = props;
@@ -14,6 +15,7 @@ const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
   const is_logged = useAppSelector(state => state.Authentication.isLogged);
   const usdispath = useAppDispatch();
   const [isVisible, setIsvisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const onChangeVisiblePassword = () => {
     setIsvisible(!isVisible);
@@ -29,7 +31,19 @@ const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
       'http://' + ID_ADRESS + ':3000/api/users/loginWithPhoneNumber',
       data,
     );
-    if (res.result) {
+    setIsLoading(true);
+    if (!res.result) {
+      setTimeout(() => {
+        setIsLoading(false);
+        Alert.alert('Cảnh báo', 'Lỗi đăng nhập, vui lòng thử lại', [
+          {
+            text: 'Cancle',
+            onPress: () => {setIsLoading(false)}
+          }
+        ]) 
+      }, 5000);
+    } else {
+      setIsLoading(false);
       usdispath(SET_ISLOGGED(true));
       navigation.navigate('AuthorizedNavigation');
     }
@@ -37,6 +51,7 @@ const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
 
   return (
     <View style={styles.container}>
+      <LoadingDialog isVisible={isLoading} />
       <Text style={styles.sayHello}>Xin chào.</Text>
       <Text style={styles.sayHello2}>Đăng nhập vào Semo ^.^</Text>
       <View style={styles.containerImg}>
