@@ -1,6 +1,5 @@
 import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
-import { AVATAR, IC_SEARCH, IC_WARN } from '../../Resource/images'
 import Dialog from '../Dialog/Dialog';
 import AwesomeAlert from 'react-native-awesome-alerts';
 
@@ -15,7 +14,7 @@ const ListFriend = () => {
             <View style={styles.header}>
                 <View style={styles.search}>
                     <TouchableOpacity>
-                        <Image style={styles.imgSearchFriend} source={{ uri: IC_SEARCH }}></Image>
+                        <Image style={styles.imgSearchFriend} source={require('../../Resource/Image2/search.png')}></Image>
                     </TouchableOpacity>
                     <TextInput style={styles.ipSearchFriend} placeholder='Tìm kiếm bạn bè'></TextInput>
                 </View>

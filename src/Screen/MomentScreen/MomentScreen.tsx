@@ -3,11 +3,14 @@ import React, { useState } from 'react'
 import { Dimensions } from 'react-native';
 import { SelectList } from 'react-native-dropdown-select-list'
 import { AVATAR, COMMENT, DOWN, EDIT, HEART, IMAGE, LIBRARY, LINE, MENU, SEND, TAKE_A_PHOTO } from '../../Resource/images';
+import Dialog from '../Dialog/Dialog';
 const w = Dimensions.get('window').width;
 const h = Dimensions.get('window').height;
 
 
 const MomentScreen = () => {
+    const [showAlert, setShowAlert] = useState(false);
+
     const [selected, setSelected] = useState("");
     const [heart, setHeart] = useState(false)
     const Liked = () => {
@@ -37,7 +40,7 @@ const MomentScreen = () => {
                     />
                 </View>
                 <View style={styles.backgroundImageMN}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => setShowAlert(!showAlert)}>
                         <Image style={styles.imgMN} source={{ uri: MENU }}></Image>
                     </TouchableOpacity>
                 </View>
@@ -92,7 +95,7 @@ const MomentScreen = () => {
                     </TouchableOpacity>
                 </KeyboardAvoidingView>
             </View>
-            
+            <Dialog message='Báo cáo vi phạm nội dung không phù hợp với Semo ?' title='Báo cáo' isvisible={showAlert} onConfirm={() =>{setShowAlert(false)}} onCancel={() => {setShowAlert(false)} }></Dialog>
         </ScrollView>
     )
 }

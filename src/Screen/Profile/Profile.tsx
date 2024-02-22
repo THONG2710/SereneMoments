@@ -1,6 +1,5 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
-import { ADD, AVATAR, DELETE, DIARY, FRIEND, LOGOUT, MOMENT, RESETPASSWORD, SETTING, SETTING2, WARNING, YOUR } from '../../Resource/images'
 
 const Profile = () => {
   return (
@@ -8,10 +7,10 @@ const Profile = () => {
     <View style={styles.container}>
       {/* HEADER */}
       <View style={styles.header}>
-        <View style={styles.background}>
-          <Image style={styles.imgAVT} source={{ uri: AVATAR }}></Image>
+        <View style={styles.background}>  
+          <Image style={styles.imgAVT} source={require('../../Resource/Image2/avt.jpg')}></Image>
           <TouchableOpacity style={styles.backgroundAdd}>
-            <Image style={styles.imgAdd} source={{ uri: ADD }}></Image>
+            <Image style={styles.imgAdd} source={require('../../Resource/Image2/add.png')}></Image>
           </TouchableOpacity>
         </View>
         <Text style={styles.textName}>Thông Nguyễn</Text>
@@ -25,11 +24,11 @@ const Profile = () => {
       <View style={styles.centerTop}>
         <View style={styles.title}>
           <Text style={styles.textTitle}>Của bạn</Text>
-          <Image style={styles.imgTitle} source={{ uri: YOUR }}></Image>
+          <Image style={styles.imgTitle} source={require('../../Resource/Image2/your.png')}></Image>
         </View>
         <TouchableOpacity style={styles.itemContentOne}>
           <View style={styles.itemContentLeft}>
-            <Image style={styles.imageItem} source={{ uri: DIARY }}></Image>
+            <Image style={styles.imageItem} source={require('../../Resource/Image2/note.png')}></Image>
             <Text style={styles.textItem}>Nhật ký</Text>
           </View>
           <Text style={styles.notificationItem}>2</Text>
@@ -37,7 +36,7 @@ const Profile = () => {
 
         <TouchableOpacity style={styles.itemContentTwo}>
           <View style={styles.itemContentLeft}>
-            <Image style={styles.imageItem} source={{ uri: MOMENT }}></Image>
+            <Image style={styles.imageItem} source={require('../../Resource/Image2/moment.png')}></Image>
             <Text style={styles.textItem}>Khoảnh khắc</Text>
           </View>
           <Text style={styles.notificationItem}>14</Text>
@@ -45,7 +44,7 @@ const Profile = () => {
 
         <TouchableOpacity style={styles.itemContentThree}>
           <View style={styles.itemContentLeft}>
-            <Image style={styles.imageItem} source={{ uri: FRIEND }}></Image>
+            <Image style={styles.imageItem} source={require('../../Resource/Image2/friend.png')}></Image>
             <Text style={styles.textItem}>Bạn bè</Text>
           </View>
           <Text style={styles.notificationItem}>12</Text>
@@ -56,19 +55,19 @@ const Profile = () => {
       <View style={styles.centerBot}>
         <View style={styles.title}>
           <Text style={styles.textTitle}>Cài đặt</Text>
-          <Image style={styles.imgTitle} source={{ uri: SETTING2 }}></Image>
+          <Image style={styles.imgTitle} source={require('../../Resource/Image2/setting2.png')}></Image>
         </View>
 
         <TouchableOpacity style={styles.itemContentOne}>
           <View style={styles.itemContentLeft}>
-            <Image style={styles.imageItem} source={{ uri: RESETPASSWORD }}></Image>
+            <Image style={styles.imageItem} source={require('../../Resource/Image2/resetPassword.png')}></Image>
             <Text style={styles.textItem}>Đặt mật khẩu</Text>
           </View>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.itemContentThree}>
           <View style={styles.itemContentLeft}>
-            <Image style={styles.imageItem} source={{ uri: SETTING }}></Image>
+            <Image style={styles.imageItem} source={require('../../Resource/Image2/setting.png')}></Image>
             <Text style={styles.textItem}>Đặt mặc định</Text>
           </View>
         </TouchableOpacity>
@@ -79,18 +78,18 @@ const Profile = () => {
       <View style={styles.footer}>
         <View style={styles.title}>
           <Text style={styles.textTitle}>Tài khoản</Text>
-          <Image style={styles.imgTitle} source={{ uri: WARNING }}></Image>
+          <Image style={styles.imgTitle} source={require('../../Resource/Image2/warning.png')}></Image>
         </View>
         <TouchableOpacity style={styles.itemContentOne}>
           <View style={styles.itemContentLeft}>
-            <Image style={styles.imageItem} source={{ uri: LOGOUT }}></Image>
+            <Image style={styles.imageItem} source={require('../../Resource/Image2/logOut.png')}></Image>
             <Text style={styles.textItem}>Đăng xuất</Text>
           </View>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.itemContentThree}>
           <View style={styles.itemContentLeft}>
-            <Image style={styles.imageItem} source={{ uri: DELETE }}></Image>
+            <Image style={styles.imageItem} source={require('../../Resource/Image2/deleteAcount.png')}></Image>
             <Text style={[styles.textItem,{color:'red'}]}>Xóa tài khoản</Text>
           </View>
         </TouchableOpacity>

@@ -1,25 +1,25 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View, ViewProps } from 'react-native'
 import React, { useState } from 'react'
 import AwesomeAlert from 'react-native-awesome-alerts'
-import { AVATAR, IC_WARN } from '../../Resource/images';
 interface DialogProps extends ViewProps {
   isvisible: boolean;
   onCancel?: () => void;
   onConfirm?: () => void;
   title?:string;
+  message?:string;
 }
 const Dialog: React.FC<DialogProps> = (props) => {
- const {isvisible, onCancel, onConfirm,title} = props;
+ const {isvisible, onCancel, onConfirm,title, message} = props;
  
   return (
     <View >
       <AwesomeAlert
-        customView={<Image style={styles.imgWarn} source={{ uri: IC_WARN }} />}
+        customView={<Image style={styles.imgWarn} source={require('../../Resource/Image2/warn.png')} />}
         contentContainerStyle={styles.alertContainer}
         show={isvisible}
         title={title}
         titleStyle={styles.titleStyle}
-        message='Bạn có chắc chắn muốn hủy kết bạn với người này không ? '
+        message={message}
         messageStyle={styles.messageStyle}
         // CANCEL BUTTON
         showCancelButton={true}

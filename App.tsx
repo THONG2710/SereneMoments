@@ -5,15 +5,13 @@ import Login from './src/Screen/Authentication/Login/Login';
 import Register from './src/Screen/Authentication/Register/Register';
 import ChangePass from './src/Screen/Authentication/ChangePass/ChangePass';
 import LoginEmail from './src/Screen/Authentication/LoginEmail/LoginEmail';
+import Profile from './src/Screen/Profile/Profile';
+import TodoList from './src/Screen/TodoList/TodoList';
 
 function App(): JSX.Element {
   return (
-    // <HomeScreen></HomeScreen>
-    // <Login></Login>
-    // <Register></Register>
-    // <ChangePass></ChangePass>
-    // <LoginEmail></LoginEmail>
-    <MomentScreen></MomentScreen>
+   
+    <TodoList></TodoList> 
   ); 
 }
 

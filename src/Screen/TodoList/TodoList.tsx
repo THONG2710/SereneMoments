@@ -1,27 +1,25 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View, TextInput } from 'react-native'
 import React, { useState } from 'react'
-import { DOWN, IC_CHECKED, IC_DOWN, IMG_TODO } from '../../Resource/images'
-
 
 const TodoList = () => {
     const [newTask, setNewTask] = useState('');
     const [completedTasks, setCompletedTasks] = useState([]);
+    const [showCompletedTasks, setShowCompletedTasks] = useState(true);
     const [checked, setChecked] = useState([]);
+
     const [dataToDoList, setDataToDoList] = useState([
         {
-          _id: '1',
-          task: 'Công việc hằng ngày'
+            _id: '1',
+            task: 'Công việc hằng ngày'
         },
         {
-          _id: '2',
-          task: 'Công việc quan trọng'
+            _id: '2',
+            task: 'Công việc quan trọng'
         },
-        {
-          _id: '3',
-          task: 'Công việc xã hội'
-        },
-      ]);
-    function pickTodo(selectedTasks: never) {
+
+    ]);
+
+    function pickTodo(selectedTasks) {
         if (checked.includes(selectedTasks)) {
             setChecked(checked.filter(task => task !== selectedTasks));
             setCompletedTasks(completedTasks.filter(task => task !== selectedTasks));
@@ -30,17 +28,29 @@ const TodoList = () => {
             setCompletedTasks(completedTasks => completedTasks.concat(selectedTasks));
         }
     }
+
+    function pickUnfinished(task) {
+        setCompletedTasks(completedTasks.filter(item => item !== task));
+        setChecked(checked => checked.filter(item => item !== task));
+        // Check if the task is already in the dataToDoList
+        const isTaskExist = dataToDoList.some(item => item.task === task);
+        if (!isTaskExist) {
+            setDataToDoList(dataToDoList => [...dataToDoList, { _id: String(dataToDoList.length + 1), task }]);
+        }
+    }
+
     function handleAddTask() {
         if (newTask.trim() !== '') {
-          const newId = String(dataToDoList.length + 1);
-          const newTaskObj = {
-            _id: newId,
-            task: newTask.trim()
-          };
-          setDataToDoList([...dataToDoList, newTaskObj]);
-          setNewTask('');
+            const newId = String(dataToDoList.length + 1);
+            const newTaskObj = {
+                _id: newId,
+                task: newTask.trim()
+            };
+            setDataToDoList([...dataToDoList, newTaskObj]);
+            setNewTask('');
         }
-      }
+    }
+
     return (
         // CONTAINER
         <View style={styles.container}>
@@ -48,11 +58,11 @@ const TodoList = () => {
             <View style={styles.header}>
                 <View style={styles.backgroundHeader}>
                     <Text style={styles.textHeader}>Cố gắng hoàn thành bạn nhé !</Text>
-                    <Image source={{ uri: IMG_TODO }} style={styles.imgHeader}></Image>
+                    <Image source={require('../../Resource/Image2/imgtodo.png')} style={styles.imgHeader}></Image>
                 </View>
             </View>
             {/* CENTER */}
-            
+
             <View style={styles.center}>
                 <Text style={styles.textUnfinished}>Chưa hoàn thành</Text>
                 {/* TASK UNFINISHED */}
@@ -62,28 +72,29 @@ const TodoList = () => {
                             <View key={item._id} style={styles.task}>
                                 {/* Checkbox code */}
                                 <TouchableOpacity style={styles.checkbox} onPress={() => pickTodo(item.task)}>
-                                    {checked.includes(item.task) && <Text style={styles.check}>√</Text>}
+
                                 </TouchableOpacity>
                                 <Text style={styles.textTask}>{item.task}</Text>
                             </View>
                         )
                     ))}
                 </View>
-                
-                {/* TASK FINISHED */}
-                <View style={styles.finishTitle}>
-                    <Text style={styles.textFinished}>Đã hoàn thành</Text>
-                    <Image source={{ uri: IC_DOWN }} style={styles.downFinish}></Image>
 
-                </View>
-                <View style={styles.itemTask}>
-                    {completedTasks.map(task => (
-                        <View style={styles.finished}>
-                            <Image source={{ uri: IC_CHECKED }} style={styles.checked}></Image>
-                            <Text style={styles.textTaskFinished} key={task}>{task}</Text>
-                        </View>
-                    ))}
-                </View>
+                {/* TASK FINISHED */}
+                <TouchableOpacity style={styles.finishTitle} onPress={() => setShowCompletedTasks(!showCompletedTasks)}>
+                    <Text style={styles.textFinished}>Đã hoàn thành</Text>
+                    <Image source={require('../../Resource/Image2/ic_check.png')} style={styles.downFinish} />
+                </TouchableOpacity>
+                {showCompletedTasks && (
+                    <View style={styles.itemTask}>
+                        {completedTasks.map(task => (
+                            <TouchableOpacity key={task} style={styles.finished} onPress={() => pickUnfinished(task)}>
+                                <Image source={require('../../Resource/Image2/ic_down.png')} style={styles.checked} />
+                                <Text style={styles.textTaskFinished}>{task}</Text>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
+                )}
             </View>
 
             {/* FOOTER */}
@@ -103,7 +114,7 @@ const TodoList = () => {
                 </TouchableOpacity>
             </View>
 
-        </View>
+        </View >
     )
 }
 
