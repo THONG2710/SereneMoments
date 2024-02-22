@@ -1,20 +1,23 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image, StyleSheet, Text, TouchableOpacity, View, ViewProps } from 'react-native'
 import React, { useState } from 'react'
 import AwesomeAlert from 'react-native-awesome-alerts'
 import { AVATAR, IC_WARN } from '../../Resource/images';
-
-const Dialog = () => {
-  const [showAlert, setShowAlert] = useState(false);
+interface DialogProps extends ViewProps {
+  isvisible: boolean;
+  onCancel?: () => void;
+  onConfirm?: () => void;
+  title?:string;
+}
+const Dialog: React.FC<DialogProps> = (props) => {
+ const {isvisible, onCancel, onConfirm,title} = props;
+ 
   return (
     <View >
-      <TouchableOpacity onPress={() => setShowAlert(!showAlert)} style={styles.btn}>
-        <Text style={styles.text}>Click</Text>
-      </TouchableOpacity>
       <AwesomeAlert
         customView={<Image style={styles.imgWarn} source={{ uri: IC_WARN }} />}
         contentContainerStyle={styles.alertContainer}
-        show={showAlert}
-        title='Xóa bạn bè'
+        show={isvisible}
+        title={title}
         titleStyle={styles.titleStyle}
         message='Bạn có chắc chắn muốn hủy kết bạn với người này không ? '
         messageStyle={styles.messageStyle}
@@ -24,11 +27,7 @@ const Dialog = () => {
         cancelButtonColor='#EEEEEE'
         cancelButtonTextStyle={styles.cancelButtonTextStyle}
         cancelButtonStyle={styles.buttonStyle}
-        onCancelPressed={() =>
-        {
-          console.log('Cancel Button');
-          setShowAlert(false)
-        }}
+        onCancelPressed={onCancel}
 
         // CONFIRM BUTTON
         showConfirmButton={true}
@@ -36,10 +35,7 @@ const Dialog = () => {
         confirmButtonColor='red'
         confirmButtonTextStyle={styles.confirmButtonTextStyle}
         confirmButtonStyle={styles.buttonStyle}
-        onConfirmPressed={() =>{
-          console.log('Confirm Button');
-          setShowAlert(false)
-        }}
+        onConfirmPressed={onConfirm}
       />
     </View>
   )

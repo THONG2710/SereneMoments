@@ -1,7 +1,6 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View, TextInput } from 'react-native'
 import React, { useState } from 'react'
 import { DOWN, IC_CHECKED, IC_DOWN, IMG_TODO } from '../../Resource/images'
-import CheckBox from 'react-native-check-box';
 
 
 const TodoList = () => {
