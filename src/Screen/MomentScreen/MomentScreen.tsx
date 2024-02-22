@@ -9,8 +9,12 @@ const h = Dimensions.get('window').height;
 
 const MomentScreen = () => {
     const [selected, setSelected] = useState("");
+    const [heart, setHeart] = useState(false)
+    const Liked = () => {
+        setHeart(!heart)
+    }
     const data = [
-        { key: '1', value: 'Nguyễn Quang Trường' },
+        { key: '1', value: 'Nguyễn Trường' },
     ]
     return (
         //CONTAINER
@@ -28,7 +32,8 @@ const MomentScreen = () => {
                         dropdownTextStyles={styles.textDropdownStyles}
                         setSelected={(value: React.SetStateAction<string>) => setSelected(value)}
                         data={data}
-                        save="value"
+                        defaultOption={{ key: '1', value: 'Nguyễn Trường' }}
+
                     />
                 </View>
                 <View style={styles.backgroundImageMN}>
@@ -62,8 +67,14 @@ const MomentScreen = () => {
                 </View>
 
                 <View style={styles.interact}>
-                    <TouchableOpacity style={styles.interactLeft}>
-                        <Image style={styles.imgInteract} source={{ uri: HEART }}></Image>
+                    <TouchableOpacity style={styles.interactLeft} onPress={Liked}>
+                        {
+                            heart
+                                ?
+                                <Image style={styles.imgInteract} source={require('../../Resource/Image2/hearted.png')}></Image>
+                                :
+                                <Image style={styles.imgInteract} source={require('../../Resource/Image2/noHeart.png')}></Image>
+                        }
                         <Text style={styles.textInteract}>30</Text>
                     </TouchableOpacity>
                     <Image style={styles.line} source={{ uri: LINE }}></Image>
@@ -81,6 +92,7 @@ const MomentScreen = () => {
                     </TouchableOpacity>
                 </KeyboardAvoidingView>
             </View>
+            
         </ScrollView>
     )
 }
@@ -124,7 +136,7 @@ const styles = StyleSheet.create({
         top: 0,
         zIndex: 1,
         alignItems: 'center',
-        left:80
+        left: 80
     },
 
     selectedList:
@@ -134,13 +146,17 @@ const styles = StyleSheet.create({
         borderWidth: 0,
         width: 200,
         fontFamily: 'Helvetica',
-        height: 45
+        height: 45,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 
     inputStylesSelected:
     {
         color: '#176B87',
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        marginHorizontal: 10
+
     },
 
     dropdownStylesSelected:

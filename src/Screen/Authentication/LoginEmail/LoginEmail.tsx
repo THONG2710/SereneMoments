@@ -9,15 +9,15 @@ const LoginEmail: React.FC = () => {
             <Text style={styles.sayHello}>Xin chào.</Text>
             <Text style={styles.sayHello2}>Đăng nhập vào Semo ^.^</Text>
             <View style={styles.containerImg}>
-                <Image style={styles.img} source={{ uri: REGISTER }} />
+                <Image style={styles.img} source={require('../../../Resource/Image2/logo.png')} />
             </View>
             <View style={styles.btnRegister}>
                 <Image style={styles.imgIcon} source={{ uri: EMAILREGISTER }} />
-                <TextInput style={styles.txtBtn}></TextInput>
+                <TextInput placeholder='Nhập Email' style={styles.txtBtn}></TextInput>
             </View>
             <View style={styles.btnRegister}>
                 <Image style={styles.imgIcon} source={{ uri: KEYREGISTER }} />
-                <TextInput style={styles.txtBtn} secureTextEntry={true}></TextInput>
+                <TextInput placeholder='Nhập mật khẩu' style={styles.txtBtn} secureTextEntry={true}></TextInput>
             </View>
             <TouchableOpacity>
                 <View style={styles.btnLogin}>

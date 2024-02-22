@@ -8,7 +8,7 @@ const ChangePass: React.FC = () => {
         <View style={styles.container}>
             <Text style={styles.sayHello2}>Đổi mật khẩu</Text>
             <View style={styles.containerImg}>
-                <Image style={styles.img} source={{ uri: REGISTER }} />
+                <Image style={styles.img} source={require('../../../Resource/Image2/logo.png')} />
             </View>
             <View style={styles.btnRegister}>
                 <Image style={styles.imgIcon} source={{ uri: KEYREGISTER }} />

@@ -6,9 +6,9 @@ import { EMAIL, FACEBOOK, HELLO, USER } from '../../../Resource/images'
 const Login: React.FC = () => {
     return (
         <View style={styles.container}>
-            <Text style={styles.sayHello}>Xin chào.</Text>
+            <Text style={styles.sayHello}>Xin chào</Text>
             <View style={styles.containerImg}>
-                <Image style={styles.img} source={{ uri: HELLO }} />
+                <Image style={styles.img} source={require('../../../Resource/Image2/logo.png')} />
             </View>
             <TouchableOpacity>
                 <View style={styles.btnLogin}>

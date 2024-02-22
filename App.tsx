@@ -12,7 +12,8 @@ function App(): JSX.Element {
     // <Login></Login>
     // <Register></Register>
     // <ChangePass></ChangePass>
-    <LoginEmail></LoginEmail>
+    // <LoginEmail></LoginEmail>
+    <MomentScreen></MomentScreen>
   ); 
 }
 

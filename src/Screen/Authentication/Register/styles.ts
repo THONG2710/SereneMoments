@@ -20,7 +20,6 @@ const styles = StyleSheet.create({
     containerImg:{
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop:-40
     },
     img:{
         width:275,
