@@ -34,6 +34,7 @@ const HomeScreen = () => {
                         setSelected={(value: React.SetStateAction<string>) => setSelected(value)}
                         data={data}
                         save="value"
+                        defaultOption={{ key:'1', value:'Bạn bè' }}
                     />
                 </View>
                 <TouchableOpacity style={styles.save}>

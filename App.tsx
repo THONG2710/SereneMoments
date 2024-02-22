@@ -1,15 +1,19 @@
 import React from 'react';
 import HomeScreen from './src/Screen/HomeScreen/HomeScreen';
 import MomentScreen from './src/Screen/MomentScreen/MomentScreen';
-import Profile from './src/Screen/Profile/Profile';
-import EditProfile from './src/Screen/EditProfile/EditProfile';
-import Dialog from './src/Screen/Dialog/Dialog';
-import TodoList from './src/Screen/TodoList/TodoList';
-import ListFriend from './src/Screen/Profile/ListFriend';
+import Login from './src/Screen/Authentication/Login/Login';
+import Register from './src/Screen/Authentication/Register/Register';
+import ChangePass from './src/Screen/Authentication/ChangePass/ChangePass';
+import LoginEmail from './src/Screen/Authentication/LoginEmail/LoginEmail';
 
 function App(): JSX.Element {
   return (
-    <ListFriend/>
+    // <HomeScreen></HomeScreen>
+    // <Login></Login>
+    // <Register></Register>
+    // <ChangePass></ChangePass>
+    // <LoginEmail></LoginEmail>
+    <MomentScreen></MomentScreen>
   ); 
 }
 
