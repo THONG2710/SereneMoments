@@ -1,23 +1,26 @@
 import {View, Text, Image, TouchableOpacity} from 'react-native';
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import styles from './styles';
 import {LoginProps} from './type';
-import { useAppSelector } from '../../../Redux/Hook';
+import {useAppSelector} from '../../../Redux/Hook';
+import {LoginButton, AccessToken} from 'react-native-fbsdk-next';
+import { Settings, Profile } from 'react-native-fbsdk-next';
 
 const Login: React.FC<LoginProps> = props => {
   const {navigation} = props;
   const is_logged = useAppSelector(state => state.Authentication.isLogged);
+  Settings.setAppID('3561957340731174');
+  Settings.initializeSDK();
 
   useEffect(() => {
     console.log(is_logged);
-    
-    is_logged ? navigation.navigate('AuthorizedNavigation') : null
-  }, [])
-  
+
+    is_logged ? navigation.navigate('AuthorizedNavigation') : null;
+  }, []);
 
   const onLoginWithAccount = () => {
     navigation.navigate('LoginWithAccount');
-  }
+  };
 
   const onRegister = () => {
     navigation.navigate('RegisterScreen');
@@ -26,7 +29,7 @@ const Login: React.FC<LoginProps> = props => {
   const onLogin = () => {
     navigation.navigate('AuthorizedNavigation');
   };
-  
+
   return (
     <View style={styles.container}>
       <Text style={styles.sayHello}>Xin chào.</Text>
@@ -45,6 +48,31 @@ const Login: React.FC<LoginProps> = props => {
           <Text style={styles.txtBtn}>Đăng nhập bằng gmail</Text>
         </View>
       </TouchableOpacity>
+      <LoginButton
+        onLoginFinished={(error, result) => {
+          if (error) {
+            console.log('login has error: ' + result);
+          } else if (result.isCancelled) {
+            console.log('login is cancelled.');
+          } else {
+            AccessToken.getCurrentAccessToken().then(data => {
+              console.log(data.accessToken.toString());
+            });
+            const currentProfile = Profile.getCurrentProfile().then(
+              function(currentProfile) {
+                if (currentProfile) {
+                  console.log("The current logged user is: " +
+                    currentProfile.name
+                    + ". His profile id is: " +
+                    currentProfile.userID
+                  );
+                }
+              }
+            );
+          }
+        }}
+        onLogoutFinished={() => console.log('logout.')}
+      />
       <TouchableOpacity onPress={onLogin}>
         <View style={styles.btnLogin}>
           <Image
