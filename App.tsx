@@ -11,6 +11,8 @@ import Profile from './src/Screen/AccountScreen/Profile/Profile';
 import RootNavigation from './src/Navigation/RootNavigation';
 import ItemMoment from './src/Screen/MomentScreen/Component/ItemMoment';
 import TakeAMoment from './src/Screen/MomentScreen/Component/TakeAMoment';
+import TestSnapshot from './TestSnapshot';
+import TestDragable from './TestDragable';
 
 function App(): JSX.Element {
   return (
@@ -22,10 +24,12 @@ function App(): JSX.Element {
     // <AuthenticationNavigation/>
     // <AuthorizedNavigation/>
     // <Profile/>
-    <RootNavigation/>
+    // <RootNavigation/>
     // <HomeScreen/>
     // <ItemMoment/>
     // <TakeAMoment/>
+    // <TestSnapshot/>
+    <TestDragable/>
   ); 
 }
 

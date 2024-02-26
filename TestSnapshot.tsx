@@ -3,11 +3,13 @@ import React from 'react';
 import ViewShot from 'react-native-view-shot';
 import {useRef, useState} from 'react';
 
-const test = () => {
+const TestSnapshot = () => {
   const viewShot = useRef(null);
   const [uri, setUri] = useState('');
   const captureScreen = () => {
     viewShot.current.capture().then(uri => {
+      console.log(uri);
+      
       setUri(uri);
     });
   };
@@ -37,7 +39,7 @@ const test = () => {
   );
 };
 
-export default test;
+export default TestSnapshot;
 
 const styles = StyleSheet.create({
   container: {
