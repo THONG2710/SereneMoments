@@ -1,7 +1,7 @@
 import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
-import Dialog from '../Dialog/Dialog';
 import AwesomeAlert from 'react-native-awesome-alerts';
+import Dialog from '../../Dialog/Dialog';
 
 const ListFriend = () => {
     const [showAlert, setShowAlert] = useState(false);
