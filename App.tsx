@@ -7,11 +7,12 @@ import ChangePass from './src/Screen/Authentication/ChangePass/ChangePass';
 import LoginEmail from './src/Screen/Authentication/LoginEmail/LoginEmail';
 import Profile from './src/Screen/Profile/Profile';
 import TodoList from './src/Screen/TodoList/TodoList';
+import MomentHistory from './src/Screen/Profile/MomentHistory';
 
 function App(): JSX.Element {
   return (
    
-    <TodoList></TodoList> 
+    <MomentHistory></MomentHistory> 
   ); 
 }
 
