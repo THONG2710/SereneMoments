@@ -1,10 +1,20 @@
 interface UserModel {
     _id: String,
-    userName: string,
+    username: string,
     password: string,
     email: string,
     available: boolean,
     avatar: string,
+    createdat: Number,
+    phoneNumber: String,
 }
 
-export type {UserModel}
+interface DiaryModel {
+    _id: String,
+    userid: String,
+    diary: String,
+    createdat: Number,
+    privacy: Number,
+}
+
+export type {UserModel, DiaryModel}

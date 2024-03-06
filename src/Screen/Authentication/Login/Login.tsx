@@ -3,20 +3,20 @@ import React, {useEffect} from 'react';
 import styles from './styles';
 import {LoginProps} from './type';
 import {useAppSelector} from '../../../Redux/Hook';
-import {LoginButton, AccessToken} from 'react-native-fbsdk-next';
-import { Settings, Profile } from 'react-native-fbsdk-next';
+import {
+  LoginButton,
+  AccessToken,
+  LoginManager,
+  GraphRequest,
+  GraphRequestManager,
+} from 'react-native-fbsdk-next';
+import {Settings, Profile} from 'react-native-fbsdk-next';
 
 const Login: React.FC<LoginProps> = props => {
   const {navigation} = props;
   const is_logged = useAppSelector(state => state.Authentication.isLogged);
   Settings.setAppID('3561957340731174');
   Settings.initializeSDK();
-
-  useEffect(() => {
-    console.log(is_logged);
-
-    is_logged ? navigation.navigate('AuthorizedNavigation') : null;
-  }, []);
 
   const onLoginWithAccount = () => {
     navigation.navigate('LoginWithAccount');
@@ -30,6 +30,65 @@ const Login: React.FC<LoginProps> = props => {
     navigation.navigate('AuthorizedNavigation');
   };
 
+  const handleLogout = async () => {
+    try {
+      await LoginManager.logOut();
+      console.log('Logged out successfully!');
+      // Xử lý logout thành công
+    } catch (error) {
+      console.log('Logout error:', error);
+      // Xử lý lỗi logout
+    }
+  };
+
+  const handleLogin = async () => {
+    try {
+      const result = await LoginManager.logInWithPermissions([
+        'public_profile',
+        'email',
+      ]);
+      if (result.isCancelled) {
+        console.log('Login cancelled');
+      } else {
+        const tokenData = await AccessToken.getCurrentAccessToken();
+        console.log('Logged in successfully!', tokenData);
+        const fetchUserAvatar = async () => {
+          const responseCallback = (error, result) => {
+            if (error) {
+              console.log('Error fetching user avatar:', error);
+              // Xử lý lỗi khi không thể lấy thông tin
+            } else {
+              console.log('User avatar:', result.picture.data.url);
+              // Xử lý thông tin avatar
+            }
+          };
+
+          const graphRequest = new GraphRequest(
+            '/me',
+            {
+              parameters: {
+                fields: {
+                  string: 'picture.type(large)',
+                },
+                access_token: {
+                  string: tokenData.accessToken,
+                },
+              },
+            },
+            responseCallback,
+          );
+
+          new GraphRequestManager().addRequest(graphRequest).start();
+        };
+
+        fetchUserAvatar();
+        // Xử lý đăng nhập thành công
+      }
+    } catch (error) {
+      console.log('Login error:', error);
+      // Xử lý lỗi đăng nhập
+    }
+  };
   return (
     <View style={styles.container}>
       <Text style={styles.sayHello}>Xin chào.</Text>
@@ -48,32 +107,7 @@ const Login: React.FC<LoginProps> = props => {
           <Text style={styles.txtBtn}>Đăng nhập bằng gmail</Text>
         </View>
       </TouchableOpacity>
-      <LoginButton
-        onLoginFinished={(error, result) => {
-          if (error) {
-            console.log('login has error: ' + result);
-          } else if (result.isCancelled) {
-            console.log('login is cancelled.');
-          } else {
-            AccessToken.getCurrentAccessToken().then(data => {
-              console.log(data.accessToken.toString());
-            });
-            const currentProfile = Profile.getCurrentProfile().then(
-              function(currentProfile) {
-                if (currentProfile) {
-                  console.log("The current logged user is: " +
-                    currentProfile.name
-                    + ". His profile id is: " +
-                    currentProfile.userID
-                  );
-                }
-              }
-            );
-          }
-        }}
-        onLogoutFinished={() => console.log('logout.')}
-      />
-      <TouchableOpacity onPress={onLogin}>
+      <TouchableOpacity onPress={handleLogin}>
         <View style={styles.btnLogin}>
           <Image
             style={styles.imgIcon}

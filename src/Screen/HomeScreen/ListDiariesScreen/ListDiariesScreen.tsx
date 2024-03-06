@@ -1,18 +1,44 @@
-import {Alert, StyleSheet, Text, View} from 'react-native';
-import React, { useEffect } from 'react';
+import {Alert, FlatList, RefreshControl, StyleSheet, Text, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {styles} from './style';
 import InputBox from '../../../Components/Inputs/InputBox';
 import ButtonIcon from '../../../Components/Buttons/ButtonIcon';
 import Post from '../components/Post';
 import {ListDiarieProps} from './type';
-import { useAppSelector } from '../../../Redux/Hook';
+import {useAppSelector} from '../../../Redux/Hook';
+import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
+import {DiaryModel} from '../../../Models/Model';
 
 const ListDiariesScreen: React.FC<ListDiarieProps> = props => {
   const {navigation} = props;
-  const is_logged = useAppSelector(state => state.Authentication.isLogged);
+  const user = useAppSelector(state => state.Authentication.myAccount);
+  const [listDiaries, setListDiaries] = useState<DiaryModel[]>([]);
+  const [refreshing, setrefreshing] = useState(false);
 
   const onCreateNewDiary = () => {
     navigation.navigate('CreateDiaryScreen');
+  };
+
+  const getDiaries = async () => {
+    const result = await getData(
+      'http://' +
+        ID_ADRESS +
+        ':3000/api/diary/getDiariesMyFriends?id=' +
+        user._id,
+    );
+    if (result.diaries) {
+      setListDiaries(result.diaries);
+      setrefreshing(false)
+    }
+   
+  };
+
+  useEffect(() => {
+    getDiaries();
+  }, [refreshing]);
+
+  const onRefresh = () => {
+    setrefreshing(true);
   };
 
   return (
@@ -30,7 +56,16 @@ const ListDiariesScreen: React.FC<ListDiarieProps> = props => {
           onPress={onCreateNewDiary}
         />
       </View>
-      <Post />
+      {/* list */}
+      <FlatList
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        data={listDiaries}
+        showsVerticalScrollIndicator={false}
+        renderItem={({item}) => <Post diary={item} />}
+        keyExtractor={item => item._id.toString()}
+      />
     </View>
   );
 };

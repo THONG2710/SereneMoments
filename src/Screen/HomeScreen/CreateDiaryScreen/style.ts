@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: 'space-between',
         paddingHorizontal: 20,
-        height: 70,
+        height: 60,
     },
 
     // ======== left =================================
@@ -80,14 +80,15 @@ export const styles = StyleSheet.create({
     // ================ body =================
     body: {
         width: Dimensions.get("screen").width,
-        height: Dimensions.get("screen").height / 10 * 7,
+        height: Dimensions.get("screen").height / 10 * 6.5,
         alignItems: 'center',
         justifyContent: 'center',
+        paddingVertical: 10,
     },
 
     bodyShadow: {
         width: Dimensions.get("screen").width / 10 * 9,
-        height: '97%',
+        height: '100%',
     },
 
     customize: {
@@ -96,6 +97,12 @@ export const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: Colors.DARK_BLUE,
         backgroundColor: Colors.WHITE,
+        paddingHorizontal: 10,
+        justifyContent: 'flex-start',
+        overflow: 'hidden',
+    },
+
+    diaryContent: {
     },
 
     // ========= footer =================

@@ -1,10 +1,20 @@
-import {View, Text, Image, TextInput, TouchableOpacity, Alert} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import styles from './styles';
 import {LoginWithAccountProps} from './type';
 import {ID_ADRESS, postData} from '../../../Service/RequestMethod';
 import {useAppDispatch, useAppSelector} from '../../../Redux/Hook';
-import {SET_ISLOGGED} from '../../../Redux/Action/AuthenticationActions';
+import {
+  SAVE_USER,
+  SET_ISLOGGED,
+} from '../../../Redux/Action/AuthenticationActions';
 import ButtonIcon from '../../../Components/Buttons/ButtonIcon';
 import LoadingDialog from '../../../Components/Dialogs/LoadingDialog';
 
@@ -38,11 +48,25 @@ const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
         Alert.alert('Cảnh báo', 'Lỗi đăng nhập, vui lòng thử lại', [
           {
             text: 'Cancle',
-            onPress: () => {setIsLoading(false)}
-          }
-        ]) 
+            onPress: () => {
+              setIsLoading(false);
+            },
+          },
+        ]);
       }, 5000);
     } else {
+      const userCurrent = {
+        _id: res.user._id,
+        username: res.user.username,
+        password: res.user.password,
+        email: res.user.email,
+        available: res.user.available,
+        avatar: res.user.avatar,
+        createdat: res.user.createdat,
+        phoneNumber: res.user.phonenumber,
+      };
+      usdispath(SAVE_USER(userCurrent));
+
       setIsLoading(false);
       usdispath(SET_ISLOGGED(true));
       navigation.navigate('AuthorizedNavigation');

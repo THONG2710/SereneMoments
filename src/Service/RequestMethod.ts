@@ -1,4 +1,4 @@
-export const ID_ADRESS = '192.168.1.22';
+export const ID_ADRESS = '192.168.0.153';
 
 export const getData = async (url: string) => {
     try {

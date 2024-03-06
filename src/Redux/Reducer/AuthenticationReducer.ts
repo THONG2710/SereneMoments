@@ -9,7 +9,7 @@ export type AuthenticationState = {
 
 export const INITIAL_AUTHENTICATION_STATE: AuthenticationState = {
     isLogged: false,
-    myAccount: { _id: '', userName: '', password: '', email: '', available: false, avatar: '', }
+    myAccount: { _id: '', username: '', password: '', email: '', available: true, avatar: '', createdat: 0, phoneNumber: ''}
 };
 
 export const AuthenticationReducer = createReducer(

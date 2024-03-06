@@ -24,12 +24,12 @@ function App(): JSX.Element {
     // <AuthenticationNavigation/>
     // <AuthorizedNavigation/>
     // <Profile/>
-    // <RootNavigation/>
+    <RootNavigation/>
     // <HomeScreen/>
     // <ItemMoment/>
     // <TakeAMoment/>
     // <TestSnapshot/>
-    <TestDragable/>
+    // <TestDragable/>
   ); 
 }
 

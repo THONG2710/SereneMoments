@@ -3,15 +3,16 @@ import React from 'react';
 import {Colors} from '../../Resource/colors';
 
 interface ButtonTextProps extends ViewProps {
-  label?: string;
+  label: string;
   buttonStyle?: StyleProp<ViewStyle>;
   labelStyle?: StyleProp<TextStyle>;
+  onPress?: () => void;
 }
 
 const ButtonText: React.FC<ButtonTextProps> = props => {
-  const {label} = props;
+  const {label, onPress} = props;
   return (
-    <Pressable style={styles.container}>
+    <Pressable onPress={onPress} style={styles.container}>
       <Text style={styles.labelStyle}>{label}</Text>
     </Pressable>
   );

@@ -16,10 +16,11 @@ interface ButtonIconProps extends ViewProps {
   styles?: StyleProp<ImageStyle>;
   onPress?: () => void;
   styleBtn?: StyleProp<ViewStyle>;
+  uri?: string;
 }
 
 const ButtonIcon: React.FC<ButtonIconProps> = props => {
-  const {styles, onPress, url, styleBtn} = props;
+  const {styles, onPress, url, styleBtn, uri} = props;
   return (
     <Pressable style={styleBtn} onPress={onPress}>
       <Image style={styles} source={url} />

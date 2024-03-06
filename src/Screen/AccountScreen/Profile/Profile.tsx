@@ -7,6 +7,7 @@ import { SET_ISLOGGED } from '../../../Redux/Action/AuthenticationActions';
 const Profile: React.FC<ProfileProps> = (props) => {
   const {navigation} = props;
   const useDispatch = useAppDispatch();
+  const myAccount = useAppSelector(state => state.Authentication.myAccount);
 
   const onLogout = () => {
     useDispatch(SET_ISLOGGED(false));
@@ -21,14 +22,14 @@ const Profile: React.FC<ProfileProps> = (props) => {
         <View style={styles.background}>
           <Image
             style={styles.imgAVT}
-            source={require('../../../Resource/images/avatar3.jpg')}></Image>
+            source={{uri: myAccount.avatar}}></Image>
           <TouchableOpacity style={styles.backgroundAdd}>
             <Image
               style={styles.imgAdd}
               source={require('../../../Resource/images/icon_add.png')}></Image>
           </TouchableOpacity>
         </View>
-        <Text style={styles.textName}>Thông Nguyễn</Text>
+        <Text style={styles.textName}>{myAccount.username}</Text>
         <TouchableOpacity style={styles.backgroundEdit}>
           <Text style={styles.textEdit}>Sửa đổi thông tin cá nhân</Text>
         </TouchableOpacity>
