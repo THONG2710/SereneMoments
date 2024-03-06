@@ -5,7 +5,19 @@ import AwesomeAlert from 'react-native-awesome-alerts';
 
 const ListFriend = () => {
     const [showAlert, setShowAlert] = useState(false);
-    
+    const [friends, setFriends] = useState(Friend);
+    const [selectedFriend, setSelectedFriend] = useState(null);
+    const handleDeleteFriend = (friend) => {
+        setSelectedFriend(friend);
+        setShowAlert(true);
+    };
+
+    const handleConfirmDelete = () => {
+        const updatedFriends = friends.filter((item) => item._id !== selectedFriend._id);
+        setFriends(updatedFriends);
+        setSelectedFriend(null);
+        setShowAlert(false);
+      };
 
     return (
         // CONTAINER
@@ -23,7 +35,7 @@ const ListFriend = () => {
             <View style={styles.center}>
                 <Text style={styles.sumFriend}>57 bạn bè</Text>
                 {
-                    Friend.map((item) =>
+                    friends.map((item) =>
                         <View key={item._id} style={styles.itemFriend}>
                             <View style={styles.itemFriendLeft}>
                                 <Image style={styles.imgAvatar} source={item.imageAVT}></Image>
@@ -32,7 +44,7 @@ const ListFriend = () => {
                                     <Text style={styles.manutalFriend}>{item.manutalFriend}</Text>
                                 </View>
                             </View>
-                            <TouchableOpacity onPress={() => setShowAlert(!showAlert)}>
+                            <TouchableOpacity onPress={() => handleDeleteFriend(item)}>
                                 <Image source={require('../../Resource/Image2/unFriend.png')} style={styles.itemFriendRight}></Image>
                             </TouchableOpacity>
                         </View>
@@ -40,8 +52,8 @@ const ListFriend = () => {
                 }
 
             </View>
-                <Dialog title='Xóa bạn bè' isvisible={showAlert} onConfirm={() =>{setShowAlert(false)}} onCancel={() => {setShowAlert(false)} }></Dialog>
-           
+            <Dialog message='Bạn có chắc chắn muốn xóa người này không' title='Xóa bạn bè' isvisible={showAlert} onConfirm={handleConfirmDelete} onCancel={() => { setShowAlert(false) }}></Dialog>
+
         </ScrollView>
     )
 }
@@ -167,7 +179,7 @@ const styles = StyleSheet.create({
     },
 
     // DIALOG
-    
+
 
 
 })

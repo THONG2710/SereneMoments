@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View, TextInput } from 'react-native'
+import { Image, StyleSheet, Text, TouchableOpacity, View, TextInput, ScrollView } from 'react-native'
 import React, { useState } from 'react'
 
 const TodoList = () => {
@@ -53,6 +53,7 @@ const TodoList = () => {
 
     return (
         // CONTAINER
+       
         <View style={styles.container}>
             {/* HEADER */}
             <View style={styles.header}>
@@ -63,7 +64,7 @@ const TodoList = () => {
             </View>
             {/* CENTER */}
 
-            <View style={styles.center}>
+            <ScrollView style={styles.center}>
                 <Text style={styles.textUnfinished}>Chưa hoàn thành</Text>
                 {/* TASK UNFINISHED */}
                 <View style={styles.itemTask}>
@@ -95,7 +96,7 @@ const TodoList = () => {
                         ))}
                     </View>
                 )}
-            </View>
+            </ScrollView>
 
             {/* FOOTER */}
             {/* ADD TODOLIST */}
@@ -166,7 +167,7 @@ const styles = StyleSheet.create({
     center:
     {
         flex: 0.7,
-        marginHorizontal: 20
+        marginHorizontal: 20,
     },
 
 
