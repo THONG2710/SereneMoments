@@ -2,6 +2,8 @@ import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View 
 import React, { useState } from 'react'
 import Dialog from '../Dialog/Dialog';
 import AwesomeAlert from 'react-native-awesome-alerts';
+import DialogConfirmSuccess from '../Dialog/DialogConfirmSuccess';
+import DialogConfirmFailure from '../Dialog/DialogConfirmFailure';
 
 const ListFriend = () => {
     const [showAlert, setShowAlert] = useState(false);
@@ -52,7 +54,7 @@ const ListFriend = () => {
                 }
 
             </View>
-            <Dialog message='Bạn có chắc chắn muốn xóa người này không' title='Xóa bạn bè' isvisible={showAlert} onConfirm={handleConfirmDelete} onCancel={() => { setShowAlert(false) }}></Dialog>
+            <Dialog message='Bạn có chắc chắn muốn xóa người này không' title='Xóa bạn bè !' isvisible={showAlert} onConfirm={handleConfirmDelete} onCancel={() => { setShowAlert(false) }}></Dialog>
 
         </ScrollView>
     )

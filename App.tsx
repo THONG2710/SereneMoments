@@ -9,11 +9,12 @@ import Profile from './src/Screen/Profile/Profile';
 import TodoList from './src/Screen/TodoList/TodoList';
 import MomentHistory from './src/Screen/Profile/MomentHistory';
 import ListFriend from './src/Screen/Profile/ListFriend';
+import Dialog from './src/Screen/Dialog/Dialog';
+import DialogConfirmSuccess from './src/Screen/Dialog/DialogConfirmSuccess';
 
 function App(): JSX.Element {
   return (
-   
-    <TodoList></TodoList> 
+    <ListFriend></ListFriend>
   ); 
 }
 
