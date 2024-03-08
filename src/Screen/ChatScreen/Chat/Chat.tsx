@@ -8,12 +8,38 @@ import {
   TextInput,
   Image,
   Alert,
+  FlatList,
 } from 'react-native';
-import React from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {ChatScreenProps} from './type';
+import {RealmContext, Task} from '../../../Models/Task';
+import { BSON } from 'realm';
+import {Realm} from '@realm/react'
+// import { useQuery, useRealm } from '@realm/react';
+
+const {useQuery, useRealm} = RealmContext;
 
 const Chat: React.FC<ChatScreenProps> = props => {
   const {navigation} = props;
+  const realm = useRealm();
+  const tasks = useQuery(Task);
+
+  const addTask = useCallback(() => {
+    realm.write(() => {
+      realm.create('Task', {
+        _id: new BSON.ObjectID(),
+        title: 'walk the dog',
+        description: 'bring an umbrella',
+      });
+    });
+  }, [realm]);
+
+  useEffect(() => {
+    realm.subscriptions.update(mutableSubs => {
+      mutableSubs.add(realm.objects(Task));
+    });
+  }, [realm]);
+
   const pressHandler = () => {
     Alert.alert(
       'Xóa bạn bè',
@@ -32,7 +58,16 @@ const Chat: React.FC<ChatScreenProps> = props => {
       </View>
       <TextInput style={styles.textInput} placeholder="Tìm kiếm..."></TextInput>
 
-      <View>
+      <FlatList
+        data={tasks}
+        renderItem={({item}) => (
+          <Text>{`${item.title} - ${item.description}`}</Text>
+        )}
+      />
+      <TouchableOpacity style={{backgroundColor: 'yellow'}} onPress={addTask}>
+        <Text>{'new task'}</Text>
+      </TouchableOpacity>
+      {/* <View>
         <Text style={styles.text4}>Gần đây</Text>
       </View>
       <TouchableOpacity
@@ -73,7 +108,7 @@ const Chat: React.FC<ChatScreenProps> = props => {
           <Text style={styles.text1}>Nguyễn Ngọc Bảo Sơn</Text>
           <Text style={styles.text2}>Xin chào</Text>
         </TouchableOpacity>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 };

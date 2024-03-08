@@ -12,12 +12,13 @@ import React from 'react';
 interface TextButtonProps extends ViewProps {
   label: string;
   style?: StyleProp<TextStyle>;
+  onPress?: () => void;
 }
 
 const TextButton: React.FC<TextButtonProps> = props => {
-  const {label, style} = props;
+  const {label, style, onPress} = props;
   return (
-    <Pressable>
+    <Pressable onPress={onPress}>
       <Text style={style}>{label}</Text>
     </Pressable>
   );

@@ -27,27 +27,39 @@ import DialogText from '../components/DialogText';
 import {useAppSelector} from '../../../Redux/Hook';
 import {ID_ADRESS, postData} from '../../../Service/RequestMethod';
 import LoadingDialog from '../../../Components/Dialogs/LoadingDialog';
+import {Colors} from '../../../Resource/colors';
+import DialogBackground from '../components/DialogBackground';
 
 const listOptions = [
   {
     _id: 1,
     label: 'Mẫu sẵn',
+    icon: require('../../../Resource/images/icon_model.png'),
   },
   {
     _id: 2,
     label: 'Nhãn dán',
+    icon: require('../../../Resource/images/icon_sticker.png'),
   },
   {
     _id: 3,
     label: 'Văn bản',
+    icon: require('../../../Resource/images/icon_text.png'),
   },
   {
     _id: 4,
     label: 'Hình ảnh',
+    icon: require('../../../Resource/images/icon_image.png'),
   },
   {
     _id: 5,
-    label: 'Hình ảnh',
+    label: 'Nền',
+    icon: require('../../../Resource/images/icon_background.png'),
+  },
+  {
+    _id: 6,
+    label: 'Thời gian',
+    icon: require('../../../Resource/images/icon_date.png'),
   },
 ];
 
@@ -56,7 +68,7 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
   const [status, setStatus] = useState('');
   const inputRef = useRef<TextInput>(null);
   const viewShotRef = useRef<ViewShot>(null);
-  const [content, setContent] = useState<String>('');
+  const [content, setContent] = useState<string>('');
   const [components, setComponents] = useState<React.ReactNode[]>();
   const [isVisibleDialog, setIsVisibleDialog] = useState<boolean>(false);
   const [childs, setChilds] = useState<React.ReactElement[]>([]);
@@ -67,6 +79,33 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
   const user = useAppSelector(state => state.Authentication.myAccount);
   const [isLoading, setisLoading] = useState<boolean>(false);
   const [isVisibleConfirmDialog, setisVisibleConfirmDialog] = useState(false);
+  const [font, setfont] = useState<string>('inter');
+  const [textSize, settextSize] = useState<number>(14);
+  const [textColor, settextColor] = useState<string>(Colors.BLACK);
+  const [isVisibleDialogBackground, setisVisibleDialogBackground] =
+    useState<boolean>(true);
+  const [backgroundColor, setbackgroundColor] = useState<string>(Colors.WHITE);
+
+  // chọn font chữ
+  const onSelectFont = (fontselected: string) => {
+    console.log(fontselected);
+    setfont(fontselected);
+  };
+
+  // chọn size chữ
+  const onSelectFontSize = (textSize: number) => {
+    settextSize(textSize);
+  };
+
+  // chọn màu chữ
+  const onSelectColor = (color: string) => {
+    settextColor(color);
+  };
+
+  // chọn màu nền
+  const onSelectBackground = (color: string) => {
+    setbackgroundColor(color);
+  };
 
   // xác nhận đăng
   const onConfirmPostDiary = () => {
@@ -184,15 +223,22 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
               if (e.label === 'Nhãn dán') {
                 setIsVisibleDialog(true);
                 setisVisibleDialogText(false);
+                setisVisibleDialogBackground(false);
               }
               if (e.label === 'Văn bản') {
                 setIsVisibleDialog(false);
                 setisVisibleDialogText(true);
+                setisVisibleDialogBackground(false);
+              }
+              if (e.label === 'Nền') {
+                setIsVisibleDialog(false);
+                setisVisibleDialogText(false);
+                setisVisibleDialogBackground(true);
               }
             }}
             itemStyle={[status === e.label ? styles.optionActive : {}]}
             key={e._id}
-            label={e.label}
+            item={e}
           />
         ))}
       </ScrollView>
@@ -207,6 +253,11 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
   // đóng dialog văn bản
   const onCancelText = () => {
     setisVisibleDialogText(false);
+  };
+
+  // Đóng dialog background
+  const onCancelBackground = () => {
+    setisVisibleDialogBackground(false);
   };
 
   return (
@@ -231,7 +282,25 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
       <Modal
         animationIn={'bounce'}
         isVisible={isVisibleDialogText}
-        children={<DialogText onCancel={onCancelText} />}
+        children={
+          <DialogText
+            onSelectColor={value => onSelectColor(value)}
+            textSize={textSize}
+            onSelectFontSize={size => onSelectFontSize(size)}
+            onSelectFont={fontselected => onSelectFont(fontselected)}
+            onCancel={onCancelText}
+          />
+        }
+      />
+      {/* dialog background */}
+      <Modal
+        isVisible={isVisibleDialogBackground}
+        children={
+          <DialogBackground
+            onSelectBackground={color => onSelectBackground(color)}
+            onCancel={onCancelBackground}
+          />
+        }
       />
       {/* dialog loading */}
       <LoadingDialog isVisible={isLoading} />
@@ -264,12 +333,13 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
       <Pressable style={styles.body} onPress={onFocusInContent}>
         <ViewShot style={{backgroundColor: 'red'}} ref={viewShotRef}>
           <Shadow distance={7} offset={[5, 5]} style={styles.bodyShadow}>
-            <View style={styles.customize}>
+            <View style={[styles.customize, {backgroundColor: backgroundColor}]}>
               <TextInput
+                style={{fontFamily: font, fontSize: textSize, color: textColor}}
                 onChangeText={(value: string) => setContent(value)}
                 ref={inputRef}
                 multiline
-                style={styles.diaryContent}
+                value={content}
               />
               {childs}
             </View>

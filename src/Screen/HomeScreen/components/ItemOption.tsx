@@ -3,17 +3,17 @@ import React from 'react';
 import { Colors } from '../../../Resource/colors';
 
 interface ItemOptionProps extends ViewProps {
-    label: string;
+    item: {_id: number; label: string; icon: any};
     itemStyle?: StyleProp<ViewStyle>;
     onPress?: (status: any) => void;
 }
 
 const ItemOption: React.FC<ItemOptionProps> = (props) => {
-  const { label, itemStyle, onPress } = props;
+  const { item, itemStyle, onPress } = props;
   return (
     <TouchableOpacity onPress={onPress} style={[styles.container, itemStyle]}>
-      <Image style={styles.iconImage} source={require('../../../Resource/images/icon_model.png')}/>
-      <Text style={styles.txtLabel}>{label}</Text>
+      <Image style={styles.iconImage} source={item.icon}/>
+      <Text style={styles.txtLabel}>{item.label}</Text>
     </TouchableOpacity>
   );
 };

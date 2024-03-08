@@ -1,4 +1,11 @@
-import {Alert, FlatList, RefreshControl, StyleSheet, Text, View} from 'react-native';
+import {
+  Alert,
+  FlatList,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {styles} from './style';
 import InputBox from '../../../Components/Inputs/InputBox';
@@ -8,6 +15,7 @@ import {ListDiarieProps} from './type';
 import {useAppSelector} from '../../../Redux/Hook';
 import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
 import {DiaryModel} from '../../../Models/Model';
+import FriendsComponent from '../components/FriendsComponent';
 
 const ListDiariesScreen: React.FC<ListDiarieProps> = props => {
   const {navigation} = props;
@@ -28,9 +36,8 @@ const ListDiariesScreen: React.FC<ListDiarieProps> = props => {
     );
     if (result.diaries) {
       setListDiaries(result.diaries);
-      setrefreshing(false)
+      setrefreshing(false);
     }
-   
   };
 
   useEffect(() => {
@@ -58,6 +65,7 @@ const ListDiariesScreen: React.FC<ListDiarieProps> = props => {
       </View>
       {/* list */}
       <FlatList
+        ListHeaderComponent={<FriendsComponent />}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }

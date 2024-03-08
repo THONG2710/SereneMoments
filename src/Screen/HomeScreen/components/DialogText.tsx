@@ -6,16 +6,21 @@ import {
   View,
   ViewProps,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {Colors} from '../../../Resource/colors';
 import ButtonIcon from '../../../Components/Buttons/ButtonIcon';
 import ItemColor from './ItemColor';
 import InputSpinner from 'react-native-input-spinner';
 import ButtonText from '../../../Components/Buttons/ButtonText';
 import TextButton from '../../../Components/Buttons/TextButton';
+import {assets} from '../../../../react-native.config';
 
 interface DialogTextProps extends ViewProps {
   onCancel?: () => void;
+  onSelectFont: (fonts: string) => void;
+  onSelectFontSize: (size: number) => void;
+  onSelectColor: (color: string) => void;
+  textSize: number;
 }
 
 const listColors = [
@@ -49,8 +54,71 @@ const listColors = [
   },
 ];
 
+const listFonts = [
+  {
+    id: 1,
+    fonts: 'inter',
+  },
+  {
+    id: 2,
+    fonts: 'Times New Roman',
+  },
+  {
+    id: 3,
+    fonts: 'dancingScript',
+  },
+  {
+    id: 4,
+    fonts: 'PinyonScript-Regular',
+  },
+  {
+    id: 5,
+    fonts: 'Lobster-Regular',
+  },
+  {
+    id: 6,
+    fonts: 'SedgwickAve-Regular',
+  },
+  {
+    id: 7,
+    fonts: 'BodoniModa-VariableFont_opsz,wght',
+  },
+  {
+    id: 8,
+    fonts: 'Fuggles-Regular',
+  },
+  {
+    id: 9,
+    fonts: 'ComforterBrush-Regular',
+  },
+  {
+    id: 10,
+    fonts: 'Hurricane-Regular',
+  },
+  {
+    id: 11,
+    fonts: 'OoohBaby-Regular',
+  },
+  {
+    id: 12,
+    fonts: 'Parisienne-Regular',
+  },
+  {
+    id: 13,
+    fonts: 'Playball-Regular',
+  },
+  {
+    id: 14,
+    fonts: 'Sacramento-Regular',
+  },
+  {
+    id: 15,
+    fonts: 'Yellowtail-Regular',
+  },
+];
+
 const DialogText: React.FC<DialogTextProps> = props => {
-  const {onCancel} = props;
+  const {onCancel, onSelectFont, onSelectFontSize, onSelectColor, textSize} = props;
   return (
     <View style={styles.container}>
       <ButtonIcon
@@ -65,28 +133,47 @@ const DialogText: React.FC<DialogTextProps> = props => {
           showsHorizontalScrollIndicator={false}
           horizontal
           data={listColors}
-          renderItem={({item}) => <ItemColor color={item.color} />}
+          renderItem={({item}) => <ItemColor onPress={() => onSelectColor(item.color)} color={item.color} />}
           keyExtractor={item => item.id.toString()}
         />
       </View>
       {/* size */}
       <View style={styles.fontSizeContainer}>
         <Text style={styles.txtTitle}>Kích thước</Text>
-        <InputSpinner value={'15'} style={styles.inputStyle} skin="clean" />
+        <InputSpinner
+          onChange={value => {
+            onSelectFontSize(Number(value));
+          }}
+          value={textSize}
+          style={styles.inputStyle}
+          skin="clean"
+        />
       </View>
       {/* stroke */}
       <View style={styles.strokeContainer}>
         <Text style={styles.txtTitle}>Nét chữ</Text>
         <View style={styles.stroke}>
-          <TextButton style={styles.txtStrokeN} label='N'/>
-          <TextButton style={styles.txtStrokeB} label='B'/>
-          <TextButton style={styles.txtStrokeI} label='I'/>
+          <TextButton style={styles.txtStrokeN} label="N" />
+          <TextButton style={styles.txtStrokeB} label="B" />
+          <TextButton style={styles.txtStrokeI} label="I" />
         </View>
       </View>
       {/* font */}
-      <View>
-        <Text style={[styles.txtTitle, {fontFamily: 'DancingScript-VariableFont_wght'}]}>Kiểu chữ</Text>
-
+      <View style={styles.fontsContainer}>
+        <Text style={styles.txtTitle}>Kiểu chữ</Text>
+        <FlatList
+          showsHorizontalScrollIndicator={false}
+          horizontal
+          data={listFonts}
+          renderItem={({item}) => (
+            <TextButton
+              onPress={() => onSelectFont(item.fonts)}
+              style={[styles.itemFont, {fontFamily: item.fonts}]}
+              label="aA"
+            />
+          )}
+          keyExtractor={item => item.id.toString()}
+        />
       </View>
     </View>
   );
@@ -167,5 +254,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.BLACK,
     fontStyle: 'italic',
+  },
+
+  // fonts
+  fontsContainer: {},
+
+  itemFont: {
+    color: Colors.BLACK,
+    marginHorizontal: 15,
+    fontSize: 24,
   },
 });

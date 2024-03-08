@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
     right: -7,
     backgroundColor: Colors.WHITE,
     zIndex: 100,
+    borderRadius: 50,
   },
 
   iconbtn: {

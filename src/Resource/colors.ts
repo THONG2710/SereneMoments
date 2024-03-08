@@ -10,4 +10,9 @@ export const Colors = {
     PINK: '#FF407D',
     ORANGE: '#FBA834',
     GREEN: '#74E291',
+    YELLOW: '#FFF3CF',
+    RED: '#D04848',
+    LIGHT_PINK: '#FF90BC',
+    LIGHT_BLUE2: '#C5FFF8',
+    BACKGROUND_BLUE: '#B4D4FF',
 }

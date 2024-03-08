@@ -13,6 +13,7 @@ import {Shadow} from 'react-native-shadow-2';
 import {ViewProps} from 'react-native-svg/lib/typescript/fabric/utils';
 import {DiaryModel, UserModel} from '../../../Models/Model';
 import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
+import {onConvertEpochtime} from '../../../Service/Service';
 
 interface PostProps extends ViewProps {
   diary: DiaryModel;
@@ -20,6 +21,7 @@ interface PostProps extends ViewProps {
 
 const Post: React.FC<PostProps> = props => {
   const [user, setuser] = useState<UserModel>();
+
   useEffect(() => {
     const getUser = async () => {
       const result = await getData(
@@ -29,8 +31,6 @@ const Post: React.FC<PostProps> = props => {
           diary.userid,
       );
       if (result.user) {
-        console.log(result.user);
-
         setuser(result.user);
       }
     };
@@ -50,7 +50,7 @@ const Post: React.FC<PostProps> = props => {
                 <Image source={{uri: user?.avatar}} style={styles.hdA_img} />
               ) : (
                 <Image
-                  source={require('../../../Resource/images/avatar_default.png')}
+                  source={require('../../../Resource/images/avatar.png')}
                   style={styles.hdA_img}
                 />
               )}
@@ -63,10 +63,19 @@ const Post: React.FC<PostProps> = props => {
           <View style={styles.hdi_smallContainer}>
             <ButtonIcon
               styles={styles.hdi_iconfr}
-              url={require('../../../Resource/images/icon_friends.png')}
+              url={
+                diary.privacy === 2
+                  ? require('../../../Resource/images/icon_friends.png')
+                  : require('../../../Resource/images/icon_public.png')
+              }
             />
-            <Text style={styles.hdi_txtStatus}>Bạn bè</Text>
+            <Text style={styles.hdi_txtStatus}>
+              {diary.privacy === 2 ? 'Bạn bè' : 'Công khai'}
+            </Text>
           </View>
+          <Text style={styles.hdi_txtDate}>
+            {onConvertEpochtime(Number(diary.createdat))}
+          </Text>
         </View>
         {/* menu */}
         <View style={styles.hd_menu}>
@@ -141,15 +150,19 @@ const styles = StyleSheet.create({
   },
 
   hdi_iconfr: {
-    width: 20,
-    height: 20,
+    width: 15,
+    height: 15,
   },
 
   hdi_txtStatus: {
     color: Colors.BLUE_TXT,
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: 'bold',
     marginLeft: 5,
+  },
+
+  hdi_txtDate: {
+    fontSize: 12,
   },
 
   // ============ menu =================================

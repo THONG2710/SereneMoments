@@ -14,11 +14,9 @@ const ItemMoment = () => {
     ]
     return (
         // CONTAINER
-
         <ScrollView style={styles.container}>
-
             {/* HEADER */}
-            <View style={styles.header}>
+            {/* <View style={styles.header}>
                 <View style={styles.backgroundImage}>
                     <TouchableOpacity>
                         <Image style={styles.imgAVT} source={require('../../../Resource/images/img.png')}></Image>
@@ -38,7 +36,7 @@ const ItemMoment = () => {
                 <TouchableOpacity style={styles.save}>
                     <Text style={styles.textSave}>Lưu</Text>
                 </TouchableOpacity>
-            </View>
+            </View> */}
             {/* CENTER */}
             <View style={styles.center}>
                 <ImageBackground source={require('../../../Resource/images/img.png')} resizeMode="cover" style={styles.image} imageStyle={{ borderRadius: 30 }}>

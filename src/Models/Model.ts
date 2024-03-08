@@ -17,4 +17,20 @@ interface DiaryModel {
     privacy: Number,
 }
 
-export type {UserModel, DiaryModel}
+interface MomentModel {
+    _id: String,
+    userid: String,
+    createdat: Number,
+    content: String,
+    caption: String,
+}
+
+interface FriendModel {
+    _id: String,
+    userid: String,
+    friendid: String,
+    requestedat: Number,
+    status: boolean,
+}
+
+export type {UserModel, DiaryModel, MomentModel, FriendModel}

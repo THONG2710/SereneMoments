@@ -13,6 +13,10 @@ import ItemMoment from './src/Screen/MomentScreen/Component/ItemMoment';
 import TakeAMoment from './src/Screen/MomentScreen/Component/TakeAMoment';
 import TestSnapshot from './TestSnapshot';
 import TestDragable from './TestDragable';
+import { AppProvider, RealmProvider, UserProvider } from '@realm/react';
+import Test from './RealmWrapper';
+import RealmWrapper from './RealmWrapper';
+import Chat from './src/Screen/ChatScreen/Chat/Chat';
 
 function App(): JSX.Element {
   return (
@@ -24,12 +28,15 @@ function App(): JSX.Element {
     // <AuthenticationNavigation/>
     // <AuthorizedNavigation/>
     // <Profile/>
-    <RootNavigation/>
+    // <RealmProvider>
+      <RootNavigation/>
+    // </RealmProvider>
     // <HomeScreen/>
     // <ItemMoment/>
     // <TakeAMoment/>
     // <TestSnapshot/>
     // <TestDragable/>
+    // <Chat/>
   ); 
 }
 

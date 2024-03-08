@@ -1,17 +1,20 @@
 import { StyleSheet } from "react-native";
+import { Colors } from "../../Resource/colors";
 
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: Colors.BACKGROUND_BLUE
     },
 
     //HEADER
     header: {
-        marginHorizontal: 15,
+        paddingHorizontal: 15,
         marginVertical: 25,
         justifyContent: 'space-between',
         flexDirection: 'row',
         alignItems: 'center',
+        width: '100%',
     },
 
     backgroundImage: {
@@ -77,6 +80,22 @@ export const styles = StyleSheet.create({
         elevation: 15, // chỉ dùng cho Android
         justifyContent: 'center',
         alignItems: 'center',
+    },
+
+    save:
+    {
+        backgroundColor: '#499EDC',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 40,
+        width: 70,
+        borderRadius: 10
+    },
+
+    textSave:
+    {
+        color: '#FFFFFF',
+        fontWeight: 'bold',
     },
 
     imgMN: {

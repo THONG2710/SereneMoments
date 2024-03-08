@@ -1,18 +1,79 @@
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React from 'react';
-import { ProfileProps } from './type';
-import { useAppDispatch, useAppSelector } from '../../../Redux/Hook';
-import { SET_ISLOGGED } from '../../../Redux/Action/AuthenticationActions';
+import React, {useEffect, useState} from 'react';
+import {ProfileProps} from './type';
+import {useAppDispatch, useAppSelector} from '../../../Redux/Hook';
+import {SET_ISLOGGED} from '../../../Redux/Action/AuthenticationActions';
+import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
+import {DiaryModel, FriendModel, MomentModel} from '../../../Models/Model';
 
-const Profile: React.FC<ProfileProps> = (props) => {
+const Profile: React.FC<ProfileProps> = props => {
   const {navigation} = props;
   const useDispatch = useAppDispatch();
   const myAccount = useAppSelector(state => state.Authentication.myAccount);
+  const [diaries, setdiaries] = useState<DiaryModel[]>([]);
+  const [moments, setmoments] = useState<MomentModel[]>([]);
+  const [friends, setfriends] = useState<FriendModel[]>([]);
+
+  // lấy nhật kí
+  const getDiaries = async () => {
+    try {
+      const response = await getData(
+        'http://' +
+          ID_ADRESS +
+          ':3000/api/diary/getDiariesByIdUser?id=' +
+          myAccount._id,
+      );
+      if (response) {
+        setdiaries(response.diaries);
+      }
+    } catch (error) {
+      console.log('get diaries failled: ' + error);
+    }
+  };
+
+  // lấy khoảnh khắc
+  const getMoments = async () => {
+    try {
+      const response = await getData(
+        'http://' +
+          ID_ADRESS +
+          ':3000/api/moment/getMomentsById?id=' +
+          myAccount._id,
+      );
+      if (response) {
+        setmoments(response.moments);
+      }
+    } catch (error) {
+      console.log('get moment failled: ' + error);
+    }
+  };
+
+  //  lấy bạn bè
+  const getFriends = async () => {
+    try {
+      const response = await getData(
+        'http://' +
+          ID_ADRESS +
+          ':3000/api/friend/getFriendsById?id=' +
+          myAccount._id,
+      );
+      if (response) {
+        setfriends(response.friends);
+      }
+    } catch (error) {
+      console.log('get friends failled: ' + error);
+    }
+  };
+
+  useEffect(() => {
+    getDiaries();
+    getMoments();
+    getFriends();
+  }, []);
 
   const onLogout = () => {
     useDispatch(SET_ISLOGGED(false));
-    navigation.getParent()?.goBack();
-  }
+  };
 
   return (
     //CONTAINER
@@ -20,9 +81,7 @@ const Profile: React.FC<ProfileProps> = (props) => {
       {/* HEADER */}
       <View style={styles.header}>
         <View style={styles.background}>
-          <Image
-            style={styles.imgAVT}
-            source={{uri: myAccount.avatar}}></Image>
+          <Image style={styles.imgAVT} source={{uri: myAccount.avatar}}></Image>
           <TouchableOpacity style={styles.backgroundAdd}>
             <Image
               style={styles.imgAdd}
@@ -51,7 +110,7 @@ const Profile: React.FC<ProfileProps> = (props) => {
               source={require('../../../Resource/images/icon_diary.png')}></Image>
             <Text style={styles.textItem}>Nhật ký</Text>
           </View>
-          <Text style={styles.notificationItem}>2</Text>
+          <Text style={styles.notificationItem}>{diaries.length}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.itemContentTwo}>
@@ -61,7 +120,7 @@ const Profile: React.FC<ProfileProps> = (props) => {
               source={require('../../../Resource/images/icon_moment.png')}></Image>
             <Text style={styles.textItem}>Khoảnh khắc</Text>
           </View>
-          <Text style={styles.notificationItem}>14</Text>
+          <Text style={styles.notificationItem}>{moments.length}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.itemContentThree}>
@@ -71,7 +130,7 @@ const Profile: React.FC<ProfileProps> = (props) => {
               source={require('../../../Resource/images/icon_friends_d.png')}></Image>
             <Text style={styles.textItem}>Bạn bè</Text>
           </View>
-          <Text style={styles.notificationItem}>12</Text>
+          <Text style={styles.notificationItem}>{friends.length}</Text>
         </TouchableOpacity>
       </View>
       {/* CENTERBOTTOM */}

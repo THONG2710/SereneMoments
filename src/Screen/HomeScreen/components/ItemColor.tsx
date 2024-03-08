@@ -4,12 +4,13 @@ import {Colors} from '../../../Resource/colors';
 
 interface ItemColorProps extends ViewProps {
   color: string;
+  onPress: () => void;
 }
 
 const ItemColor: React.FC<ItemColorProps> = props => {
-  const {color} = props;
+  const {color, onPress} = props;
   return (
-    <Pressable>
+    <Pressable onPress={onPress}>
       <View style={[styles.container, {backgroundColor: color}]}></View>
     </Pressable>
   );

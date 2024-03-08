@@ -2,6 +2,8 @@ import {View, Text, TouchableOpacity, Image} from 'react-native';
 import React, {useState} from 'react';
 import {styles} from './Style';
 import {SelectList} from 'react-native-dropdown-select-list';
+import TakeAMoment from './Component/TakeAMoment';
+import ItemMoment from './Component/ItemMoment';
 
 const MomentScreen = () => {
   const [selected, setSelected] = useState('');
@@ -29,14 +31,12 @@ const MomentScreen = () => {
             save="value"
           />
         </View>
-        <View style={styles.backgroundImageMN}>
-          <TouchableOpacity>
-            <Image
-              style={styles.imgMN}
-              source={require('../../Resource/images/icon_menu.png')}></Image>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity style={styles.save}>
+          <Text style={styles.textSave}>Lưu</Text>
+        </TouchableOpacity>
       </View>
+      {/* body */}
+      <ItemMoment />
     </View>
   );
 };
