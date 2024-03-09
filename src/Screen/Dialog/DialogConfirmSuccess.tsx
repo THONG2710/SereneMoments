@@ -1,38 +1,32 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View, ViewProps } from 'react-native'
 import React, { useState } from 'react'
 import AwesomeAlert from 'react-native-awesome-alerts'
-interface DialogProps extends ViewProps {
+interface DialogConfirmSuccessProps extends ViewProps {
   isvisible: boolean;
   onCancel?: () => void;
   onConfirm?: () => void;
   title?: string;
   message?: string;
 }
-const Dialog: React.FC<DialogProps> = (props) => {
+const DialogConfirmSuccess: React.FC<DialogConfirmSuccessProps> = (props) => {
   const { isvisible, onCancel, onConfirm, title, message } = props;
 
   return (
     <View >
       <AwesomeAlert
-        customView={<Image style={styles.imgWarn} source={require('../../Resource/Image2/warn.png')} />}
+        customView={<Image style={styles.imgWarn} source={require('../../Resource/Image2/success.png')} />}
         contentContainerStyle={styles.alertContainer}
         show={isvisible}
         title={title}
         titleStyle={styles.titleStyle}
         message={message}
         messageStyle={styles.messageStyle}
-        // CANCEL BUTTON
-        showCancelButton={true}
-        cancelText='Hủy'
-        cancelButtonColor='#EEEEEE'
-        cancelButtonTextStyle={styles.cancelButtonTextStyle}
-        cancelButtonStyle={styles.buttonStyle}
-        onCancelPressed={onCancel}
+        
 
         // CONFIRM BUTTON
         showConfirmButton={true}
         confirmText='Chấp nhận'
-        confirmButtonColor='red'
+        confirmButtonColor='#499EDC'
         confirmButtonTextStyle={styles.confirmButtonTextStyle}
         confirmButtonStyle={styles.buttonStyle}
         onConfirmPressed={onConfirm}
@@ -41,7 +35,7 @@ const Dialog: React.FC<DialogProps> = (props) => {
   )
 }
 
-export default Dialog
+export default DialogConfirmSuccess
 
 const styles = StyleSheet.create({
 
@@ -66,10 +60,10 @@ const styles = StyleSheet.create({
 
   imgWarn:
   {
-    width: 40,
-    height: 40,
+    width: 60,
+    height: 60,
     position: 'absolute',
-    bottom: 85,
+    top:-35,
 
   },
 
@@ -79,21 +73,24 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     elevation: 15,
     borderRadius: 20,
+    height:270
   },
 
   titleStyle:
   {
-    fontSize: 24,
-    color: 'black',
+    fontSize: 28,
+    color: '#499EDC',
     fontWeight: 'bold',
-    marginTop: 30
+    marginTop: 50
   },
 
   messageStyle:
   {
     textAlign: 'center',
-    color: 'black',
-    fontWeight: '500'
+    fontWeight: 'bold',
+    fontSize:15,
+    color: '#499EDC',
+    bottom:10
   },
 
   cancelButtonTextStyle:
@@ -105,12 +102,13 @@ const styles = StyleSheet.create({
 
   buttonStyle:
   {
-    width: 100,
-    height: 40,
+    width: '80%',
+    height: 45,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 8,
-    marginHorizontal: 15
+    borderRadius: 20,
+    marginHorizontal: 15,
+    top:20
   },
 
   confirmButtonTextStyle:
