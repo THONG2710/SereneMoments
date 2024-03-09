@@ -50,7 +50,6 @@ const FriendsComponent: React.FC<FriendsComponentProps> = props => {
   const user = useAppSelector(state => state.Authentication.myAccount);
 
   //  lấy bạn bè
-
   const getFriends = async () => {
     const res = await getData(
       'http://' +
@@ -64,7 +63,6 @@ const FriendsComponent: React.FC<FriendsComponentProps> = props => {
   };
 
   useEffect(() => {
-    console.log(user._id);
     getFriends();
   }, []);
 

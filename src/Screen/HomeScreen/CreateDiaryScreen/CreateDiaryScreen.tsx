@@ -83,7 +83,7 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
   const [textSize, settextSize] = useState<number>(14);
   const [textColor, settextColor] = useState<string>(Colors.BLACK);
   const [isVisibleDialogBackground, setisVisibleDialogBackground] =
-    useState<boolean>(true);
+    useState<boolean>(false);
   const [backgroundColor, setbackgroundColor] = useState<string>(Colors.WHITE);
 
   // chọn font chữ
@@ -123,8 +123,14 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
 
   // xóa một item trên diary
   const onDeleteItem = (id: Number) => {
+    console.log(childs);
+    console.log(id);
+
     const newChilds = [...childs];
+    const newItemKey = [...itemKey];
     newChilds.splice(Number(id), 1);
+    newItemKey.splice(Number(id), 1);
+    setItemKey(newItemKey);
     setChilds(newChilds);
     setReRender(!reRender);
   };
@@ -136,7 +142,7 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
     const newChild = (
       <ButtonDragable
         onDelete={() => onDeleteItem(key)}
-        key={itemKey.toString()}
+        key={key.toString()}
         isSlected={true}
         component={Item}
       />
@@ -234,6 +240,9 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
                 setIsVisibleDialog(false);
                 setisVisibleDialogText(false);
                 setisVisibleDialogBackground(true);
+              }
+              if (e.label === 'Hình ảnh') {
+                // onCreateOneItem()
               }
             }}
             itemStyle={[status === e.label ? styles.optionActive : {}]}
@@ -333,7 +342,8 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
       <Pressable style={styles.body} onPress={onFocusInContent}>
         <ViewShot style={{backgroundColor: 'red'}} ref={viewShotRef}>
           <Shadow distance={7} offset={[5, 5]} style={styles.bodyShadow}>
-            <View style={[styles.customize, {backgroundColor: backgroundColor}]}>
+            <View
+              style={[styles.customize, {backgroundColor: backgroundColor}]}>
               <TextInput
                 style={{fontFamily: font, fontSize: textSize, color: textColor}}
                 onChangeText={(value: string) => setContent(value)}
