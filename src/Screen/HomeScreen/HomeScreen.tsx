@@ -4,6 +4,8 @@ import {createStackNavigator} from '@react-navigation/stack';
 import ListDiariesScreen from './ListDiariesScreen/ListDiariesScreen';
 import CreateDiaryScreen from './CreateDiaryScreen/CreateDiaryScreen';
 import {HomeParamlist} from '../../StoryBoard/HomeStoryboard';
+import ListFriend from './ListFriends/ListFriend';
+import ListOtherUser from './ListOtherUser/ListOtherUser';
 
 const stack = createStackNavigator<HomeParamlist>();
 
@@ -12,6 +14,8 @@ const HomeScreen: React.FC = () => {
     <stack.Navigator screenOptions={{headerShown: false}}>
       <stack.Screen name="ListDiariesScreen" component={ListDiariesScreen} />
       <stack.Screen name="CreateDiaryScreen" component={CreateDiaryScreen} />
+      <stack.Screen name='ListFriends' component={ListFriend}/>
+      <stack.Screen name='ListOtherUsers' component={ListOtherUser}/>
     </stack.Navigator>
   );
 };

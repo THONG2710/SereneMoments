@@ -86,6 +86,22 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
     useState<boolean>(false);
   const [backgroundColor, setbackgroundColor] = useState<string>(Colors.WHITE);
 
+  // chọn ảnh từ thư viện
+  const getImageFromLibrary = () => {
+    launchImageLibrary({mediaType: 'photo'}, response => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.errorMessage) {
+        console.log('ImagePicker Error:', response.errorMessage);
+      } else {
+        // Hình ảnh đã được chọn thành công
+        const source = {uri: response.assets[0].uri};
+        onCreateOneItem(<Image style={{width: 50, height: 50}} source={{uri: source.uri}}/>)
+        // Thực hiện xử lý hình ảnh ở đây
+      }
+    });
+  };
+
   // chọn font chữ
   const onSelectFont = (fontselected: string) => {
     console.log(fontselected);
@@ -242,7 +258,7 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
                 setisVisibleDialogBackground(true);
               }
               if (e.label === 'Hình ảnh') {
-                // onCreateOneItem()
+                getImageFromLibrary();
               }
             }}
             itemStyle={[status === e.label ? styles.optionActive : {}]}

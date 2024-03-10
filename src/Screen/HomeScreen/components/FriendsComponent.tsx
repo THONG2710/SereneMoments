@@ -43,9 +43,13 @@ const list = [
   },
 ];
 
-interface FriendsComponentProps extends ViewProps {}
+interface FriendsComponentProps extends ViewProps {
+  onMyFriends: () => void;
+  onOtherUsers: () => void;
+}
 
 const FriendsComponent: React.FC<FriendsComponentProps> = props => {
+  const { onMyFriends, onOtherUsers } = props;
   const [friends, setfriends] = useState<UserModel[]>([]);
   const user = useAppSelector(state => state.Authentication.myAccount);
 
@@ -69,8 +73,8 @@ const FriendsComponent: React.FC<FriendsComponentProps> = props => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TextButton style={styles.ButtonFriend} label="Bạn bè" />
-        <TextButton style={styles.buttonMore} label="Xem thêm" />
+        <TextButton onPress={onMyFriends} style={styles.ButtonFriend} label="Bạn bè" />
+        <TextButton onPress={onOtherUsers} style={styles.buttonMore} label="Xem thêm" />
       </View>
       <View>
         <FlatList

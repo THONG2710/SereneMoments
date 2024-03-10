@@ -10,9 +10,9 @@ interface ButtonTextProps extends ViewProps {
 }
 
 const ButtonText: React.FC<ButtonTextProps> = props => {
-  const {label, onPress} = props;
+  const {label, onPress, buttonStyle} = props;
   return (
-    <Pressable onPress={onPress} style={styles.container}>
+    <Pressable onPress={onPress} style={[styles.container, buttonStyle]}>
       <Text style={styles.labelStyle}>{label}</Text>
     </Pressable>
   );

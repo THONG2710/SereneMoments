@@ -15,4 +15,5 @@ export const Colors = {
     LIGHT_PINK: '#FF90BC',
     LIGHT_BLUE2: '#C5FFF8',
     BACKGROUND_BLUE: '#B4D4FF',
+    LIGHT_GRAY: '#E3E3E3',
 }

@@ -17,13 +17,14 @@ interface ButtonIconProps extends ViewProps {
   onPress?: () => void;
   styleBtn?: StyleProp<ViewStyle>;
   uri?: string;
+  tintColor?: string;
 }
 
 const ButtonIcon: React.FC<ButtonIconProps> = props => {
-  const {styles, onPress, url, styleBtn, uri} = props;
+  const {styles, onPress, url, styleBtn, uri, tintColor} = props;
   return (
     <Pressable style={styleBtn} onPress={onPress}>
-      <Image style={styles} source={url} />
+      <Image tintColor={tintColor} style={styles} source={url} />
     </Pressable>
   );
 };
