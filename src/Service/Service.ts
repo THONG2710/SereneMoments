@@ -7,7 +7,7 @@ export const onConvertEpochtime = (time: number) => {
     const hours = onFormatNumber(Number(date.getHours()));
     const minutes = onFormatNumber(Number(date.getMinutes()));
 
-    return `${hours}:${minutes}       ${day}/${month}/${year} `;
+    return `${hours}:${minutes}    ${day}/${month}/${year} `;
 };
 
 // thêm số 0 nếu nhỏ hơn 10

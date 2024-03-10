@@ -1,42 +1,51 @@
 import {View, Text, TouchableOpacity, Image} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {styles} from './Style';
 import {SelectList} from 'react-native-dropdown-select-list';
-import TakeAMoment from './Component/TakeAMoment';
 import ItemMoment from './Component/ItemMoment';
+import TakeAMoment from './Component/TakeMoment';
+import Swiper from 'react-native-swiper';
+import {ID_ADRESS, getData} from '../../Service/RequestMethod';
+import {useAppSelector} from '../../Redux/Hook';
+import {MomentModel, UserModel} from '../../Models/Model';
 
 const MomentScreen = () => {
   const [selected, setSelected] = useState('');
   const data = [{key: '1', value: 'Nguyễn Quang Trường'}];
+  const user = useAppSelector(state => state.Authentication.myAccount);
+  const [moments, setmoments] = useState<MomentModel[]>([]);
+  const [infor, setinfor] = useState<UserModel>();
+
+  // lấy khoảnh khắc 
+  const getMoments = async () => {
+    const res = await getData(
+      'http://' +
+        ID_ADRESS +
+        ':3000/api/moment/getFriendMoments?id=' +
+        user._id,
+    );
+    if (res) {
+      setmoments(res.moments);
+    }
+  };
+
+  useEffect(() => {
+    getMoments();
+  }, []);
 
   return (
     <View style={styles.container}>
-      {/* HEADER */}
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backgroundImage}>
-          <Image
-            style={styles.imgAVT}
-            source={require('../../Resource/images/avatar2.png')}></Image>
-        </TouchableOpacity>
-        <View style={styles.dropdownContainer}>
-          <SelectList
-            boxStyles={styles.selectedList}
-            inputStyles={styles.inputStylesSelected}
-            dropdownStyles={styles.dropdownStylesSelected}
-            dropdownTextStyles={styles.textDropdownStyles}
-            setSelected={(value: React.SetStateAction<string>) =>
-              setSelected(value)
-            }
-            data={data}
-            save="value"
-          />
-        </View>
-        <TouchableOpacity style={styles.save}>
-          <Text style={styles.textSave}>Lưu</Text>
-        </TouchableOpacity>
-      </View>
       {/* body */}
-      <ItemMoment />
+      <Swiper
+        showsVerticalScrollIndicator={false}
+        horizontal={false}
+        showsPagination={false}
+        loop={false}>
+        <TakeAMoment />
+        {moments.map(moment => (
+          <ItemMoment moment={moment} />
+        ))}
+      </Swiper>
     </View>
   );
 };

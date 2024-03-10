@@ -9,8 +9,8 @@ import AuthenticationNavigation from './src/Navigation/AuthenticationNavigation'
 import AuthorizedNavigation from './src/Navigation/AuthorizedNavigation';
 import Profile from './src/Screen/AccountScreen/Profile/Profile';
 import RootNavigation from './src/Navigation/RootNavigation';
-import ItemMoment from './src/Screen/MomentScreen/Component/ItemMoment';
-import TakeAMoment from './src/Screen/MomentScreen/Component/TakeAMoment';
+import ItemMoment from './src/Screen/MomentScreen/Component/TakeMoment';
+import TakeAMoment from './src/Screen/MomentScreen/Component/ItemMoment';
 import TestSnapshot from './TestSnapshot';
 import TestDragable from './TestDragable';
 import { AppProvider, RealmProvider, UserProvider } from '@realm/react';

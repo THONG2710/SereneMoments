@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
     //HEADER
     header: {
         paddingHorizontal: 15,
-        marginVertical: 25,
+        marginVertical: 20,
         justifyContent: 'space-between',
         flexDirection: 'row',
         alignItems: 'center',
@@ -102,4 +102,6 @@ export const styles = StyleSheet.create({
         width: 28,
         height: 28,
     },
+
+    // 
 });
