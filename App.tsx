@@ -11,10 +11,11 @@ import MomentHistory from './src/Screen/Profile/MomentHistory';
 import ListFriend from './src/Screen/Profile/ListFriend';
 import Dialog from './src/Screen/Dialog/Dialog';
 import DialogConfirmSuccess from './src/Screen/Dialog/DialogConfirmSuccess';
+import Notification from './src/Screen/Notification/Notification';
 
 function App(): JSX.Element {
   return (
-    <ListFriend></ListFriend>
+    <Notification></Notification>
   ); 
 }
 
