@@ -8,8 +8,7 @@ import {
 } from 'react-native';
 import React from 'react';
 
-const BoxChatScreen = (props) => {
-  
+const BoxChatScreen = props => {
   const {navigation} = props;
   return (
     <View style={styles.container}>
@@ -18,28 +17,30 @@ const BoxChatScreen = (props) => {
           <Image
             source={require('../SereneMoments/assets/images/btn_back.png')}></Image>
         </TouchableOpacity>
-        <TouchableOpacity>
-          <Image
-            source={require('../SereneMoments/assets/images/title_name.png')}></Image>
-        </TouchableOpacity>
+        <View>
+          <TouchableOpacity style={styles.viewName}>
+            <Image
+              style={styles.imageView}
+              source={require('../SereneMoments/assets/images/Ellipse3.png')}></Image>
+            <Text style={styles.textName}>Sơn</Text>
+          </TouchableOpacity>
+        </View>
         <TouchableOpacity>
           <Image
             source={require('../SereneMoments/assets/images/btn_menu.png')}></Image>
         </TouchableOpacity>
       </TouchableOpacity>
       <View style={styles.boxView}>
-        <Image
-          source={require('../SereneMoments/assets/images/message_1.png')}
-          style={styles.text1}></Image>
-        <Image
-          source={require('../SereneMoments/assets/images/message_2.png')}
-          style={styles.text2}></Image>
-        <Image
-          source={require('../SereneMoments/assets/images/reply.png')}
-          style={styles.text3}></Image>
-        <Image
-          source={require('../SereneMoments/assets/images/message_3.png')}
-          style={styles.text4}></Image>
+        <View style={styles.messagesRight}>
+          <View>
+            <Text style={styles.mesTextRight}>Xin chào</Text>
+          </View>
+        </View>
+        <View style={styles.messagesLeft}>
+          <View>
+            <Text style={styles.mesTextLeft}>Mình có quen nhau không? ?</Text>
+          </View>
+        </View>
       </View>
       <TouchableOpacity style={styles.viewButton1}>
         <TouchableOpacity>
@@ -69,6 +70,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     //justifyContent: 'center',
   },
+  viewName: {
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    padding: 4,
+    paddingVertical: 7,
+    alignItems: 'center',
+    borderRadius: 5,
+  },
+  textName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'black',
+    paddingLeft:6,
+  },
 
   viewButton: {
     flexDirection: 'row',
@@ -97,30 +112,66 @@ const styles = StyleSheet.create({
     height: 40,
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
-
     padding: 10,
   },
 
   boxView: {
-    top: 90,
-    width: 400,
-    height: 600,
-   // backgroundColor: '#F94747',
+    marginTop: 75,
+    width: '100%',
+    padding: 20,
+  },
+
+  messagesRight: {
+    paddingVertical: 10,
+    marginVertical: 5,
+    backgroundColor: '#4913F6',
+    maxWidth: '80%',
+    flexDirection: 'row',
+    alignSelf: 'flex-end',
+    borderRadius: 15,
+    paddingHorizontal: 10,
+  },
+
+  messagesLeft: {
+    paddingVertical: 10,
+    marginVertical: 16,
+    backgroundColor: 'white',
+    maxWidth: '80%',
+    flexDirection: 'row',
+    alignSelf: 'flex-start',
+    borderRadius: 15,
+    paddingHorizontal: 10,
+  },
+  mesTextLeft: {
+    color: 'black',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  mesTextRight: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  imageView: {
+    width: 25,
+    height: 25,
+    borderRadius: 3,
   },
   text1: {
     left: 340,
   },
 
   text2: {
-    top : 5,
+    top: 5,
     left: 247,
   },
 
   text3: {
-    top : 15,
+    top: 15,
   },
   text4: {
-    top : 15,
+    top: 15,
     left: 336,
   },
+  
 });
