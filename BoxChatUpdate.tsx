@@ -7,27 +7,26 @@ import {
   TextInput,
 } from 'react-native';
 import React from 'react';
+import {BoxChatScreenProps} from './type';
 
-const BoxChatScreen = props => {
+const BoxChatScreen: React.FC<BoxChatScreenProps> = props => {
   const {navigation} = props;
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.viewButton}>
-        <TouchableOpacity onPress={() => navigation.navigate('chat')}>
+        <TouchableOpacity onPress={() => navigation.navigate('Chat')}>
           <Image
-            source={require('../SereneMoments/assets/images/btn_back.png')}></Image>
+            source={require('../../../Resource/images/btn_back.png')}></Image>
         </TouchableOpacity>
         <View>
           <TouchableOpacity style={styles.viewName}>
-            <Image
-              style={styles.imageView}
-              ></Image>
+            <Image style={styles.imageView}></Image>
             <Text style={styles.textName}>Sơn</Text>
           </TouchableOpacity>
         </View>
         <TouchableOpacity>
           <Image
-            source={require('../SereneMoments/assets/images/btn_menu.png')}></Image>
+            source={require('../../../Resource/images/btn_menu.png')}></Image>
         </TouchableOpacity>
       </TouchableOpacity>
       <View style={styles.boxView}>
@@ -45,7 +44,7 @@ const BoxChatScreen = props => {
       <TouchableOpacity style={styles.viewButton1}>
         <TouchableOpacity>
           <Image
-            source={require('../SereneMoments/assets/images/btn_send.png')}></Image>
+            source={require('../../../Resource/images/btn_send.png')}></Image>
         </TouchableOpacity>
 
         <TextInput
@@ -54,7 +53,7 @@ const BoxChatScreen = props => {
 
         <TouchableOpacity>
           <Image
-            source={require('../SereneMoments/assets/images/btn_url.png')}></Image>
+            source={require('../../../Resource/images/btn_url.png')}></Image>
         </TouchableOpacity>
       </TouchableOpacity>
     </View>
@@ -82,7 +81,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: 'black',
-    paddingLeft:6,
+    paddingLeft: 6,
+  },
+  imageView: {
+    width: 25,
+    height: 25,
+    borderRadius: 3,
+    backgroundColor: 'black',
   },
 
   viewButton: {
@@ -120,7 +125,6 @@ const styles = StyleSheet.create({
     width: '100%',
     padding: 20,
   },
-
   messagesRight: {
     paddingVertical: 10,
     marginVertical: 5,
@@ -131,7 +135,6 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     paddingHorizontal: 10,
   },
-
   messagesLeft: {
     paddingVertical: 10,
     marginVertical: 16,
@@ -152,12 +155,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
   },
-  imageView: {
-    width: 25,
-    height: 25,
-    borderRadius: 3,
-    backgroundColor:'black',
-  },
   text1: {
     left: 340,
   },
@@ -174,5 +171,4 @@ const styles = StyleSheet.create({
     top: 15,
     left: 336,
   },
-  
 });
