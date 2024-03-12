@@ -30,7 +30,7 @@ const ListDiariesScreen: React.FC<ListDiarieProps> = props => {
 
   //  di chuyển đến trang người lạ
   const onOtherUsers = () => {
-    navigation.navigate('ListOtherUsers');
+    navigation.navigate('OtherUsers');
   }
 
   // di chuyển đến trang bạn bè
@@ -78,7 +78,7 @@ const ListDiariesScreen: React.FC<ListDiarieProps> = props => {
       </View>
       {/* list */}
       <FlatList
-        ListHeaderComponent={<FriendsComponent onOtherUsers={onOtherUsers} onMyFriends={onMyFriends}/>}
+        ListHeaderComponent={<FriendsComponent isRefresh={refreshing} onOtherUsers={onOtherUsers} onMyFriends={onMyFriends}/>}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }

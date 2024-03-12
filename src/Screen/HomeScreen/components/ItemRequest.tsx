@@ -11,16 +11,15 @@ import {UserModel} from '../../../Models/Model';
 import TextButton from '../../../Components/Buttons/TextButton';
 import {Colors} from '../../../Resource/colors';
 
-interface ItemUserProps extends ViewProps {
+interface ItemRequestProps extends ViewProps {
   user: UserModel;
   onPress?: () => void;
-  isSent?: boolean;
-  onHandlePress: (id: string) => void;
   onCancelRequest: () => void;
+  onAcceptRequest: () => void;
 }
 
-const ItemUser: React.FC<ItemUserProps> = props => {
-  const {user, onPress, isSent, onHandlePress, onCancelRequest} = props;
+const ItemRequest: React.FC<ItemRequestProps> = props => {
+  const {user, onPress, onCancelRequest, onAcceptRequest} = props;
   return (
     <Pressable style={styles.container} onPress={onPress}>
       <View style={styles.left}>
@@ -37,19 +36,18 @@ const ItemUser: React.FC<ItemUserProps> = props => {
         <Text style={styles.left_txtName}>{user.username}</Text>
       </View>
       <View style={styles.right}>
+        <TextButton onPress={() => onAcceptRequest()} style={styles.right_btnStyleAdd} label={'Xác nhận'} />
         <TextButton
-          onPress={() => isSent ? onCancelRequest() : onHandlePress(user._id.toString())}
-          style={
-            isSent ? styles.right_btnStyleCancel : styles.right_btnStyleAdd
-          }
-          label={isSent ? 'Hủy' : 'Kết bạn'}
+          onPress={() => onCancelRequest()}
+          style={styles.right_btnStyleCancel}
+          label={'Xóa'}
         />
       </View>
     </Pressable>
   );
 };
 
-export default ItemUser;
+export default ItemRequest;
 
 const styles = StyleSheet.create({
   container: {
@@ -83,7 +81,10 @@ const styles = StyleSheet.create({
   },
 
   //   right
-  right: {},
+  right: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
 
   right_btnStyleAdd: {
     backgroundColor: Colors.BLUE,
@@ -101,5 +102,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     color: Colors.BLACK,
     fontWeight: 'bold',
+    marginLeft: 10,
   },
 });

@@ -71,9 +71,15 @@ const Profile: React.FC<ProfileProps> = props => {
     getFriends();
   }, []);
 
+  // đăng xuất
   const onLogout = () => {
     useDispatch(SET_ISLOGGED(false));
   };
+
+  // chỉnh sửa thông tin cá nhân
+  const onEditProfile = () => {
+    navigation.navigate('EditProfile');
+  }
 
   return (
     //CONTAINER
@@ -89,7 +95,7 @@ const Profile: React.FC<ProfileProps> = props => {
           </TouchableOpacity>
         </View>
         <Text style={styles.textName}>{myAccount.username}</Text>
-        <TouchableOpacity style={styles.backgroundEdit}>
+        <TouchableOpacity style={styles.backgroundEdit} onPress={onEditProfile}>
           <Text style={styles.textEdit}>Sửa đổi thông tin cá nhân</Text>
         </TouchableOpacity>
       </View>

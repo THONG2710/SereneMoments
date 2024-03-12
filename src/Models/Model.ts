@@ -33,4 +33,9 @@ interface FriendModel {
     status: boolean,
 }
 
-export type {UserModel, DiaryModel, MomentModel, FriendModel}
+interface RequestModel {
+    user: UserModel,
+    friend: FriendModel,
+}
+
+export type {UserModel, DiaryModel, MomentModel, FriendModel, RequestModel}

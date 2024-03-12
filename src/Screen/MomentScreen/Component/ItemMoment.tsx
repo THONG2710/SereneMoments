@@ -44,7 +44,7 @@ const ItemMoment: React.FC<ItemMomentProps> = props => {
 
   return (
     //CONTAINER
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       {/* CENTER */}
       <View style={styles.center}>
         <ImageBackground
@@ -62,7 +62,13 @@ const ItemMoment: React.FC<ItemMomentProps> = props => {
         <View style={styles.poster}>
           <View style={styles.namePoster}>
             <View style={styles.backgroundImage}>
-              <Image style={styles.imgAVT} source={{uri: user?.avatar}}></Image>
+              <Image
+                style={styles.imgAVT}
+                source={
+                  user?.avatar
+                    ? {uri: user?.avatar}
+                    : require('../../../Resource/images/avatar.png')
+                }></Image>
             </View>
             <Text style={styles.textPoster}>{user?.username}</Text>
           </View>
@@ -103,7 +109,7 @@ const ItemMoment: React.FC<ItemMomentProps> = props => {
           </TouchableOpacity>
         </KeyboardAvoidingView>
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -112,15 +118,14 @@ export default ItemMoment;
 const styles = StyleSheet.create({
   //CONTAINER
   container: {
-    flex: 1,
+    width: Dimensions.get('screen').width,
+    height: Dimensions.get('screen').height - 120,
     backgroundColor: '#B4D4FF',
-    marginTop: 30,
   },
 
   //HEADER
   header: {
     marginHorizontal: 15,
-    marginVertical: 25,
     justifyContent: 'space-between',
     flexDirection: 'row',
     alignItems: 'center',

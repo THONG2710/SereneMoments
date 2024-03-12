@@ -46,10 +46,11 @@ const list = [
 interface FriendsComponentProps extends ViewProps {
   onMyFriends: () => void;
   onOtherUsers: () => void;
+  isRefresh: boolean;
 }
 
 const FriendsComponent: React.FC<FriendsComponentProps> = props => {
-  const { onMyFriends, onOtherUsers } = props;
+  const { onMyFriends, onOtherUsers, isRefresh } = props;
   const [friends, setfriends] = useState<UserModel[]>([]);
   const user = useAppSelector(state => state.Authentication.myAccount);
 
@@ -68,7 +69,7 @@ const FriendsComponent: React.FC<FriendsComponentProps> = props => {
 
   useEffect(() => {
     getFriends();
-  }, []);
+  }, [isRefresh]);
 
   return (
     <View style={styles.container}>

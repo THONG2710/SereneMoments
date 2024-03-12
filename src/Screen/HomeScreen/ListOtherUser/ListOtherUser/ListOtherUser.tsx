@@ -1,19 +1,20 @@
 import {FlatList, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {ListOtherUsersProps} from './type';
-import InputBox from '../../../Components/Inputs/InputBox';
-import ButtonIcon from '../../../Components/Buttons/ButtonIcon';
-import {Colors} from '../../../Resource/colors';
-import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
-import {UserModel} from '../../../Models/Model';
-import {useAppSelector} from '../../../Redux/Hook';
-import ItemUser from '../components/ItemUser';
+import InputBox from '../../../../Components/Inputs/InputBox';
+import ButtonIcon from '../../../../Components/Buttons/ButtonIcon';
+import {Colors} from '../../../../Resource/colors';
+import {ID_ADRESS, getData, postData} from '../../../../Service/RequestMethod';
+import {RequestModel, UserModel} from '../../../../Models/Model';
+import {useAppSelector} from '../../../../Redux/Hook';
+import ItemUser from '../../components/ItemUser';
+import { ListOtherUsersProps } from './type';
 
 const ListOtherUser: React.FC<ListOtherUsersProps> = props => {
   const {navigation} = props;
   const [otherUsers, setotherUsers] = useState<UserModel[]>([]);
-  const [usersSentRequest, setusersSentRequest] = useState<UserModel[]>([]);
+  const [usersSentRequest, setusersSentRequest] = useState<RequestModel[]>([]);
   const user = useAppSelector(state => state.Authentication.myAccount);
+  const [refresh, setrefresh] = useState<boolean>(false);
 
   // quay trở lại
   const onGoBack = () => {
@@ -23,7 +24,7 @@ const ListOtherUser: React.FC<ListOtherUsersProps> = props => {
   //  lấy người lạ
   const getOtherUsers = async () => {
     const res = await getData(
-      'http://' + ID_ADRESS + ':3000/api/friend/getOtherUsers',
+      'http://' + ID_ADRESS + ':3000/api/friend/getOtherUsers/' + user._id,
     );
     if (res.result) {
       setotherUsers(res.users);
@@ -43,10 +44,38 @@ const ListOtherUser: React.FC<ListOtherUsersProps> = props => {
     }
   };
 
+  // kết bạn
+  const onAddFriend = async (friendid: string) => {
+    const requestedat = new Date().getTime();
+    const userid = user._id;
+    const status = 2;
+    const newRequest = {userid, friendid, requestedat, status};
+    const res = await postData(
+      'http://' + ID_ADRESS + ':3000/api/friend/addFriend',
+      newRequest,
+    );
+    if (res) {
+      console.log(res.ask);
+      setrefresh(!refresh);
+    }
+  };
+
+  // hủy kết bạn
+  const onCancelRequest = async (idRequest: string) => {
+    const res = await postData(
+      'http://' + ID_ADRESS + ':3000/api/friend/cancelRequest/' + idRequest,
+      {},
+    );
+    if (res) {
+      console.log(res.result);
+      setrefresh(!refresh);
+    }
+  };
+
   useEffect(() => {
     getOtherUsers();
     getUserSentRequest();
-  }, []);
+  }, [refresh]);
 
   return (
     <View style={styles.container}>
@@ -55,7 +84,7 @@ const ListOtherUser: React.FC<ListOtherUsersProps> = props => {
         <ButtonIcon
           onPress={onGoBack}
           styles={styles.btnBack}
-          url={require('../../../Resource/images/icon_back3.png')}
+          url={require('../../../../Resource/images/icon_back3.png')}
         />
         <InputBox placeholder="Tìm bạn mới..." />
       </View>
@@ -66,16 +95,32 @@ const ListOtherUser: React.FC<ListOtherUsersProps> = props => {
             <Text style={styles.title}>Gần đây</Text>
             <FlatList
               data={usersSentRequest}
-              renderItem={({item}) => <ItemUser isSent={true} user={item} />}
-              keyExtractor={item => item._id.toString()}
+              renderItem={({item}) => (
+                <ItemUser
+                  onCancelRequest={() =>
+                    onCancelRequest(item.friend._id.toString())
+                  }
+                  onHandlePress={id => onAddFriend(id)}
+                  isSent={true}
+                  user={item.user}
+                />
+              )}
+              keyExtractor={item => item.user._id.toString()}
             />
           </View>
         )}
         <View style={styles.listContainer}>
-          <Text style={styles.title}>Bạn mới</Text>
+          <Text style={styles.title}>Thêm bạn mới</Text>
           <FlatList
             data={otherUsers}
-            renderItem={({item}) => <ItemUser isSent={false} user={item} />}
+            renderItem={({item}) => (
+              <ItemUser
+                onCancelRequest={() => null}
+                onHandlePress={id => onAddFriend(id)}
+                isSent={false}
+                user={item}
+              />
+            )}
             keyExtractor={item => item._id.toString()}
           />
         </View>

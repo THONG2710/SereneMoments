@@ -1,7 +1,9 @@
 import {
+  Alert,
   Image,
   ImageBackground,
   KeyboardAvoidingView,
+  PermissionsAndroid,
   ScrollView,
   StyleSheet,
   Text,
@@ -14,23 +16,129 @@ import {Dimensions} from 'react-native';
 import {SelectList} from 'react-native-dropdown-select-list';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useAppSelector} from '../../../Redux/Hook';
-const w = Dimensions.get('window').width;
-const h = Dimensions.get('window').height;
+import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
+import {ID_ADRESS, postData} from '../../../Service/RequestMethod';
+import {firebase} from '@react-native-firebase/storage';
 
-const TakeMoment = () => {
+const TakeMoment: React.FC = () => {
   const [selected, setSelected] = useState('');
+  const [uriImage, setUriImage] = useState<any>('');
+  const [caption, setCaption] = useState<string>('');
+  const [description, setdescription] = useState('');
   const data = [
     {key: '1', value: 'Bạn bè'},
     {key: '2', value: 'Mọi người'},
   ];
   const user = useAppSelector(state => state.Authentication.myAccount);
+
+  // chọn ảnh từ thư viện
+  const getImageFromLibrary = () => {
+    launchImageLibrary({mediaType: 'photo'}, response => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.errorMessage) {
+        console.log('ImagePicker Error:', response.errorMessage);
+      } else {
+        // Hình ảnh đã được chọn thành công
+        const source = {uri: response.assets[0].uri};
+        setUriImage(source.uri);
+        setdescription('image');
+        // Thực hiện xử lý hình ảnh ở đây
+      }
+    });
+  };
+
+  // chụp ảnh
+  const onTakeAPhoto = () => {
+    launchCamera(
+      {mediaType: 'photo', includeBase64: false, quality: 0.8},
+      response => {
+        if (response.didCancel) {
+          console.log('User cancelled image picker');
+        } else if (response.errorMessage) {
+          console.log('ImagePicker Error:', response.errorMessage);
+        } else {
+          // Hình ảnh đã được chọn thành công
+          const source = {uri: response.assets[0].uri};
+          console.log(source.uri);
+          setUriImage(source.uri);
+          setdescription('image');
+        }
+      },
+    );
+  };
+
+  // chọn video
+  const getVideoFromLibrary = () => {
+    launchImageLibrary({mediaType: 'video'}, response => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.errorMessage) {
+        console.log('ImagePicker Error:', response.errorMessage);
+      } else {
+        // Hình ảnh đã được chọn thành công
+        const source = {uri: response.assets[0].uri};
+        setUriImage(source.uri);
+        setdescription('video');
+        // Thực hiện xử lý hình ảnh ở đây
+      }
+    });
+  };
+
+  // đăng khoảnh khắc
+  const postMoment = async (content: string) => {
+    if (description !== '') {
+      const reference = firebase
+        .storage()
+        .ref()
+        .child(new Date().getTime() + '.png');
+      const upload = reference.putFile(content);
+      upload.on(
+        firebase.storage.TaskEvent.STATE_CHANGED,
+        snapshot => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log(`Upload is ${progress}% done`);
+        },
+        error => {
+          console.log('Upload error:', error);
+        },
+        () => {
+          upload.snapshot?.ref.getDownloadURL().then(async downloadURL => {
+            const userid = user._id;
+            const createdat = new Date().getTime();
+            const cation = caption;
+            const moment = {userid, createdat, cation, content, description};
+            const res = await postData(
+              'http://' + ID_ADRESS + ':3000/api/moment/createMoment',
+              moment,
+            );
+            if (res) {
+              console.log(moment);
+              setCaption('');
+              setUriImage(null);
+            }
+          });
+        },
+      );
+    } else {
+      Alert.alert('Vui lòng chọn ảnh')
+    }
+  };
+
   return (
     // CONTAINER
     <ScrollView style={styles.container}>
       {/* HEADER */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backgroundImage}>
-          <Image style={styles.imgAVT} source={{uri: user.avatar}}></Image>
+          <Image
+            style={styles.imgAVT}
+            source={
+              user.avatar
+                ? {uri: user.avatar}
+                : require('../../../Resource/images/avatar.png')
+            }></Image>
         </TouchableOpacity>
         <View style={styles.dropdownContainer}>
           <SelectList
@@ -45,36 +153,45 @@ const TakeMoment = () => {
             save="value"
           />
         </View>
-        <TouchableOpacity style={styles.save}>
+        <TouchableOpacity
+          style={styles.save}
+          onPress={() => postMoment(uriImage, description)}>
           <Text style={styles.textSave}>Lưu</Text>
         </TouchableOpacity>
       </View>
       {/* CENTER */}
       <View style={styles.center}>
         <ImageBackground
-          source={require('../../../Resource/images/img.png')}
+          source={
+            uriImage
+              ? {uri: uriImage}
+              : require('../../../Resource/images/img.jpg')
+          }
           resizeMode="cover"
           style={styles.image}
           imageStyle={{borderRadius: 30}}>
           <View style={styles.backgroundTextContent}>
-            <TextInput style={styles.textContent}></TextInput>
+            <TextInput
+              value={caption}
+              onChangeText={value => setCaption(value)}
+              style={styles.textContent}></TextInput>
           </View>
         </ImageBackground>
       </View>
       {/* FOOTER */}
       <View style={styles.footer}>
         <View style={styles.footerHeader}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={getImageFromLibrary}>
             <Image
               style={styles.imgLeftRight}
               source={require('../../../Resource/images/img_library.png')}></Image>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={onTakeAPhoto}>
             <Image
               style={styles.imgTakePhoto}
               source={require('../../../Resource/images/take.png')}></Image>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={getVideoFromLibrary}>
             <Image
               style={styles.imgLeftRight}
               source={require('../../../Resource/images/img_video.png')}></Image>

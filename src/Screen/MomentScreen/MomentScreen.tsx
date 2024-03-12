@@ -1,4 +1,4 @@
-import {View, Text, TouchableOpacity, Image} from 'react-native';
+import {View, Text, TouchableOpacity, Image, ScrollView} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {styles} from './Style';
 import {SelectList} from 'react-native-dropdown-select-list';
@@ -8,15 +8,18 @@ import Swiper from 'react-native-swiper';
 import {ID_ADRESS, getData} from '../../Service/RequestMethod';
 import {useAppSelector} from '../../Redux/Hook';
 import {MomentModel, UserModel} from '../../Models/Model';
+import {MomentScreenProps} from './Type';
+import ShowMoments from './Component/ShowMoments';
 
-const MomentScreen = () => {
+const MomentScreen: React.FC<MomentScreenProps> = () => {
   const [selected, setSelected] = useState('');
   const data = [{key: '1', value: 'Nguyễn Quang Trường'}];
   const user = useAppSelector(state => state.Authentication.myAccount);
   const [moments, setmoments] = useState<MomentModel[]>([]);
   const [infor, setinfor] = useState<UserModel>();
+  const [isRefresh, setIsRefresh] = useState(false);
 
-  // lấy khoảnh khắc 
+  // lấy khoảnh khắc
   const getMoments = async () => {
     const res = await getData(
       'http://' +
@@ -26,27 +29,26 @@ const MomentScreen = () => {
     );
     if (res) {
       setmoments(res.moments);
+      
     }
   };
 
   useEffect(() => {
     getMoments();
-  }, []);
+  }, [isRefresh]);
 
   return (
-    <View style={styles.container}>
+    <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
       {/* body */}
-      <Swiper
+      {/* <Swiper
         showsVerticalScrollIndicator={false}
         horizontal={false}
         showsPagination={false}
-        loop={false}>
+        loop={false}> */}
         <TakeAMoment />
-        {moments.map(moment => (
-          <ItemMoment moment={moment} />
-        ))}
-      </Swiper>
-    </View>
+        <ShowMoments moments={moments}/>
+      {/* </Swiper> */}
+    </ScrollView>
   );
 };
 
