@@ -38,4 +38,5 @@ interface RequestModel {
     friend: FriendModel,
 }
 
+
 export type {UserModel, DiaryModel, MomentModel, FriendModel, RequestModel}
