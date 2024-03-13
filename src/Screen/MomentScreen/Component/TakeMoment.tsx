@@ -4,6 +4,7 @@ import {
   ImageBackground,
   KeyboardAvoidingView,
   PermissionsAndroid,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -11,24 +12,27 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Dimensions} from 'react-native';
 import {SelectList} from 'react-native-dropdown-select-list';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useAppSelector} from '../../../Redux/Hook';
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
-import {ID_ADRESS, postData} from '../../../Service/RequestMethod';
+import {ID_ADRESS, getData, postData} from '../../../Service/RequestMethod';
 import {firebase} from '@react-native-firebase/storage';
+import {UserModel} from '../../../Models/Model';
 
 const TakeMoment: React.FC = () => {
   const [selected, setSelected] = useState('');
   const [uriImage, setUriImage] = useState<any>('');
   const [caption, setCaption] = useState<string>('');
   const [description, setdescription] = useState('');
-  const data = [
-    {key: '1', value: 'Bạn bè'},
-    {key: '2', value: 'Mọi người'},
-  ];
+  const [isRefresh, setIsRefresh] = useState<boolean>(false);
+  const [data, setData] = useState<{value: string; key: string}[]>([]);
+  // const data = [
+  //   {key: '1', value: 'Bạn bè'},
+  //   {key: '2', value: 'Mọi người'},
+  // ];
   const user = useAppSelector(state => state.Authentication.myAccount);
 
   // chọn ảnh từ thư viện
@@ -40,10 +44,11 @@ const TakeMoment: React.FC = () => {
         console.log('ImagePicker Error:', response.errorMessage);
       } else {
         // Hình ảnh đã được chọn thành công
-        const source = {uri: response.assets[0].uri};
-        setUriImage(source.uri);
-        setdescription('image');
-        // Thực hiện xử lý hình ảnh ở đây
+        if (response.assets && response.assets.length > 0) {
+          const source = {uri: response.assets[0].uri};
+          setUriImage(source.uri);
+          setdescription('image');
+        }
       }
     });
   };
@@ -59,10 +64,12 @@ const TakeMoment: React.FC = () => {
           console.log('ImagePicker Error:', response.errorMessage);
         } else {
           // Hình ảnh đã được chọn thành công
-          const source = {uri: response.assets[0].uri};
-          console.log(source.uri);
-          setUriImage(source.uri);
-          setdescription('image');
+          if (response.assets && response.assets.length > 0) {
+            const source = {uri: response.assets[0].uri};
+            console.log(source.uri);
+            setUriImage(source.uri);
+            setdescription('image');
+          }
         }
       },
     );
@@ -77,10 +84,11 @@ const TakeMoment: React.FC = () => {
         console.log('ImagePicker Error:', response.errorMessage);
       } else {
         // Hình ảnh đã được chọn thành công
-        const source = {uri: response.assets[0].uri};
-        setUriImage(source.uri);
-        setdescription('video');
-        // Thực hiện xử lý hình ảnh ở đây
+        if (response.assets && response.assets.length > 0) {
+          const source = {uri: response.assets[0].uri};
+          setUriImage(source.uri);
+          setdescription('video');
+        }
       }
     });
   };
@@ -122,13 +130,46 @@ const TakeMoment: React.FC = () => {
         },
       );
     } else {
-      Alert.alert('Vui lòng chọn ảnh')
+      Alert.alert('Vui lòng chọn ảnh');
     }
   };
 
+  // lấy danh sách bạn bè
+  const onGetMyFriends = async () => {
+    const res = await getData(
+      'http://' +
+        ID_ADRESS +
+        ':3000/api/friend/getInforFriendsById?id=' +
+        user._id,
+    );
+    if (res.result) {
+      const users = res.friends;
+      setTimeout(() => {
+        for (const user of users) {
+          const newData = {key: user._id.toString(), value: user.username};
+          console.log(newData);
+          setData([...data, newData]);
+        }
+      }, 1000);
+    }
+  };
+
+  // tải lại trang
+  const onRefresh = () => {
+    setIsRefresh(!isRefresh);
+  };
+
+  useEffect(() => {
+    onGetMyFriends();
+  }, [isRefresh]);
+
   return (
     // CONTAINER
-    <ScrollView style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      refreshControl={
+        <RefreshControl refreshing={isRefresh} onRefresh={onRefresh} />
+      }>
       {/* HEADER */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backgroundImage}>
@@ -141,21 +182,23 @@ const TakeMoment: React.FC = () => {
             }></Image>
         </TouchableOpacity>
         <View style={styles.dropdownContainer}>
-          <SelectList
-            boxStyles={styles.selectedList}
-            inputStyles={styles.inputStylesSelected}
-            dropdownStyles={styles.dropdownStylesSelected}
-            dropdownTextStyles={styles.textDropdownStyles}
-            setSelected={(value: React.SetStateAction<string>) =>
-              setSelected(value)
-            }
-            data={data}
-            save="value"
-          />
+          {data && (
+            <SelectList
+              boxStyles={styles.selectedList}
+              inputStyles={styles.inputStylesSelected}
+              dropdownStyles={styles.dropdownStylesSelected}
+              dropdownTextStyles={styles.textDropdownStyles}
+              setSelected={(value: React.SetStateAction<string>) =>
+                setSelected(value)
+              }
+              data={data}
+              save="value"
+            />
+          )}
         </View>
         <TouchableOpacity
           style={styles.save}
-          onPress={() => postMoment(uriImage, description)}>
+          onPress={() => postMoment(uriImage)}>
           <Text style={styles.textSave}>Lưu</Text>
         </TouchableOpacity>
       </View>
