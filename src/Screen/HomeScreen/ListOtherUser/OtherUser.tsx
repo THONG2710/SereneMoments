@@ -10,9 +10,6 @@ import { Colors } from '../../../Resource/colors';
 
 const Tab = createMaterialTopTabNavigator<UsersParamlist>();
 const OtherUsers: React.FC = () => {
-  const [searchText, setSearchText] = useState('');
-  
-
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -23,12 +20,8 @@ const OtherUsers: React.FC = () => {
         <InputBox placeholder="Tìm bạn mới..." />
       </View>
       <Tab.Navigator>
-        <Tab.Screen name="ListOtherUsers">
-          {() => <ListOtherUser searchText={searchText} />}
-        </Tab.Screen>
-        <Tab.Screen name='SentRequests'>
-          {() => <SenterRequest searchText={searchText} />}
-        </Tab.Screen>
+        <Tab.Screen name="ListOtherUsers" component={ListOtherUser} />
+        <Tab.Screen name='SentRequests' component={SenterRequest} />
       </Tab.Navigator>
     </View>
   );
