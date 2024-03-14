@@ -17,7 +17,7 @@ import {
 } from '../../../Redux/Action/AuthenticationActions';
 import ButtonIcon from '../../../Components/Buttons/ButtonIcon';
 import LoadingDialog from '../../../Components/Dialogs/LoadingDialog';
-
+import {isValidPassword, isValidPhoneNumber} from '../../Validations/Validate';
 const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
   const {navigation} = props;
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -26,6 +26,9 @@ const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
   const usdispath = useAppDispatch();
   const [isVisible, setIsvisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorPhoneNumber, setErrorPhoneNumber] = useState('');
+  const [errorPassWord, setErrorPassword] = useState('');
+  
 
   const onChangeVisiblePassword = () => {
     setIsvisible(!isVisible);
@@ -91,7 +94,14 @@ const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
         />
         <TextInput
           placeholder="Số điện thoại"
-          onChangeText={setPhoneNumber}
+          onChangeText={text => {
+            setErrorPhoneNumber(
+              isValidPhoneNumber(text) == true
+                ? ''
+                : 'SDT không đúng định dạng',
+            );
+            setPhoneNumber(text);
+          }}
           style={styles.txtBtn}></TextInput>
       </View>
       <View style={styles.btnRegister}>
@@ -100,7 +110,14 @@ const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
           source={require('../../../Resource/images/icon_key.png')}
         />
         <TextInput
-          onChangeText={setPassword}
+          onChangeText={text => {
+            setErrorPassword(
+              isValidPassword(text) == true
+                ? ''
+                : 'Mật khẩu phải có ít nhất 8 kí tự',
+            );
+            setPassword(text);
+          }}
           style={styles.txtBtn}
           placeholder="Mật khẩu"
           secureTextEntry={!isVisible}></TextInput>
@@ -114,6 +131,9 @@ const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
           }
         />
       </View>
+      <Text style={styles.txtError}>
+        {errorPassWord},{errorPhoneNumber}
+      </Text>
       <TouchableOpacity onPress={onLogin}>
         <View style={styles.btnLogin}>
           <Text style={styles.txtBtn2}>Đăng nhập</Text>
