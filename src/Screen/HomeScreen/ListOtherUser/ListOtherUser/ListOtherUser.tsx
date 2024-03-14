@@ -1,16 +1,16 @@
-import {FlatList, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import InputBox from '../../../../Components/Inputs/InputBox';
 import ButtonIcon from '../../../../Components/Buttons/ButtonIcon';
-import {Colors} from '../../../../Resource/colors';
-import {ID_ADRESS, getData, postData} from '../../../../Service/RequestMethod';
-import {RequestModel, UserModel} from '../../../../Models/Model';
-import {useAppSelector} from '../../../../Redux/Hook';
+import { Colors } from '../../../../Resource/colors';
+import { ID_ADRESS, getData, postData } from '../../../../Service/RequestMethod';
+import { RequestModel, UserModel } from '../../../../Models/Model';
+import { useAppSelector } from '../../../../Redux/Hook';
 import ItemUser from '../../components/ItemUser';
 import { ListOtherUsersProps } from './type';
 
 const ListOtherUser: React.FC<ListOtherUsersProps> = props => {
-  const {navigation} = props;
+  const { navigation } = props;
   const [otherUsers, setotherUsers] = useState<UserModel[]>([]);
   const [usersSentRequest, setusersSentRequest] = useState<RequestModel[]>([]);
   const user = useAppSelector(state => state.Authentication.myAccount);
@@ -35,9 +35,9 @@ const ListOtherUser: React.FC<ListOtherUsersProps> = props => {
   const getUserSentRequest = async () => {
     const res = await getData(
       'http://' +
-        ID_ADRESS +
-        ':3000/api/friend/getOtherUsersSentRequest?id=' +
-        user._id,
+      ID_ADRESS +
+      ':3000/api/friend/getOtherUsersSentRequest?id=' +
+      user._id,
     );
     if (res) {
       setusersSentRequest(res.users);
@@ -49,7 +49,7 @@ const ListOtherUser: React.FC<ListOtherUsersProps> = props => {
     const requestedat = new Date().getTime();
     const userid = user._id;
     const status = 2;
-    const newRequest = {userid, friendid, requestedat, status};
+    const newRequest = { userid, friendid, requestedat, status };
     const res = await postData(
       'http://' + ID_ADRESS + ':3000/api/friend/addFriend',
       newRequest,
@@ -79,15 +79,7 @@ const ListOtherUser: React.FC<ListOtherUsersProps> = props => {
 
   return (
     <View style={styles.container}>
-      {/* header */}
-      <View style={styles.header}>
-        <ButtonIcon
-          onPress={onGoBack}
-          styles={styles.btnBack}
-          url={require('../../../../Resource/images/icon_back3.png')}
-        />
-        <InputBox placeholder="Tìm bạn mới..." />
-      </View>
+     
       {/* body */}
       <View style={styles.body}>
         {usersSentRequest.length > 0 && (
@@ -95,7 +87,8 @@ const ListOtherUser: React.FC<ListOtherUsersProps> = props => {
             <Text style={styles.title}>Gần đây</Text>
             <FlatList
               data={usersSentRequest}
-              renderItem={({item}) => (
+              renderItem={({ item }) => (
+
                 <ItemUser
                   onCancelRequest={() =>
                     onCancelRequest(item.friend._id.toString())
@@ -111,9 +104,10 @@ const ListOtherUser: React.FC<ListOtherUsersProps> = props => {
         )}
         <View style={styles.listContainer}>
           <Text style={styles.title}>Thêm bạn mới</Text>
+
           <FlatList
             data={otherUsers}
-            renderItem={({item}) => (
+            renderItem={({ item }) => (
               <ItemUser
                 onCancelRequest={() => null}
                 onHandlePress={id => onAddFriend(id)}
@@ -121,7 +115,9 @@ const ListOtherUser: React.FC<ListOtherUsersProps> = props => {
                 user={item}
               />
             )}
+
             keyExtractor={item => item._id.toString()}
+
           />
         </View>
       </View>
@@ -138,19 +134,7 @@ const styles = StyleSheet.create({
   },
 
   // header
-  header: {
-    height: 50,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: Colors.BLUE,
-    paddingHorizontal: 20,
-  },
-
-  btnBack: {
-    width: 30,
-    height: 30,
-  },
+ 
 
   title: {
     fontSize: 18,
@@ -168,4 +152,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginVertical: 10,
   },
+
+  bottomWidth:
+  {
+    borderBottomWidth: 2,
+    borderColor: '#DAEAF2',
+    paddingTop: 15
+  }
 });

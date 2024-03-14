@@ -29,8 +29,8 @@ const TodoList = () => {
 
   function pickTodo(selectedTasks: any) {
     if (checked.includes(selectedTasks)) {
-      setChecked(checked.filter(task => task !== selectedTasks));
-      setCompletedTasks(completedTasks.filter(task => task !== selectedTasks));
+      setChecked(checked.uns(task => task !== selectedTasks));
+      setCompletedTasks(completedTasks.uns(task => task !== selectedTasks));
     } else {
       setChecked(checked => checked.concat(selectedTasks));
       setCompletedTasks(completedTasks => completedTasks.concat(selectedTasks));
@@ -57,7 +57,7 @@ const TodoList = () => {
         _id: newId,
         task: newTask.trim(),
       };
-      setDataToDoList([...dataToDoList, newTaskObj]);
+      setDataToDoList([newTaskObj, ...dataToDoList]); // 
       setNewTask('');
     }
   }
@@ -285,6 +285,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     marginHorizontal: 30,
+    paddingBottom:10
   },
 
   addTodo: {
@@ -302,12 +303,14 @@ const styles = StyleSheet.create({
   },
 
   btnAdd: {
+    width:45,
+    height:40,
     backgroundColor: '#499EDC',
     borderRadius: 10,
+    justifyContent:'center',
+    alignItems:'center'
   },
   textAdd: {
-    paddingVertical: 10,
-    paddingHorizontal: 15,
     color: 'white',
     fontWeight: 'bold',
     fontSize: 16,
