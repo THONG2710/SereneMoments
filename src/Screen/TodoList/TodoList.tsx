@@ -29,8 +29,8 @@ const TodoList = () => {
 
   function pickTodo(selectedTasks: any) {
     if (checked.includes(selectedTasks)) {
-      setChecked(checked.uns(task => task !== selectedTasks));
-      setCompletedTasks(completedTasks.uns(task => task !== selectedTasks));
+      setChecked(checked.filter(task => task !== selectedTasks));
+      setCompletedTasks(completedTasks.filter(task => task !== selectedTasks));
     } else {
       setChecked(checked => checked.concat(selectedTasks));
       setCompletedTasks(completedTasks => completedTasks.concat(selectedTasks));
