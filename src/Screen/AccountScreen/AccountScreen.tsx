@@ -5,6 +5,9 @@ import Profile from './Profile/Profile';
 import { AccountParamlist } from '../../StoryBoard/AccountStoryboard';
 import AuthenticationNavigation from '../../Navigation/AuthenticationNavigation';
 import EditProfile from './EditProfile/EditProfile';
+import MomentHistory from './MomentHistory/MomentHistory';
+import MyFriend from './MyFriends/MyFriend';
+import DiariesHistory from './DiariesHistory/DiariesHistory';
 
 const stack = createStackNavigator<AccountParamlist>();
 
@@ -13,6 +16,9 @@ const AccountScreen = () => {
     <stack.Navigator screenOptions={{headerShown: false}}>
       <stack.Screen name="profileScreen" component={Profile} />
       <stack.Screen name='EditProfile' component={EditProfile}/>
+      <stack.Screen name='MomentHistor' component={MomentHistory}/>
+      <stack.Screen name='MyFriends' component={MyFriend}/>
+      <stack.Screen name='DiariesHistory' component={DiariesHistory}/>
     </stack.Navigator>
   );
 };

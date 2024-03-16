@@ -6,10 +6,11 @@ import ItemMoment from './Component/ItemMoment';
 import TakeAMoment from './Component/TakeMoment';
 import Swiper from 'react-native-swiper';
 import {ID_ADRESS, getData} from '../../Service/RequestMethod';
-import {useAppSelector} from '../../Redux/Hook';
+import {useAppDispatch, useAppSelector} from '../../Redux/Hook';
 import {MomentModel, UserModel} from '../../Models/Model';
 import {MomentScreenProps} from './Type';
 import ShowMoments from './Component/ShowMoments';
+import { SAVE_MYFRIENDMOMENTS } from '../../Redux/Action/MomentActions';
 
 const MomentScreen: React.FC<MomentScreenProps> = () => {
   const [selected, setSelected] = useState('');
@@ -18,6 +19,7 @@ const MomentScreen: React.FC<MomentScreenProps> = () => {
   const [moments, setmoments] = useState<MomentModel[]>([]);
   const [infor, setinfor] = useState<UserModel>();
   const [isRefresh, setIsRefresh] = useState(false);
+  const dispatch = useAppDispatch();
 
   // lấy khoảnh khắc
   const getMoments = async () => {
@@ -27,9 +29,9 @@ const MomentScreen: React.FC<MomentScreenProps> = () => {
         ':3000/api/moment/getFriendMoments?id=' +
         user._id,
     );
-    if (res) {
+    if (res.result) {
       setmoments(res.moments);
-      
+      dispatch(SAVE_MYFRIENDMOMENTS(res.moments));
     }
   };
 

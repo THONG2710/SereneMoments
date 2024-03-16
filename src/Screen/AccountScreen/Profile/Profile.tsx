@@ -17,6 +17,9 @@ import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
 import {DiaryModel, FriendModel, MomentModel} from '../../../Models/Model';
 import {getDataFromStorage, setDataToStorage} from '../../../Service/Service';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {SAVE_MYMOMENTS} from '../../../Redux/Action/MomentActions';
+import { SAVE_MYFRIENDS } from '../../../Redux/Action/FriendsActions';
+import { SAVE_MYDIARIES } from '../../../Redux/Action/DiaryActions';
 
 const Profile: React.FC<ProfileProps> = props => {
   const {navigation} = props;
@@ -35,8 +38,9 @@ const Profile: React.FC<ProfileProps> = props => {
           ':3000/api/diary/getDiariesByIdUser?id=' +
           myAccount._id,
       );
-      if (response) {
+      if (response.result) {
         setdiaries(response.diaries);
+        useDispatch(SAVE_MYDIARIES(response.diaries));
       }
     } catch (error) {
       console.log('get diaries failled: ' + error);
@@ -52,8 +56,9 @@ const Profile: React.FC<ProfileProps> = props => {
           ':3000/api/moment/getMomentsById?id=' +
           myAccount._id,
       );
-      if (response) {
+      if (response.result) {
         setmoments(response.moments);
+        useDispatch(SAVE_MYMOMENTS(response.moments));
       }
     } catch (error) {
       console.log('get moment failled: ' + error);
@@ -66,17 +71,32 @@ const Profile: React.FC<ProfileProps> = props => {
       const response = await getData(
         'http://' +
           ID_ADRESS +
-          ':3000/api/friend/getFriendsById?id=' +
+          ':3000/api/friend/getInforFriendsById?id=' +
           myAccount._id,
       );
-      if (response) {
+      if (response.result) {
         setfriends(response.friends);
+        useDispatch(SAVE_MYFRIENDS(response.friends))
       }
     } catch (error) {
       console.log('get friends failled: ' + error);
     }
   };
 
+  // đến trang khoảnh khắc
+  const onMoveToMoment = () => {
+    navigation.navigate('MomentHistor');
+  };
+
+  // đến trang bạn bè
+  const onMoveToMyFriends = () => {
+    navigation.navigate('MyFriends');
+  };
+  
+  // đến trang nhật kí của tôi
+  const onMoveToMyDiary = () => {
+    navigation.navigate('DiariesHistory');
+  }
   useEffect(() => {
     getDiaries();
     getMoments();
@@ -107,12 +127,16 @@ const Profile: React.FC<ProfileProps> = props => {
     };
     useDispatch(SAVE_USER(user));
     // xử lí đăng xuất
-    navigation.getParent()?.getParent()?.reset({
-      index: 0,
-      routes: [{name: 'AuthenticationNavigation'}],
-    });
+    navigation
+      .getParent()
+      ?.getParent()
+      ?.reset({
+        index: 0,
+        routes: [{name: 'AuthenticationNavigation'}],
+      });
   };
 
+  // xác nhận đăng xuất
   const onConfirmLogout = () => {
     Alert.alert('', 'Bạn muốn đăng xuất?', [
       {
@@ -144,11 +168,6 @@ const Profile: React.FC<ProfileProps> = props => {
                 ? {uri: myAccount.avatar}
                 : require('../../../Resource/images/avatar.png')
             }></Image>
-          <TouchableOpacity style={styles.backgroundAdd}>
-            <Image
-              style={styles.imgAdd}
-              source={require('../../../Resource/images/icon_add.png')}></Image>
-          </TouchableOpacity>
         </View>
         <Text style={styles.textName}>{myAccount.username}</Text>
         <TouchableOpacity style={styles.backgroundEdit} onPress={onEditProfile}>
@@ -165,7 +184,7 @@ const Profile: React.FC<ProfileProps> = props => {
             style={styles.imgTitle}
             source={require('../../../Resource/images/icon_user_d.png')}></Image>
         </View>
-        <TouchableOpacity style={styles.itemContentOne}>
+        <TouchableOpacity style={styles.itemContentOne} onPress={onMoveToMyDiary}>
           <View style={styles.itemContentLeft}>
             <Image
               style={styles.imageItem}
@@ -175,7 +194,9 @@ const Profile: React.FC<ProfileProps> = props => {
           <Text style={styles.notificationItem}>{diaries.length}</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.itemContentTwo}>
+        <TouchableOpacity
+          style={styles.itemContentTwo}
+          onPress={onMoveToMoment}>
           <View style={styles.itemContentLeft}>
             <Image
               style={styles.imageItem}
@@ -185,7 +206,9 @@ const Profile: React.FC<ProfileProps> = props => {
           <Text style={styles.notificationItem}>{moments.length}</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.itemContentThree}>
+        <TouchableOpacity
+          style={styles.itemContentThree}
+          onPress={onMoveToMyFriends}>
           <View style={styles.itemContentLeft}>
             <Image
               style={styles.imageItem}

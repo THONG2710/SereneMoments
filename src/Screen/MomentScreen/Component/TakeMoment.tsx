@@ -136,22 +136,22 @@ const TakeMoment: React.FC = () => {
 
   // lấy danh sách bạn bè
   const onGetMyFriends = async () => {
-    const res = await getData(
-      'http://' +
-        ID_ADRESS +
-        ':3000/api/friend/getInforFriendsById?id=' +
-        user._id,
-    );
-    if (res.result) {
-      const users = res.friends;
-      setTimeout(() => {
-        for (const user of users) {
-          const newData = {key: user._id.toString(), value: user.username};
-          console.log(newData);
-          setData([...data, newData]);
-        }
-      }, 1000);
-    }
+    // const res = await getData(
+    //   'http://' +
+    //     ID_ADRESS +
+    //     ':3000/api/friend/getInforFriendsById?id=' +
+    //     user._id,
+    // );
+    // if (res.result) {
+    //   const users = res.friends;
+    //   setTimeout(() => {
+    //     for (const user of users) {
+    //       const newData = {key: user._id.toString(), value: user.username};
+    //       console.log(newData);
+    //       setData([...data, newData]);
+    //     }
+    //   }, 1000);
+    // }
   };
 
   // tải lại trang
