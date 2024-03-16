@@ -17,6 +17,7 @@ import {
 } from '../../../Redux/Action/AuthenticationActions';
 import ButtonIcon from '../../../Components/Buttons/ButtonIcon';
 import LoadingDialog from '../../../Components/Dialogs/LoadingDialog';
+import {setDataToStorage} from '../../../Service/Service';
 
 const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
   const {navigation} = props;
@@ -66,10 +67,14 @@ const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
         phoneNumber: res.user.phonenumber,
       };
       usdispath(SAVE_USER(userCurrent));
-
+      setDataToStorage('IS_LOGGED', true);
+      setDataToStorage('ACCOUNT', userCurrent);
       setIsLoading(false);
       usdispath(SET_ISLOGGED(true));
-      navigation.navigate('AuthorizedNavigation');
+      navigation.getParent()?.reset({
+        index: 0,
+        routes: [{name: 'AuthorizedNavigation'}],
+      });
     }
   };
 

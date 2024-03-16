@@ -12,7 +12,7 @@ const stack = createStackNavigator<HomeParamlist>();
 
 const HomeScreen: React.FC = () => {
   return (
-    <stack.Navigator screenOptions={{headerShown: false}}>
+    <stack.Navigator screenOptions={{headerShown: false, gestureEnabled: false}}>
       <stack.Screen name="ListDiariesScreen" component={ListDiariesScreen} />
       <stack.Screen name="CreateDiaryScreen" component={CreateDiaryScreen} />
       <stack.Screen name='ListFriends' component={ListFriend}/>

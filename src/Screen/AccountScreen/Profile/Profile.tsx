@@ -1,10 +1,22 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {ProfileProps} from './type';
 import {useAppDispatch, useAppSelector} from '../../../Redux/Hook';
-import {SET_ISLOGGED} from '../../../Redux/Action/AuthenticationActions';
+import {
+  SAVE_USER,
+  SET_ISLOGGED,
+} from '../../../Redux/Action/AuthenticationActions';
 import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
 import {DiaryModel, FriendModel, MomentModel} from '../../../Models/Model';
+import {getDataFromStorage, setDataToStorage} from '../../../Service/Service';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Profile: React.FC<ProfileProps> = props => {
   const {navigation} = props;
@@ -71,15 +83,53 @@ const Profile: React.FC<ProfileProps> = props => {
     getFriends();
   }, []);
 
-  // đăng xuất
-  const onLogout = () => {
-    useDispatch(SET_ISLOGGED(false));
+  // xử lí đăng xuất
+  const onHandleLogout = async () => {
+    getDataFromStorage('IS_LOGGED').then(data => {
+      AsyncStorage.removeItem('IS_LOGGED').then(() => {
+        setDataToStorage('IS_LOGGED', false);
+      });
+    });
+    getDataFromStorage('ACCOUNT').then(data => {
+      AsyncStorage.removeItem('ACCOUNT').then(() => {
+        setDataToStorage('ACCOUNT', null);
+      });
+    });
+    const user = {
+      _id: '',
+      username: '',
+      password: '',
+      email: '',
+      available: false,
+      avatar: '',
+      createdat: 0,
+      phoneNumber: '',
+    };
+    useDispatch(SAVE_USER(user));
+    // xử lí đăng xuất
+    navigation.getParent()?.getParent()?.reset({
+      index: 0,
+      routes: [{name: 'AuthenticationNavigation'}],
+    });
+  };
+
+  const onConfirmLogout = () => {
+    Alert.alert('', 'Bạn muốn đăng xuất?', [
+      {
+        text: 'Đóng',
+        style: 'cancel',
+      },
+      {
+        text: 'Đăng xuất',
+        onPress: onHandleLogout,
+      },
+    ]);
   };
 
   // chỉnh sửa thông tin cá nhân
   const onEditProfile = () => {
     navigation.navigate('EditProfile');
-  }
+  };
 
   return (
     //CONTAINER
@@ -87,7 +137,13 @@ const Profile: React.FC<ProfileProps> = props => {
       {/* HEADER */}
       <View style={styles.header}>
         <View style={styles.background}>
-          <Image style={styles.imgAVT} source={{uri: myAccount.avatar}}></Image>
+          <Image
+            style={styles.imgAVT}
+            source={
+              myAccount.avatar
+                ? {uri: myAccount.avatar}
+                : require('../../../Resource/images/avatar.png')
+            }></Image>
           <TouchableOpacity style={styles.backgroundAdd}>
             <Image
               style={styles.imgAdd}
@@ -175,7 +231,9 @@ const Profile: React.FC<ProfileProps> = props => {
             style={styles.imgTitle}
             source={require('../../../Resource/images/icon_warning.png')}></Image>
         </View>
-        <TouchableOpacity style={styles.itemContentOne} onPress={onLogout}>
+        <TouchableOpacity
+          style={styles.itemContentOne}
+          onPress={onConfirmLogout}>
           <View style={styles.itemContentLeft}>
             <Image
               style={styles.imageItem}

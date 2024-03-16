@@ -13,10 +13,12 @@ import ItemMoment from './src/Screen/MomentScreen/Component/TakeMoment';
 import TakeAMoment from './src/Screen/MomentScreen/Component/ItemMoment';
 import TestSnapshot from './TestSnapshot';
 import TestDragable from './TestDragable';
-import { AppProvider, RealmProvider, UserProvider } from '@realm/react';
+import {AppProvider, RealmProvider, UserProvider} from '@realm/react';
 import Test from './RealmWrapper';
 import RealmWrapper from './RealmWrapper';
 import Chat from './src/Screen/ChatScreen/Chat/Chat';
+import { Provider } from 'react-redux';
+import { store } from './src/Redux/Store';
 
 function App(): JSX.Element {
   return (
@@ -29,7 +31,9 @@ function App(): JSX.Element {
     // <AuthorizedNavigation/>
     // <Profile/>
     // <RealmProvider>
-      <RootNavigation/>
+    <Provider store={store}>
+      <RootNavigation />
+    </Provider>
     // </RealmProvider>
     // <HomeScreen/>
     // <ItemMoment/>
@@ -37,7 +41,7 @@ function App(): JSX.Element {
     // <TestSnapshot/>
     // <TestDragable/>
     // <Chat/>
-  ); 
+  );
 }
 
 export default App;

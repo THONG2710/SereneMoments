@@ -116,7 +116,7 @@ const TakeMoment: React.FC = () => {
             const userid = user._id;
             const createdat = new Date().getTime();
             const cation = caption;
-            const moment = {userid, createdat, cation, content, description};
+            const moment = {userid, createdat, cation, downloadURL, description};
             const res = await postData(
               'http://' + ID_ADRESS + ':3000/api/moment/createMoment',
               moment,

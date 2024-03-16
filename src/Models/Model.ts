@@ -6,7 +6,7 @@ interface UserModel {
     available: boolean,
     avatar: string,
     createdat: Number,
-    phoneNumber: String,
+    phoneNumber: string,
 }
 
 interface DiaryModel {
@@ -38,5 +38,24 @@ interface RequestModel {
     friend: FriendModel,
 }
 
+interface TodoList {
+    _id: String,
+    userid: String,
+    createdat: Number,
+}
 
-export type {UserModel, DiaryModel, MomentModel, FriendModel, RequestModel}
+interface ItemTodolist {
+    _id: String,
+    status: boolean,
+    content: String,
+    description: String,
+    todoid: String,
+}
+
+interface ResponseTodo {
+    unfinishedWork: ItemTodolist,
+    finishedWork: ItemTodolist,
+}
+
+
+export type { UserModel, DiaryModel, MomentModel, FriendModel, RequestModel, TodoList, ItemTodolist, ResponseTodo }
