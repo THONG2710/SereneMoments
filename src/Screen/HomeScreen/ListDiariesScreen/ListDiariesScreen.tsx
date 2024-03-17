@@ -23,6 +23,11 @@ const ListDiariesScreen: React.FC<ListDiarieProps> = props => {
   const [listDiaries, setListDiaries] = useState<DiaryModel[]>([]);
   const [refreshing, setrefreshing] = useState(false);
 
+  // di chuyển tới trang cá nhân của người khác
+  const onMoveToProfile = () => {
+    navigation.navigate('Profile');
+  };
+
   // di chuyển đến trang tạo nhật kí
   const onCreateNewDiary = () => {
     navigation.navigate('CreateDiaryScreen');
@@ -31,7 +36,7 @@ const ListDiariesScreen: React.FC<ListDiarieProps> = props => {
   //  di chuyển đến trang người lạ
   const onOtherUsers = () => {
     navigation.navigate('OtherUsers');
-  }
+  };
 
   // di chuyển đến trang bạn bè
   const onMyFriends = () => {
@@ -56,7 +61,7 @@ const ListDiariesScreen: React.FC<ListDiarieProps> = props => {
     getDiaries();
   }, [refreshing]);
 
-  // tải lại trang 
+  // tải lại trang
   const onRefresh = () => {
     setrefreshing(true);
   };
@@ -78,7 +83,14 @@ const ListDiariesScreen: React.FC<ListDiarieProps> = props => {
       </View>
       {/* list */}
       <FlatList
-        ListHeaderComponent={<FriendsComponent isRefresh={refreshing} onOtherUsers={onOtherUsers} onMyFriends={onMyFriends}/>}
+        ListHeaderComponent={
+          <FriendsComponent
+            onMoveToProfile={onMoveToProfile}
+            isRefresh={refreshing}
+            onOtherUsers={onOtherUsers}
+            onMyFriends={onMyFriends}
+          />
+        }
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }

@@ -7,6 +7,7 @@ import {HomeParamlist} from '../../StoryBoard/HomeStoryboard';
 import ListFriend from './ListFriends/ListFriend';
 import ListOtherUser from './ListOtherUser/ListOtherUser/ListOtherUser';
 import OtherUsers from './ListOtherUser/OtherUser';
+import Profile from './Profile/Profile';
 
 const stack = createStackNavigator<HomeParamlist>();
 
@@ -17,6 +18,7 @@ const HomeScreen: React.FC = () => {
       <stack.Screen name="CreateDiaryScreen" component={CreateDiaryScreen} />
       <stack.Screen name='ListFriends' component={ListFriend}/>
       <stack.Screen name='OtherUsers' component={OtherUsers}/>
+      <stack.Screen name='Profile' component={Profile}/>
     </stack.Navigator>
   );
 };

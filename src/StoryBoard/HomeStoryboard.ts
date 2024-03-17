@@ -3,4 +3,5 @@ export type HomeParamlist = {
     CreateDiaryScreen: undefined,
     ListFriends: undefined,
     OtherUsers: undefined,
+    Profile: undefined
 }

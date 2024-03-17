@@ -15,42 +15,15 @@ import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
 import {useAppSelector} from '../../../Redux/Hook';
 import {UserModel} from '../../../Models/Model';
 
-const list = [
-  {
-    id: 1,
-    avatar: require('../../../Resource/images/avatar.png'),
-    name: 'thong',
-  },
-  {
-    id: 2,
-    avatar: require('../../../Resource/images/avatar.png'),
-    name: 'thong',
-  },
-  {
-    id: 3,
-    avatar: require('../../../Resource/images/avatar.png'),
-    name: 'thong',
-  },
-  {
-    id: 4,
-    avatar: require('../../../Resource/images/avatar.png'),
-    name: 'thong',
-  },
-  {
-    id: 5,
-    avatar: require('../../../Resource/images/avatar.png'),
-    name: 'thong',
-  },
-];
-
 interface FriendsComponentProps extends ViewProps {
   onMyFriends: () => void;
   onOtherUsers: () => void;
   isRefresh: boolean;
+  onMoveToProfile: () => void;
 }
 
 const FriendsComponent: React.FC<FriendsComponentProps> = props => {
-  const { onMyFriends, onOtherUsers, isRefresh } = props;
+  const {onMyFriends, onOtherUsers, isRefresh, onMoveToProfile} = props;
   const [friends, setfriends] = useState<UserModel[]>([]);
   const user = useAppSelector(state => state.Authentication.myAccount);
 
@@ -74,15 +47,25 @@ const FriendsComponent: React.FC<FriendsComponentProps> = props => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TextButton onPress={onMyFriends} style={styles.ButtonFriend} label="Bạn bè" />
-        <TextButton onPress={onOtherUsers} style={styles.buttonMore} label="Xem thêm" />
+        <TextButton
+          onPress={onMyFriends}
+          style={styles.ButtonFriend}
+          label="Bạn bè"
+        />
+        <TextButton
+          onPress={onOtherUsers}
+          style={styles.buttonMore}
+          label="Xem thêm"
+        />
       </View>
       <View>
         <FlatList
           showsHorizontalScrollIndicator={false}
           horizontal
           data={friends}
-          renderItem={({item}) => <ItemFriend information={item}/>}
+          renderItem={({item}) => (
+            <ItemFriend onPress={onMoveToProfile} information={item} />
+          )}
           keyExtractor={item => item._id.toString()}
         />
       </View>

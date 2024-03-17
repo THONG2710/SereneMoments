@@ -13,14 +13,15 @@ import {UserModel} from '../../Models/Model';
 
 interface ItemFriendProps extends ViewProps {
   information: UserModel;
+  onPress: () => void;
 }
 
 const ItemFriend: React.FC<ItemFriendProps> = props => {
-  const {information} = props;
+  const {information, onPress} = props;
   return (
-    <Pressable style={styles.container}>
+    <Pressable style={styles.container} onPress={onPress}>
       <Shadow style={styles.hd_shadow} distance={2} offset={[0, 5]}>
-        <Pressable style={styles.hdA_btn}>
+        <View style={styles.hdA_btn}>
           <Image
             source={
               information.avatar
@@ -29,7 +30,7 @@ const ItemFriend: React.FC<ItemFriendProps> = props => {
             }
             style={styles.hdA_img}
           />
-        </Pressable>
+        </View>
       </Shadow>
       <Text style={styles.txtName}>{information.username}</Text>
     </Pressable>
