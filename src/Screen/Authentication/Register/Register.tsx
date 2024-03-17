@@ -62,7 +62,7 @@ const Register: React.FC<RegisterProps> = props => {
             setErrorPhoneNumber(
               isValidPhoneNumber(text) == true
                 ? ''
-                : ' SDT không đúng định dạng',
+                : ' SDT chưa đúng định dạng',
             );
             setPhoneNumber(text);
           }}
