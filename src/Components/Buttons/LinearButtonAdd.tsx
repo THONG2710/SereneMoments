@@ -34,5 +34,7 @@ const styles = StyleSheet.create({
     add:
     {
         borderRadius:10,
+        
+        
     }
 });

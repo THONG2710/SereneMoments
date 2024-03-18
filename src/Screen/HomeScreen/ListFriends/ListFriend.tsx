@@ -7,21 +7,23 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Dialog from '../../Dialog/Dialog';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import DialogConfirmSuccess from '../../Dialog/DialogConfirmSuccess';
 import DialogConfirmFailure from '../../Dialog/DialogConfirmFailure';
-import {ListFriendsProps} from './type';
-import {UserModel} from '../../../Models/Model';
+import { ListFriendsProps } from './type';
+import { UserModel } from '../../../Models/Model';
 import ButtonIcon from '../../../Components/Buttons/ButtonIcon';
-import {Colors} from '../../../Resource/colors';
-import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
-import {useAppSelector} from '../../../Redux/Hook';
+import { Colors } from '../../../Resource/colors';
+import { ID_ADRESS, getData } from '../../../Service/RequestMethod';
+import { useAppSelector } from '../../../Redux/Hook';
 import ButtonText from '../../../Components/Buttons/ButtonText';
+import LinearButtonAdd from '../../../Components/Buttons/LinearButtonAdd';
+import ButtonUnfriend from '../../../Components/Buttons/ButtonUnFriend';
 
 const ListFriend: React.FC<ListFriendsProps> = props => {
-  const {navigation} = props;
+  const { navigation } = props;
   const [showAlert, setShowAlert] = useState(false);
   const [friends, setFriends] = useState<UserModel[]>([]);
   const [selectedFriend, setSelectedFriend] = useState<UserModel>();
@@ -36,9 +38,9 @@ const ListFriend: React.FC<ListFriendsProps> = props => {
     try {
       const res = await getData(
         'http://' +
-          ID_ADRESS +
-          ':3000/api/friend/getInforFriendsById?id=' +
-          user._id,
+        ID_ADRESS +
+        ':3000/api/friend/getInforFriendsById?id=' +
+        user._id,
       );
       if (res) {
         setFriends(res.friends);
@@ -73,13 +75,15 @@ const ListFriend: React.FC<ListFriendsProps> = props => {
     return (
       <View key={item._id.toString()} style={styles.itemFriend}>
         <View style={styles.itemFriendLeft}>
-          <Image style={styles.imgAvatar} source={{uri: item.avatar}}></Image>
+          <View style={styles.bgrAVT}>
+            <Image style={styles.imgAvatar} source={{ uri: item.avatar }}></Image>
+          </View>
           <View style={styles.friend}>
             <Text style={styles.nameFriend}>{item.username}</Text>
             {/* <Text style={styles.manutalFriend}>{item.manutalFriend}</Text> */}
           </View>
         </View>
-        <ButtonText
+        <ButtonUnfriend
           onPress={() => handleDeleteFriend(item)}
           buttonStyle={styles.btnStyle}
           label="Xóa"
@@ -170,6 +174,17 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
 
+  bgrAVT:
+  {
+    width:55,
+    height:55,
+    borderWidth:1,
+    justifyContent:'center',
+    alignItems:'center',
+    borderRadius:50,
+    borderColor:'#97D4EB'
+  },
+
   imgSearchFriend: {
     width: 24,
     height: 24,
@@ -184,6 +199,8 @@ const styles = StyleSheet.create({
   btnStyle: {
     width: 70,
     height: 40,
+    justifyContent:'center',
+    alignItems:'center'
   },
 
   // CENTER
@@ -228,8 +245,8 @@ const styles = StyleSheet.create({
   },
 
   imgAvatar: {
-    width: 50,
-    height: 50,
+    width: 45,
+    height: 45,
     borderRadius: 30,
   },
 
