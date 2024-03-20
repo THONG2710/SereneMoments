@@ -14,7 +14,12 @@ import {
   SET_ISLOGGED,
 } from '../../../Redux/Action/AuthenticationActions';
 import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
-import {DiaryModel, FriendModel, MomentModel} from '../../../Models/Model';
+import {
+  DiaryModel,
+  FriendModel,
+  MomentModel,
+  UserModel,
+} from '../../../Models/Model';
 import {getDataFromStorage, setDataToStorage} from '../../../Service/Service';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {SAVE_MYMOMENTS} from '../../../Redux/Action/MomentActions';
@@ -23,11 +28,26 @@ import {SAVE_MYDIARIES} from '../../../Redux/Action/DiaryActions';
 
 const Profile: React.FC<ProfileProps> = props => {
   const {navigation} = props;
+  const {idUser} = props.route.params;
   const useDispatch = useAppDispatch();
-  const myAccount = useAppSelector(state => state.Authentication.myAccount);
   const [diaries, setdiaries] = useState<DiaryModel[]>([]);
   const [moments, setmoments] = useState<MomentModel[]>([]);
   const [friends, setfriends] = useState<FriendModel[]>([]);
+  const [user, setUser] = useState<UserModel>();
+
+  useEffect(() => {
+    onGetUser();
+  }, []);
+
+  // lấy thông tin người dùng
+  const onGetUser = async () => {
+    const res = await getData(
+      'http://' + ID_ADRESS + ':3000/api/users/getUserById?id=' + idUser,
+    );
+    if (res.result) {
+      setUser(res.user);
+    }
+  };
 
   // lấy nhật kí
   const getDiaries = async () => {
@@ -36,7 +56,7 @@ const Profile: React.FC<ProfileProps> = props => {
         'http://' +
           ID_ADRESS +
           ':3000/api/diary/getDiariesByIdUser?id=' +
-          myAccount._id,
+          user?._id,
       );
       if (response.result) {
         setdiaries(response.diaries);
@@ -54,7 +74,7 @@ const Profile: React.FC<ProfileProps> = props => {
         'http://' +
           ID_ADRESS +
           ':3000/api/moment/getMomentsById?id=' +
-          myAccount._id,
+          user?._id,
       );
       if (response.result) {
         setmoments(response.moments);
@@ -72,7 +92,7 @@ const Profile: React.FC<ProfileProps> = props => {
         'http://' +
           ID_ADRESS +
           ':3000/api/friend/getInforFriendsById?id=' +
-          myAccount._id,
+          user?._id,
       );
       if (response.result) {
         setfriends(response.friends);
@@ -92,12 +112,12 @@ const Profile: React.FC<ProfileProps> = props => {
           <Image
             style={styles.imgAVT}
             source={
-              myAccount.avatar
-                ? {uri: myAccount.avatar}
+              user?.avatar
+                ? {uri: user?.avatar}
                 : require('../../../Resource/images/avatar.png')
             }></Image>
         </View>
-        <Text style={styles.textName}>{myAccount.username}</Text>
+        <Text style={styles.textName}>{user?.username}</Text>
       </View>
 
       {/* CENTER */}

@@ -29,6 +29,7 @@ const TakeMoment: React.FC = () => {
   const [description, setdescription] = useState('');
   const [isRefresh, setIsRefresh] = useState<boolean>(false);
   const [data, setData] = useState<{value: string; key: string}[]>([]);
+  const friends = useAppSelector(state => state.Friends.myFriends);
   // const data = [
   //   {key: '1', value: 'Bạn bè'},
   //   {key: '2', value: 'Mọi người'},
@@ -114,9 +115,15 @@ const TakeMoment: React.FC = () => {
         () => {
           upload.snapshot?.ref.getDownloadURL().then(async downloadURL => {
             const userid = user._id;
-            const createdat = new Date().getTime();
+            const createdat = new Date().getTime() / 1000;
             const cation = caption;
-            const moment = {userid, createdat, cation, downloadURL, description};
+            const moment = {
+              userid,
+              createdat,
+              cation,
+              downloadURL,
+              description,
+            };
             const res = await postData(
               'http://' + ID_ADRESS + ':3000/api/moment/createMoment',
               moment,
@@ -136,22 +143,15 @@ const TakeMoment: React.FC = () => {
 
   // lấy danh sách bạn bè
   const onGetMyFriends = async () => {
-    // const res = await getData(
-    //   'http://' +
-    //     ID_ADRESS +
-    //     ':3000/api/friend/getInforFriendsById?id=' +
-    //     user._id,
-    // );
-    // if (res.result) {
-    //   const users = res.friends;
-    //   setTimeout(() => {
-    //     for (const user of users) {
-    //       const newData = {key: user._id.toString(), value: user.username};
-    //       console.log(newData);
-    //       setData([...data, newData]);
-    //     }
-    //   }, 1000);
-    // }
+    const newFriends = [];
+    for (let index = 0; index < friends.length; index++) {
+      const newData = {
+        key: friends[index]._id.toString(),
+        value: friends[index].username,
+      };
+      newFriends.push(newData);
+    }
+    setData(newFriends);
   };
 
   // tải lại trang
@@ -161,6 +161,7 @@ const TakeMoment: React.FC = () => {
 
   useEffect(() => {
     onGetMyFriends();
+    
   }, [isRefresh]);
 
   return (

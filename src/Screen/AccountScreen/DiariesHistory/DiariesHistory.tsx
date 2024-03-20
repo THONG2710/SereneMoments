@@ -70,7 +70,7 @@ const DiariesHistory: React.FC<DiariesHistorProps> = props => {
       />
       <View style={styles.center}>
           <Deck_Swiper
-            infinite={true}
+            // infinite={true}
             cards={myDiaries}
             renderCard={(diary, index) => <ItemMyDiary diary={diary}/>}
             onSwiped={diaryIndex => {

@@ -57,5 +57,20 @@ interface ResponseTodo {
     finishedWork: ItemTodolist,
 }
 
+interface CommentsModel {
+    _id: String,
+    userid: String,
+    momentid: String,
+    content: string,
+    createdat: Number,
+}
 
-export type { UserModel, DiaryModel, MomentModel, FriendModel, RequestModel, TodoList, ItemTodolist, ResponseTodo }
+interface LikesModel {
+    _id: String,
+    userid: String,
+    momentid: String,
+    createdat: Number,
+}
+
+
+export type { UserModel, DiaryModel, MomentModel, FriendModel, RequestModel, TodoList, ItemTodolist, ResponseTodo, CommentsModel, LikesModel }

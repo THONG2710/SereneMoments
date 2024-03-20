@@ -19,6 +19,7 @@ import RealmWrapper from './RealmWrapper';
 import Chat from './src/Screen/ChatScreen/Chat/Chat';
 import { Provider } from 'react-redux';
 import { store } from './src/Redux/Store';
+import { MenuProvider } from 'react-native-popup-menu';
 
 function App(): JSX.Element {
   return (
@@ -32,7 +33,9 @@ function App(): JSX.Element {
     // <Profile/>
     // <RealmProvider>
     <Provider store={store}>
+      <MenuProvider>
       <RootNavigation />
+      </MenuProvider>
     </Provider>
     // </RealmProvider>
     // <HomeScreen/>

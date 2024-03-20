@@ -12,7 +12,12 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Dimensions} from 'react-native';
-import {MomentModel, UserModel} from '../../../Models/Model';
+import {
+  CommentsModel,
+  LikesModel,
+  MomentModel,
+  UserModel,
+} from '../../../Models/Model';
 import {onConvertEpochtime} from '../../../Service/Service';
 import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
 const w = Dimensions.get('window').width;
@@ -23,10 +28,10 @@ interface ItemMomentProps extends ViewProps {
 }
 
 const ItemMoment: React.FC<ItemMomentProps> = props => {
-  const [selected, setSelected] = useState('');
-  const data = [{key: '1', value: 'Nguyễn Quang Trường'}];
   const {moment} = props;
   const [user, setuser] = useState<UserModel>();
+  const [comments, setcomments] = useState<CommentsModel[]>([]);
+  const [likes, setLikes] = useState<LikesModel[]>([]);
 
   // lấy thông tin người dùng
   const onGetUser = async () => {
@@ -38,8 +43,38 @@ const ItemMoment: React.FC<ItemMomentProps> = props => {
     }
   };
 
+  // lấy lượt bình luận
+  const onGetComments = async () => {
+    try {
+      const res = await getData(
+        'http://' + ID_ADRESS + ':3000/api/comments/getComments/' + moment._id,
+      );
+      if (res.result) {
+        setcomments(res.comments);
+      }
+    } catch (error) {
+      console.log('failed to get comments');
+    }
+  };
+
+  // lấy lượt thích
+  const onGetLikes = async () => {
+    try {
+      const res = await getData(
+        'http://' + ID_ADRESS + ':3000/api/likes/getLikes/' + moment._id,
+      );
+      if (res.result) {
+        setLikes(res.likes);
+      }
+    } catch (error) {
+      console.log('failed to get likes');
+    }
+  };
+
   useEffect(() => {
     onGetUser();
+    onGetComments();
+    onGetLikes();
   }, []);
 
   return (
@@ -84,7 +119,7 @@ const ItemMoment: React.FC<ItemMomentProps> = props => {
             <Image
               style={styles.imgInteract}
               source={require('../../../Resource/images/icon_heart.png')}></Image>
-            <Text style={styles.textInteract}>30</Text>
+            <Text style={styles.textInteract}>{likes.length}</Text>
           </TouchableOpacity>
           <Image
             style={styles.line}
@@ -94,7 +129,7 @@ const ItemMoment: React.FC<ItemMomentProps> = props => {
             <Image
               style={styles.imgInteract}
               source={require('../../../Resource/images/icon_comment.png')}></Image>
-            <Text style={styles.textInteract}>64</Text>
+            <Text style={styles.textInteract}>{comments.length}</Text>
           </TouchableOpacity>
         </View>
 

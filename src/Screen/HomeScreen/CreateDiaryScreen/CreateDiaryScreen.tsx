@@ -29,13 +29,15 @@ import {ID_ADRESS, postData} from '../../../Service/RequestMethod';
 import LoadingDialog from '../../../Components/Dialogs/LoadingDialog';
 import {Colors} from '../../../Resource/colors';
 import DialogBackground from '../components/DialogBackground';
+import {
+  Menu,
+  MenuOption,
+  MenuOptions,
+  MenuTrigger,
+} from 'react-native-popup-menu';
+import DialogPrivacy from '../components/DialogPrivacy';
 
 const listOptions = [
-  {
-    _id: 1,
-    label: 'Mẫu sẵn',
-    icon: require('../../../Resource/images/icon_model.png'),
-  },
   {
     _id: 2,
     label: 'Nhãn dán',
@@ -85,6 +87,8 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
   const [isVisibleDialogBackground, setisVisibleDialogBackground] =
     useState<boolean>(false);
   const [backgroundColor, setbackgroundColor] = useState<string>(Colors.WHITE);
+  const [isVisiblePrivacy, setIsVisiblePrivacy] = useState(false);
+  const [privacy, setPrivacy] = useState(2);
 
   // chọn ảnh từ thư viện
   const getImageFromLibrary = () => {
@@ -95,11 +99,23 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
         console.log('ImagePicker Error:', response.errorMessage);
       } else {
         // Hình ảnh đã được chọn thành công
-        const source = {uri: response.assets[0].uri};
-        onCreateOneItem(<Image style={{width: 50, height: 50}} source={{uri: source.uri}}/>)
+        if (response.assets && response.assets[0]) {
+          const source = {uri: response.assets[0].uri};
+          onCreateOneItem(
+            <Image
+              style={{width: 50, height: 50}}
+              source={{uri: source.uri}}
+            />,
+          );
+        }
         // Thực hiện xử lý hình ảnh ở đây
       }
     });
+  };
+
+  // chọn quyền riêng tư
+  const onSetPrivacy = () => {
+    setIsVisiblePrivacy(true);
   };
 
   // chọn font chữ
@@ -168,7 +184,8 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
     setReRender(!reRender);
   };
 
-  useEffect(() => {}, [reRender]);
+  useEffect(() => {
+  }, [reRender]);
 
   // đăng bài
   const onCreateDiary = () => {
@@ -192,12 +209,12 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
         },
         () => {
           upload.snapshot?.ref.getDownloadURL().then(async downloadURL => {
-            const date = new Date();
+            const date = new Date().getTime() / 1000;
             const data = {
               userid: user._id.toString(),
               diary: downloadURL.toString(),
-              createdat: date.getTime(),
-              privacy: 2,
+              createdat: date ,
+              privacy: privacy,
             };
             const res = await postData(
               'http://' + ID_ADRESS + ':3000/api/diary/createDiary',
@@ -329,6 +346,18 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
       />
       {/* dialog loading */}
       <LoadingDialog isVisible={isLoading} />
+
+      {/* cài đặt quyền riêng tư */}
+      <Modal
+        onBackdropPress={() => setIsVisiblePrivacy(false)}
+        children={
+          <DialogPrivacy
+            onSetPrivacy={privacy => setPrivacy(privacy)}
+            onCancel={() => setIsVisiblePrivacy(false)}
+          />
+        }
+        isVisible={isVisiblePrivacy}
+      />
       {/* header */}
       <View style={styles.topComponent}>
         <View style={styles.header}>
@@ -341,10 +370,10 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
           </View>
           <View style={styles.hdRight}>
             <ButtonIcon
+              onPress={onSetPrivacy}
               styles={styles.hdr_btnPrivate}
               url={require('../../../Resource/images/icon_editPrivate.png')}
             />
-
             <ButtonIcon
               styles={styles.hdr_btnClose}
               url={require('../../../Resource/images/icon_add.png')}
