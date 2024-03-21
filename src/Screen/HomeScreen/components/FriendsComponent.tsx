@@ -12,47 +12,22 @@ import ItemFriend from '../../../Components/Items/ItemFriend';
 import TextButton from '../../../Components/Buttons/TextButton';
 import {Colors} from '../../../Resource/colors';
 import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
-import {useAppSelector} from '../../../Redux/Hook';
+import {useAppDispatch, useAppSelector} from '../../../Redux/Hook';
 import {UserModel} from '../../../Models/Model';
-
-const list = [
-  {
-    id: 1,
-    avatar: require('../../../Resource/images/avatar.png'),
-    name: 'thong',
-  },
-  {
-    id: 2,
-    avatar: require('../../../Resource/images/avatar.png'),
-    name: 'thong',
-  },
-  {
-    id: 3,
-    avatar: require('../../../Resource/images/avatar.png'),
-    name: 'thong',
-  },
-  {
-    id: 4,
-    avatar: require('../../../Resource/images/avatar.png'),
-    name: 'thong',
-  },
-  {
-    id: 5,
-    avatar: require('../../../Resource/images/avatar.png'),
-    name: 'thong',
-  },
-];
+import { SAVE_MYFRIENDS } from '../../../Redux/Action/FriendsActions';
 
 interface FriendsComponentProps extends ViewProps {
   onMyFriends: () => void;
   onOtherUsers: () => void;
   isRefresh: boolean;
+  onMoveToProfile: (id: string) => void;
 }
 
 const FriendsComponent: React.FC<FriendsComponentProps> = props => {
-  const { onMyFriends, onOtherUsers, isRefresh } = props;
+  const {onMyFriends, onOtherUsers, isRefresh, onMoveToProfile} = props;
   const [friends, setfriends] = useState<UserModel[]>([]);
   const user = useAppSelector(state => state.Authentication.myAccount);
+  const dispatch = useAppDispatch();
 
   //  lấy bạn bè
   const getFriends = async () => {
@@ -62,8 +37,9 @@ const FriendsComponent: React.FC<FriendsComponentProps> = props => {
         ':3000/api/friend/getInforFriendsById?id=' +
         user._id,
     );
-    if (res) {
+    if (res.result) {
       setfriends(res.friends);
+      dispatch(SAVE_MYFRIENDS(res.friends))
     }
   };
 
@@ -74,15 +50,25 @@ const FriendsComponent: React.FC<FriendsComponentProps> = props => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TextButton onPress={onMyFriends} style={styles.ButtonFriend} label="Bạn bè" />
-        <TextButton onPress={onOtherUsers} style={styles.buttonMore} label="Xem thêm" />
+        <TextButton
+          onPress={onMyFriends}
+          style={styles.ButtonFriend}
+          label="Bạn bè"
+        />
+        <TextButton
+          onPress={onOtherUsers}
+          style={styles.buttonMore}
+          label="Xem thêm"
+        />
       </View>
       <View>
         <FlatList
           showsHorizontalScrollIndicator={false}
           horizontal
           data={friends}
-          renderItem={({item}) => <ItemFriend information={item}/>}
+          renderItem={({item}) => (
+            <ItemFriend onPress={(id) => onMoveToProfile(id)} information={item} />
+          )}
           keyExtractor={item => item._id.toString()}
         />
       </View>

@@ -17,10 +17,12 @@ import {onConvertEpochtime} from '../../../Service/Service';
 
 interface PostProps extends ViewProps {
   diary: DiaryModel;
+  onPress: (id: string) => void;
 }
 
 const Post: React.FC<PostProps> = props => {
   const [user, setuser] = useState<UserModel>();
+  const {diary, onPress} = props;
 
   useEffect(() => {
     const getUser = async () => {
@@ -37,7 +39,6 @@ const Post: React.FC<PostProps> = props => {
     getUser();
   }, []);
 
-  const {diary} = props;
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -45,7 +46,7 @@ const Post: React.FC<PostProps> = props => {
         {/* avatar */}
         <View style={styles.hd_avatar}>
           <Shadow style={styles.hd_shadow} distance={2} offset={[0, 5]}>
-            <Pressable style={styles.hdA_btn}>
+            <Pressable style={styles.hdA_btn} onPress={() => onPress(user?._id.toString() || '')}>
               {user?.avatar ? (
                 <Image source={{uri: user?.avatar}} style={styles.hdA_img} />
               ) : (

@@ -15,7 +15,7 @@ const tab = createBottomTabNavigator<AuthorizedParamlist>();
 
 const AuthorizedNavigation: React.FC = () => {
   return (
-    <tab.Navigator screenOptions={{headerShown: false}}>
+    <tab.Navigator screenOptions={{headerShown: false, tabBarHideOnKeyboard: true}}>
       <tab.Screen
         name="HomeScreen"
         component={HomeScreen}

@@ -14,20 +14,40 @@ import {
   SET_ISLOGGED,
 } from '../../../Redux/Action/AuthenticationActions';
 import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
-import {DiaryModel, FriendModel, MomentModel} from '../../../Models/Model';
+import {
+  DiaryModel,
+  FriendModel,
+  MomentModel,
+  UserModel,
+} from '../../../Models/Model';
 import {getDataFromStorage, setDataToStorage} from '../../../Service/Service';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {SAVE_MYMOMENTS} from '../../../Redux/Action/MomentActions';
-import { SAVE_MYFRIENDS } from '../../../Redux/Action/FriendsActions';
-import { SAVE_MYDIARIES } from '../../../Redux/Action/DiaryActions';
+import {SAVE_MYFRIENDS} from '../../../Redux/Action/FriendsActions';
+import {SAVE_MYDIARIES} from '../../../Redux/Action/DiaryActions';
 
 const Profile: React.FC<ProfileProps> = props => {
   const {navigation} = props;
+  const {idUser} = props.route.params;
   const useDispatch = useAppDispatch();
-  const myAccount = useAppSelector(state => state.Authentication.myAccount);
   const [diaries, setdiaries] = useState<DiaryModel[]>([]);
   const [moments, setmoments] = useState<MomentModel[]>([]);
   const [friends, setfriends] = useState<FriendModel[]>([]);
+  const [user, setUser] = useState<UserModel>();
+
+  useEffect(() => {
+    onGetUser();
+  }, []);
+
+  // lấy thông tin người dùng
+  const onGetUser = async () => {
+    const res = await getData(
+      'http://' + ID_ADRESS + ':3000/api/users/getUserById?id=' + idUser,
+    );
+    if (res.result) {
+      setUser(res.user);
+    }
+  };
 
   // lấy nhật kí
   const getDiaries = async () => {
@@ -36,7 +56,7 @@ const Profile: React.FC<ProfileProps> = props => {
         'http://' +
           ID_ADRESS +
           ':3000/api/diary/getDiariesByIdUser?id=' +
-          myAccount._id,
+          user?._id,
       );
       if (response.result) {
         setdiaries(response.diaries);
@@ -54,7 +74,7 @@ const Profile: React.FC<ProfileProps> = props => {
         'http://' +
           ID_ADRESS +
           ':3000/api/moment/getMomentsById?id=' +
-          myAccount._id,
+          user?._id,
       );
       if (response.result) {
         setmoments(response.moments);
@@ -72,87 +92,15 @@ const Profile: React.FC<ProfileProps> = props => {
         'http://' +
           ID_ADRESS +
           ':3000/api/friend/getInforFriendsById?id=' +
-          myAccount._id,
+          user?._id,
       );
       if (response.result) {
         setfriends(response.friends);
-        useDispatch(SAVE_MYFRIENDS(response.friends))
+        useDispatch(SAVE_MYFRIENDS(response.friends));
       }
     } catch (error) {
       console.log('get friends failled: ' + error);
     }
-  };
-
-  // đến trang khoảnh khắc
-  const onMoveToMoment = () => {
-    navigation.navigate('MomentHistor');
-  };
-
-  // đến trang bạn bè
-  const onMoveToMyFriends = () => {
-    navigation.navigate('MyFriends');
-  };
-  
-  // đến trang nhật kí của tôi
-  const onMoveToMyDiary = () => {
-    navigation.navigate('DiariesHistory');
-  }
-  useEffect(() => {
-    getDiaries();
-    getMoments();
-    getFriends();
-  }, []);
-
-  // xử lí đăng xuất
-  const onHandleLogout = async () => {
-    getDataFromStorage('IS_LOGGED').then(data => {
-      AsyncStorage.removeItem('IS_LOGGED').then(() => {
-        setDataToStorage('IS_LOGGED', false);
-      });
-    });
-    getDataFromStorage('ACCOUNT').then(data => {
-      AsyncStorage.removeItem('ACCOUNT').then(() => {
-        setDataToStorage('ACCOUNT', null);
-      });
-    });
-    const user = {
-      _id: '',
-      username: '',
-      password: '',
-      email: '',
-      available: false,
-      avatar: '',
-      createdat: 0,
-      phoneNumber: '',
-    };
-    useDispatch(SAVE_USER(user));
-    // xử lí đăng xuất
-    navigation
-      .getParent()
-      ?.getParent()
-      ?.reset({
-        index: 0,
-        routes: [{name: 'AuthenticationNavigation'}],
-      });
-  };
-
-  // xác nhận đăng xuất
-  const onConfirmLogout = () => {
-    Alert.alert('', 'Bạn muốn đăng xuất?', [
-      {
-        text: 'Đóng',
-        style: 'cancel',
-      },
-      {
-        text: 'Đăng xuất',
-        onPress: onHandleLogout,
-      },
-    ]);
-  };
-
-  // chỉnh sửa thông tin cá nhân
-  const onEditProfile = () => {
-    navigation.navigate('EditProfile');
   };
 
   return (
@@ -164,27 +112,18 @@ const Profile: React.FC<ProfileProps> = props => {
           <Image
             style={styles.imgAVT}
             source={
-              myAccount.avatar
-                ? {uri: myAccount.avatar}
+              user?.avatar
+                ? {uri: user?.avatar}
                 : require('../../../Resource/images/avatar.png')
             }></Image>
         </View>
-        <Text style={styles.textName}>{myAccount.username}</Text>
-        <TouchableOpacity style={styles.backgroundEdit} onPress={onEditProfile}>
-          <Text style={styles.textEdit}>Sửa đổi thông tin cá nhân</Text>
-        </TouchableOpacity>
+        <Text style={styles.textName}>{user?.username}</Text>
       </View>
 
       {/* CENTER */}
       {/* CENTER TOP */}
       <View style={styles.centerTop}>
-        <View style={styles.title}>
-          <Text style={styles.textTitle}>Của bạn</Text>
-          <Image
-            style={styles.imgTitle}
-            source={require('../../../Resource/images/icon_user_d.png')}></Image>
-        </View>
-        <TouchableOpacity style={styles.itemContentOne} onPress={onMoveToMyDiary}>
+        <TouchableOpacity style={styles.itemContentOne}>
           <View style={styles.itemContentLeft}>
             <Image
               style={styles.imageItem}
@@ -194,9 +133,7 @@ const Profile: React.FC<ProfileProps> = props => {
           <Text style={styles.notificationItem}>{diaries.length}</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.itemContentTwo}
-          onPress={onMoveToMoment}>
+        <TouchableOpacity style={styles.itemContentTwo}>
           <View style={styles.itemContentLeft}>
             <Image
               style={styles.imageItem}
@@ -206,9 +143,7 @@ const Profile: React.FC<ProfileProps> = props => {
           <Text style={styles.notificationItem}>{moments.length}</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.itemContentThree}
-          onPress={onMoveToMyFriends}>
+        <TouchableOpacity style={styles.itemContentThree}>
           <View style={styles.itemContentLeft}>
             <Image
               style={styles.imageItem}
@@ -216,62 +151,6 @@ const Profile: React.FC<ProfileProps> = props => {
             <Text style={styles.textItem}>Bạn bè</Text>
           </View>
           <Text style={styles.notificationItem}>{friends.length}</Text>
-        </TouchableOpacity>
-      </View>
-      {/* CENTERBOTTOM */}
-      <View style={styles.centerBot}>
-        <View style={styles.title}>
-          <Text style={styles.textTitle}>Cài đặt</Text>
-          <Image
-            style={styles.imgTitle}
-            source={require('../../../Resource/images/icon_setting_d.png')}></Image>
-        </View>
-
-        <TouchableOpacity style={styles.itemContentOne}>
-          <View style={styles.itemContentLeft}>
-            <Image
-              style={styles.imageItem}
-              source={require('../../../Resource/images/icon_password.png')}></Image>
-            <Text style={styles.textItem}>Đặt mật khẩu</Text>
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.itemContentThree}>
-          <View style={styles.itemContentLeft}>
-            <Image
-              style={styles.imageItem}
-              source={require('../../../Resource/images/icon_setting.png')}></Image>
-            <Text style={styles.textItem}>Đặt mặc định</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-
-      {/* FOOTER */}
-      <View style={styles.footer}>
-        <View style={styles.title}>
-          <Text style={styles.textTitle}>Tài khoản</Text>
-          <Image
-            style={styles.imgTitle}
-            source={require('../../../Resource/images/icon_warning.png')}></Image>
-        </View>
-        <TouchableOpacity
-          style={styles.itemContentOne}
-          onPress={onConfirmLogout}>
-          <View style={styles.itemContentLeft}>
-            <Image
-              style={styles.imageItem}
-              source={require('../../../Resource/images/icon_logout.png')}></Image>
-            <Text style={styles.textItem}>Đăng xuất</Text>
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.itemContentThree}>
-          <View style={styles.itemContentLeft}>
-            <Image
-              style={styles.imageItem}
-              source={require('../../../Resource/images/icon_delete.png')}></Image>
-            <Text style={[styles.textItem, {color: 'red'}]}>Xóa tài khoản</Text>
-          </View>
         </TouchableOpacity>
       </View>
     </View>

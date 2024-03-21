@@ -1,5 +1,7 @@
 export type AccountParamlist = {
     profileScreen: undefined,
-    AuthorizedNavigation: undefined,
     EditProfile: undefined,
+    MomentHistor: undefined,
+    MyFriends: undefined,
+    DiariesHistory: undefined
 }

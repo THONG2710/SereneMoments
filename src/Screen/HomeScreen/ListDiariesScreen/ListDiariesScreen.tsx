@@ -12,7 +12,7 @@ import InputBox from '../../../Components/Inputs/InputBox';
 import ButtonIcon from '../../../Components/Buttons/ButtonIcon';
 import Post from '../components/Post';
 import {ListDiarieProps} from './type';
-import {useAppSelector} from '../../../Redux/Hook';
+import {useAppDispatch, useAppSelector} from '../../../Redux/Hook';
 import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
 import {DiaryModel} from '../../../Models/Model';
 import FriendsComponent from '../components/FriendsComponent';
@@ -22,6 +22,46 @@ const ListDiariesScreen: React.FC<ListDiarieProps> = props => {
   const user = useAppSelector(state => state.Authentication.myAccount);
   const [listDiaries, setListDiaries] = useState<DiaryModel[]>([]);
   const [refreshing, setrefreshing] = useState(false);
+  const [search, setSearch] = useState<string>('');
+  const dispatch = useAppDispatch();
+
+  // tìm kiếm người dùng
+  const onFindFromDatabase = async () => {
+    if (search != '') {
+      if (Number(search)) {
+        const res = await getData(
+          'http://' +
+            ID_ADRESS +
+            ':3000/api/users/findUserByPhoneNumber?phoneNumber=' +
+            search +
+            '&id=' +
+            user._id,
+        );
+        if (res.result) {
+          setSearch('');
+          navigation.navigate('findUser', {users: res.user});
+        }
+      } else {
+        const res = await getData(
+          'http://' +
+            ID_ADRESS +
+            ':3000/api/users/findUserByName?name=' +
+            search +
+            '&id=' +
+            user._id,
+        );
+        if (res.result) {
+          setSearch('');
+          navigation.navigate('findUser', {users: res.user});
+        }
+      }
+    }
+  };
+
+  // di chuyển tới trang cá nhân của người khác
+  const onMoveToProfile = (id: string) => {
+    navigation.navigate('Profile', {idUser: id});
+  };
 
   // di chuyển đến trang tạo nhật kí
   const onCreateNewDiary = () => {
@@ -31,7 +71,7 @@ const ListDiariesScreen: React.FC<ListDiarieProps> = props => {
   //  di chuyển đến trang người lạ
   const onOtherUsers = () => {
     navigation.navigate('OtherUsers');
-  }
+  };
 
   // di chuyển đến trang bạn bè
   const onMyFriends = () => {
@@ -56,7 +96,7 @@ const ListDiariesScreen: React.FC<ListDiarieProps> = props => {
     getDiaries();
   }, [refreshing]);
 
-  // tải lại trang 
+  // tải lại trang
   const onRefresh = () => {
     setrefreshing(true);
   };
@@ -65,7 +105,12 @@ const ListDiariesScreen: React.FC<ListDiarieProps> = props => {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <InputBox placeholder="Tìm kiếm..." />
+        <InputBox
+          value={search}
+          onChangeText={value => setSearch(value)}
+          onSearch={onFindFromDatabase}
+          placeholder="Tìm kiếm..."
+        />
         <ButtonIcon
           styles={styles.header_btnICon}
           url={require('../../../Resource/images/icon_bell.png')}
@@ -78,13 +123,22 @@ const ListDiariesScreen: React.FC<ListDiarieProps> = props => {
       </View>
       {/* list */}
       <FlatList
-        ListHeaderComponent={<FriendsComponent isRefresh={refreshing} onOtherUsers={onOtherUsers} onMyFriends={onMyFriends}/>}
+        ListHeaderComponent={
+          <FriendsComponent
+            onMoveToProfile={id => onMoveToProfile(id)}
+            isRefresh={refreshing}
+            onOtherUsers={onOtherUsers}
+            onMyFriends={onMyFriends}
+          />
+        }
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
         data={listDiaries}
         showsVerticalScrollIndicator={false}
-        renderItem={({item}) => <Post diary={item} />}
+        renderItem={({item}) => (
+          <Post onPress={id => onMoveToProfile(id)} diary={item} />
+        )}
         keyExtractor={item => item._id.toString()}
       />
     </View>

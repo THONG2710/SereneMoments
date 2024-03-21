@@ -21,14 +21,18 @@ interface InputBoxProps extends ViewProps {
   containerStyle?: StyleProp<ViewStyle>;
   inputStyle?: StyleProp<ViewStyle>;
   buttonStyle?: StyleProp<ImageStyle>;
+  onSearch?: () => void;
+  onChangeText: (value: string ) => void;
+  value?: string;
 }
 
 const InputBox: React.FC<InputBoxProps> = props => {
-  const {placeholder} = props;
+  const {placeholder, onSearch, onChangeText, value} = props;
   return (
     <View style={styles.container}>
-      <TextInput style={styles.input} placeholder={placeholder} />
+      <TextInput value={value} onChangeText={(value) => onChangeText(value.toString())} style={styles.input} placeholder={placeholder} />
       <ButtonIcon
+        onPress={onSearch}
         styles={styles.btn_search}
         url={require('../../Resource/images/icon_search2.png')}
       />

@@ -8,63 +8,135 @@ import {
   ScrollView,
   Dimensions,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
+import {ItemTodolist, ResponseTodo} from '../../Models/Model';
+import {useAppDispatch, useAppSelector} from '../../Redux/Hook';
+import {ID_ADRESS, getData, postData} from '../../Service/RequestMethod';
+import {SET_ISCREATETODAY} from '../../Redux/Action/WorkAction';
 
 const TodoList = () => {
+  // function pickTodo(selectedTasks: any) {
+  //   if (checked.includes(selectedTasks)) {
+  //     setChecked(checked.filter(task => task !== selectedTasks));
+  //     setCompletedTasks(completedTasks.filter(task => task !== selectedTasks));
+  //   } else {
+  //     setChecked(checked => checked.concat(selectedTasks));
+  //     setCompletedTasks(completedTasks => completedTasks.concat(selectedTasks));
+  //   }
+  // }
+  // function pickUnfinished(task: any) {
+  //   setCompletedTasks(completedTasks.filter(item => item !== task));
+  //   setChecked(checked => checked.filter(item => item !== task));
+  //   // Check if the task is already in the dataToDoList
+  //   const isTaskExist = dataToDoList.some(item => item.task === task);
+  //   if (!isTaskExist) {
+  //     setDataToDoList(dataToDoList => [
+  //       ...dataToDoList,
+  //       {_id: String(dataToDoList.length + 1), task},
+  //     ]);
+  //   }
+  // }
+  // function handleAddTask() {
+  //   if (newTask.trim() !== '') {
+  //     const newId = String(dataToDoList.length + 1);
+  //     const newTaskObj = {
+  //       _id: newId,
+  //       task: newTask.trim(),
+  //     };
+  //     setDataToDoList([...dataToDoList, newTaskObj]);
+  //     setNewTask('');
+  //   }
+  // }
+
+  //
   const [newTask, setNewTask] = useState('');
-  const [completedTasks, setCompletedTasks] = useState([]);
-  const [showCompletedTasks, setShowCompletedTasks] = useState(true);
-  const [checked, setChecked] = useState([]);
+  const [unfinishedWorks, setUnfinishedWorks] = useState<ItemTodolist[]>([]);
+  const [finishedWork, setfinishedWork] = useState<ItemTodolist[]>([]);
+  const [isRefresh, setIsRefresh] = useState<boolean>(false);
+  const [listTodo, setListTodo] = useState<ResponseTodo>();
+  const user = useAppSelector(state => state.Authentication.myAccount);
+  const [idToday, setIdToday] = useState<string>();
 
-  const [dataToDoList, setDataToDoList] = useState([
-    {
-      _id: '1',
-      task: 'Công việc hằng ngày',
-    },
-    {
-      _id: '2',
-      task: 'Công việc quan trọng',
-    },
-  ]);
+  // lấy todolist
+  const getTodoList = async () => {
+    const date = new Date().getTime();
+    const url =
+      'http://' +
+      ID_ADRESS +
+      ':3000/api/todolist/getTodolist?id=' +
+      user._id +
+      '&createdat=' +
+      date;
+    const res = await getData(url);
+    if (res.result) {
+      setListTodo(res.todolist);
+      console.log(res.todolist);
+      setUnfinishedWorks(res.unfinishedWork);
+      setfinishedWork(res.finishedWork);
+    }
+  };
 
-  function pickTodo(selectedTasks: any) {
-    if (checked.includes(selectedTasks)) {
-      setChecked(checked.filter(task => task !== selectedTasks));
-      setCompletedTasks(completedTasks.filter(task => task !== selectedTasks));
+  // tạo một todolist
+  const onCreateTodolist = async () => {
+    const date = new Date().getTime();
+    const data = {userid: user._id, createdat: date};
+    const url = 'http://' + ID_ADRESS + ':3000/api/todolist/createToDoList';
+    const res = await postData(url, data);
+    if (res.result) {
+      setIdToday(res.todolist._id);
+      setIsRefresh(!isRefresh);
+      onCreateWork(res?.todolist?._id);
+      console.log('success');
+    }
+  };
+
+  //  kiểm tra list hôm nay
+  const onCheckTodoList = async () => {
+    const date = new Date().getTime();
+    const url =
+      'http://' +
+      ID_ADRESS +
+      ':3000/api/todolist/getCheckTodolist?id=' +
+      user._id +
+      '&createdat=' +
+      date;
+    const res = await getData(url);
+    console.log(url);
+
+    if (res.result) {
+      console.log('Đã có todolist cho ngày hôm nay');
+      onCreateWork(res?.todolist?._id);
     } else {
-      setChecked(checked => checked.concat(selectedTasks));
-      setCompletedTasks(completedTasks => completedTasks.concat(selectedTasks));
+      console.log('Chưa có todolist cho ngày hôm nay');
+      onCreateTodolist();
     }
-  }
+  };
 
-  function pickUnfinished(task: any) {
-    setCompletedTasks(completedTasks.filter(item => item !== task));
-    setChecked(checked => checked.filter(item => item !== task));
-    // Check if the task is already in the dataToDoList
-    const isTaskExist = dataToDoList.some(item => item.task === task);
-    if (!isTaskExist) {
-      setDataToDoList(dataToDoList => [
-        ...dataToDoList,
-        {_id: String(dataToDoList.length + 1), task},
-      ]);
-    }
-  }
-
-  function handleAddTask() {
-    if (newTask.trim() !== '') {
-      const newId = String(dataToDoList.length + 1);
-      const newTaskObj = {
-        _id: newId,
-        task: newTask.trim(),
-      };
-      setDataToDoList([newTaskObj, ...dataToDoList]); // 
+  // tạo một item work
+  const onCreateWork = async (idTodo: string) => {
+    const data = {
+      status: false,
+      content: newTask,
+      description: '',
+      todoid: idTodo,
+    };
+    console.log(data);
+    const res = await postData(
+      'http://' + ID_ADRESS + ':3000/api/itemTodo/createItem',
+      data,
+    );
+    if (res) {
       setNewTask('');
+      setIsRefresh(!isRefresh);
     }
-  }
+  };
+
+  useEffect(() => {
+    getTodoList();
+  }, [isRefresh]);
 
   return (
     // CONTAINER
-
     <View style={styles.container}>
       {/* HEADER */}
       <View style={styles.header}>
@@ -77,51 +149,56 @@ const TodoList = () => {
       </View>
       {/* CENTER */}
 
-      <ScrollView style={styles.center}>
-        <Text style={styles.textUnfinished}>Chưa hoàn thành</Text>
-        {/* TASK UNFINISHED */}
-        <View style={styles.itemTask}>
-          {dataToDoList.map(
-            item =>
-              !checked.includes(item.task) && (
-                <View key={item._id} style={styles.task}>
-                  {/* Checkbox code */}
-                  <TouchableOpacity
-                    style={styles.checkbox}
-                    onPress={() => pickTodo(item.task)}></TouchableOpacity>
-                  <Text style={styles.textTask}>{item.task}</Text>
-                </View>
-              ),
+      {listTodo ? (
+        <ScrollView style={styles.center}>
+          {unfinishedWorks && (
+            <Text style={styles.textUnfinished}>Chưa hoàn thành</Text>
           )}
-        </View>
+          {/* TASK UNFINISHED */}
+          {unfinishedWorks && (
+            <View style={styles.itemTask}>
+              {unfinishedWorks.map((item: ItemTodolist) => (
+                <View key={item._id.toString()} style={styles.task}>
+                  {/* Checkbox code */}
+                  <TouchableOpacity style={styles.checkbox}></TouchableOpacity>
+                  <Text style={styles.textTask}>{item.content}</Text>
+                </View>
+              ))}
+            </View>
+          )}
 
-        {/* TASK FINISHED */}
-        <TouchableOpacity
-          style={styles.finishTitle}
-          onPress={() => setShowCompletedTasks(!showCompletedTasks)}>
-          <Text style={styles.textFinished}>Đã hoàn thành</Text>
-          <Image
-            source={require('../../Resource/Image2/ic_check.png')}
-            style={styles.downFinish}
-          />
-        </TouchableOpacity>
-        {showCompletedTasks && (
-          <View style={styles.itemTask}>
-            {completedTasks.map(task => (
-              <TouchableOpacity
-                key={task}
-                style={styles.finished}
-                onPress={() => pickUnfinished(task)}>
-                <Image
-                  source={require('../../Resource/Image2/ic_down.png')}
-                  style={styles.checked}
-                />
-                <Text style={styles.textTaskFinished}>{task}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        )}
-      </ScrollView>
+          {/* TASK FINISHED */}
+          {finishedWork && (
+            <TouchableOpacity style={styles.finishTitle}>
+              <Text style={styles.textFinished}>Đã hoàn thành</Text>
+              <Image
+                source={require('../../Resource/Image2/ic_check.png')}
+                style={styles.downFinish}
+              />
+            </TouchableOpacity>
+          )}
+
+          {finishedWork && (
+            <View style={styles.itemTask}>
+              {finishedWork.map((item: ItemTodolist) => (
+                <TouchableOpacity
+                  key={item._id.toString()}
+                  style={styles.finished}>
+                  <Image
+                    source={require('../../Resource/Image2/ic_down.png')}
+                    style={styles.checked}
+                  />
+                  <Text style={styles.textTaskFinished}>{item.content}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+        </ScrollView>
+      ) : (
+        <View style={styles.centerWhileEmty}>
+          <Text>Chưa có gì cho ngày hôm nay</Text>
+        </View>
+      )}
 
       {/* FOOTER */}
       {/* ADD TODOLIST */}
@@ -135,7 +212,7 @@ const TodoList = () => {
             onChangeText={text => setNewTask(text)}
             value={newTask}></TextInput>
         </View>
-        <TouchableOpacity style={styles.btnAdd} onPress={handleAddTask}>
+        <TouchableOpacity style={styles.btnAdd} onPress={onCheckTodoList}>
           <Text style={styles.textAdd}>Lưu</Text>
         </TouchableOpacity>
       </View>
@@ -187,6 +264,14 @@ const styles = StyleSheet.create({
     flex: 0.7,
     marginHorizontal: 20,
     marginTop: 20,
+    backgroundColor: 'red',
+  },
+
+  centerWhileEmty: {
+    width: '100%',
+    height: '70%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   textUnfinished: {
@@ -280,12 +365,11 @@ const styles = StyleSheet.create({
 
   // FOOTER
   footer: {
-    flex: 0.1,
+    flex: 1,
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     flexDirection: 'row',
     marginHorizontal: 30,
-    paddingBottom:10
   },
 
   addTodo: {
@@ -303,14 +387,13 @@ const styles = StyleSheet.create({
   },
 
   btnAdd: {
-    width:45,
-    height:40,
     backgroundColor: '#499EDC',
     borderRadius: 10,
-    justifyContent:'center',
-    alignItems:'center'
   },
+
   textAdd: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
     color: 'white',
     fontWeight: 'bold',
     fontSize: 16,

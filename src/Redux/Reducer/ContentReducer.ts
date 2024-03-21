@@ -1,5 +1,5 @@
 import { PayloadAction, createReducer } from "@reduxjs/toolkit";
-import { SET_CONTENT } from "../Action/ContentActioons";
+import { SET_CONTENT } from "../Action/ContentActions";
 
 export type ContentState = {
     content: string

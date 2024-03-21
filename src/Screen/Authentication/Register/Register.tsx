@@ -2,16 +2,34 @@ import {View, Text, Image, TextInput, TouchableOpacity} from 'react-native';
 import React from 'react';
 import styles from './styles';
 import {RegisterProps} from './type';
-
+import {useEffect, useState} from 'react';
+import ButtonIcon from '../../../Components/Buttons/ButtonIcon';
+import {text} from 'stream/consumers';
+import {
+  isValidPassword,
+  isValidPhoneNumber,
+  isValidRePassword,
+} from '../../Validations/Validate';
 const Register: React.FC<RegisterProps> = props => {
   const {navigation} = props;
 
+  const [isVisible, setIsvisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorPhoneNumber, setErrorPhoneNumber] = useState('');
+  const [errorPassWord, setErrorPassword] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [password, setPassword] = useState('');
+  const [rePassword, setRePassword] = useState('');
+  const [errorRePassword, setErrorRePassword] = useState('');
   const onRegisterAccount = () => {
     navigation.navigate('LoginWithAccount');
   };
 
   const onLogin = () => {
     navigation.goBack();
+  };
+  const onChangeVisiblePassword = () => {
+    setIsvisible(!isVisible);
   };
 
   return (
@@ -27,24 +45,89 @@ const Register: React.FC<RegisterProps> = props => {
       <View style={styles.btnRegister}>
         <Image
           style={styles.imgIcon}
-          source={require('../../../Resource/images/icon_email2.png')}
+          source={require('../../../Resource/images/icon_user_r.png')}
         />
-        <TextInput style={styles.txtBtn}></TextInput>
+        <TextInput
+          style={styles.txtBtn}
+          placeholder="Nhập tên"
+          secureTextEntry={true}></TextInput>
       </View>
       <View style={styles.btnRegister}>
         <Image
           style={styles.imgIcon}
-          source={require('../../../Resource/images/icon_key.png')}
+          source={require('../../../Resource/images/icon_phone.png')}
         />
-        <TextInput style={styles.txtBtn} secureTextEntry={true}></TextInput>
+        <TextInput
+          onChangeText={text => {
+            setErrorPhoneNumber(
+              isValidPhoneNumber(text) == true
+                ? ''
+                : ' SDT chưa đúng định dạng',
+            );
+            setPhoneNumber(text);
+          }}
+          style={styles.txtBtn}
+          placeholder="Nhập số điện thoại"></TextInput>
       </View>
       <View style={styles.btnRegister}>
         <Image
-          style={styles.imgIcon}
+          style={{width: 25, height: 25}}
           source={require('../../../Resource/images/icon_key.png')}
         />
-        <TextInput style={styles.txtBtn} secureTextEntry={true}></TextInput>
+        <TextInput
+          onChangeText={text => {
+            setErrorPassword(
+              isValidPassword(text) == true
+                ? ''
+                : 'Mật khẩu phải có ít nhất 8 kí tự',
+            );
+            setPassword(text);
+          }}
+          style={styles.txtBtn}
+          placeholder="Mật khẩu"
+          secureTextEntry={!isVisible}></TextInput>
+        <ButtonIcon
+          styles={styles.icon_eye}
+          onPress={onChangeVisiblePassword}
+          url={
+            isVisible
+              ? require('../../../Resource/images/visible.png')
+              : require('../../../Resource/images/hidden.png')
+          }
+        />
       </View>
+      {/* <Text style={styles.txtError}>{errorPassWord}</Text> */}
+      <View style={styles.btnRegister}>
+        <Image
+          style={{width: 25, height: 25}}
+          source={require('../../../Resource/images/icon_key.png')}
+        />
+        <TextInput
+          onChangeText={text => {
+            setErrorPassword(
+              isValidPassword(text) == true
+                ? ''
+                : 'Mật khẩu phải có ít nhất 8 kí tự',
+            );
+            setPassword(text);
+          }}
+          style={styles.txtBtn}
+          placeholder="Nhập lại mật khẩu"
+          secureTextEntry={!isVisible}></TextInput>
+        
+        <ButtonIcon
+          styles={styles.icon_eye}
+          onPress={onChangeVisiblePassword}
+          url={
+            isVisible
+              ? require('../../../Resource/images/visible.png')
+              : require('../../../Resource/images/hidden.png')
+          }
+        />
+      </View>
+      <Text style={styles.txtError}>
+        {errorPassWord},{errorPhoneNumber}
+      </Text>
       <TouchableOpacity onPress={onRegisterAccount}>
         <View style={styles.btnLogin}>
           <Text style={styles.txtBtn2}>Đăng ký</Text>

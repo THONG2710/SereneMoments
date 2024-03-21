@@ -1,4 +1,5 @@
 import {
+  Alert,
   Image,
   StyleSheet,
   Text,
@@ -6,19 +7,119 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {EditProfileProps} from './type';
 import {Colors} from '../../../Resource/colors';
-import { useAppSelector } from '../../../Redux/Hook';
+import {useAppDispatch, useAppSelector} from '../../../Redux/Hook';
+import {launchImageLibrary} from 'react-native-image-picker';
+import {firebase} from '@react-native-firebase/storage';
+import {ID_ADRESS, postData} from '../../../Service/RequestMethod';
+import {useDispatch} from 'react-redux';
+import {SAVE_USER} from '../../../Redux/Action/AuthenticationActions';
 
 const EditProfile: React.FC<EditProfileProps> = props => {
   const {navigation} = props;
+  const [username, setUsername] = useState<string>();
+  const [phonenumber, setPhonenumber] = useState<string>();
+  const [email, setEmail] = useState<string>();
+  const [avatar, setAvatar] = useState<any>('');
   const user = useAppSelector(state => state.Authentication.myAccount);
+  const dispatch = useAppDispatch();
 
   //   quay lại
   const onGoBack = () => {
     navigation.goBack();
   };
+
+  useEffect(() => {
+    setUsername(user.username);
+    setPhonenumber(user.phoneNumber);
+    setEmail(user.email);
+    setAvatar(user.avatar);
+  }, []);
+
+  // chọn ảnh từ thư viện
+  const getImageFromLibrary = () => {
+    launchImageLibrary({mediaType: 'photo'}, response => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.errorMessage) {
+        console.log('ImagePicker Error:', response.errorMessage);
+      } else {
+        // Hình ảnh đã được chọn thành công
+        if (response.assets && response.assets.length > 0) {
+          const source = {uri: response.assets[0].uri};
+          setAvatar(source.uri);
+        }
+      }
+    });
+  };
+
+  // cài đặt thông tin tài khoản
+  const onSetUpAccount = async (Navatar?: string) => {
+    const data = {
+      id: user._id,
+      username: username,
+      email: email,
+      avatar: Navatar ? Navatar : avatar,
+      phonenumber: phonenumber,
+    };
+    const res = await postData(
+      'http://' + ID_ADRESS + ':3000/api/users/updateUser',
+      data,
+    );
+    if (res.result) {
+      const userCurrent = {
+        _id: res.user._id,
+        username: res.user.username,
+        password: res.user.password,
+        email: res.user.email,
+        available: res.user.available,
+        avatar: res.user.avatar,
+        createdat: res.user.createdat,
+        phoneNumber: res.user.phonenumber,
+      };
+      dispatch(SAVE_USER(userCurrent));
+      Alert.alert('Thông báo!', 'Cập nhật thành công', [
+        {
+          text: 'OK',
+          onPress: onGoBack,
+        },
+      ]);
+    }
+  };
+
+  // xử lí cập nhật tài khoản
+  const onUpdateAccount = async () => {
+    if (avatar != user.avatar) {
+      const reference = firebase
+        .storage()
+        .ref()
+        .child(new Date().getTime() + '.png');
+      const upload = reference.putFile(avatar);
+      upload.on(
+        firebase.storage.TaskEvent.STATE_CHANGED,
+        snapshot => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log(`Upload is ${progress}% done`);
+        },
+        error => {
+          console.log('Upload error:', error);
+        },
+        () => {
+          upload.snapshot?.ref.getDownloadURL().then(async downloadURL => {
+            setAvatar(downloadURL);
+            onSetUpAccount(downloadURL);
+          });
+        },
+      );
+    } else {
+      console.log('not change');
+      onSetUpAccount();
+    }
+  };
+
   return (
     // CONTAINER
     <View style={styles.container}>
@@ -36,8 +137,14 @@ const EditProfile: React.FC<EditProfileProps> = props => {
         <View style={styles.background}>
           <Image
             style={styles.imgAVT}
-            source={{uri: user.avatar}}></Image>
-          <TouchableOpacity style={styles.backgroundAdd}>
+            source={
+              avatar
+                ? {uri: avatar}
+                : require('../../../Resource/images/avatar.png')
+            }></Image>
+          <TouchableOpacity
+            style={styles.backgroundAdd}
+            onPress={getImageFromLibrary}>
             <Image
               style={styles.imgAdd}
               source={require('../../../Resource/images/icon_add.png')}></Image>
@@ -55,8 +162,11 @@ const EditProfile: React.FC<EditProfileProps> = props => {
           <View style={styles.contentEdit}>
             <Text style={styles.textEdit}>Họ và tên</Text>
             <TextInput
+              onChangeText={value => setUsername(value)}
               style={styles.ipEdit}
-              placeholderTextColor={'#000'}>{user.username}</TextInput>
+              placeholderTextColor={'#000'}>
+              {username}
+            </TextInput>
           </View>
         </View>
 
@@ -68,8 +178,11 @@ const EditProfile: React.FC<EditProfileProps> = props => {
           <View style={styles.contentEdit}>
             <Text style={styles.textEdit}>Số điện thoại</Text>
             <TextInput
+              onChangeText={value => setPhonenumber(value)}
               style={styles.ipEdit}
-              placeholderTextColor={'#000'}>{user.phoneNumber}</TextInput>
+              placeholderTextColor={'#000'}>
+              {phonenumber}
+            </TextInput>
           </View>
         </View>
 
@@ -81,14 +194,17 @@ const EditProfile: React.FC<EditProfileProps> = props => {
           <View style={styles.contentEdit}>
             <Text style={styles.textEdit}>Email</Text>
             <TextInput
+              onChangeText={value => setEmail(value)}
               style={styles.ipEdit}
-              placeholderTextColor={'#000'}>{user.email}</TextInput>
+              placeholderTextColor={'#000'}>
+              {email}
+            </TextInput>
           </View>
         </View>
       </View>
       {/* FOOTER */}
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.btnEdit}>
+        <TouchableOpacity style={styles.btnEdit} onPress={onUpdateAccount}>
           <Text style={styles.textUpdate}>Cập nhật thông tin</Text>
         </TouchableOpacity>
       </View>
