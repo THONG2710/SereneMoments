@@ -3,46 +3,29 @@ import React, {useEffect, useState} from 'react';
 import {styles} from './Style';
 import {SelectList} from 'react-native-dropdown-select-list';
 import ItemMoment from './Component/ItemMoment';
-import TakeAMoment from './Component/TakeMoment';
+import TakeAMoment from './TakeMoment/TakeMoment';
 import Swiper from 'react-native-swiper';
 import {ID_ADRESS, getData} from '../../Service/RequestMethod';
 import {useAppDispatch, useAppSelector} from '../../Redux/Hook';
 import {MomentModel, UserModel} from '../../Models/Model';
 import {MomentScreenProps} from './Type';
-import ShowMoments from './Component/ShowMoments';
-import { SAVE_MYFRIENDMOMENTS } from '../../Redux/Action/MomentActions';
+import ShowMoments from './ShowMoments/ShowMoments';
+import {SAVE_MYFRIENDMOMENTS} from '../../Redux/Action/MomentActions';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {MomentParamlist} from '../../StoryBoard/MomentStoryboard';
+import Profile from './Profile/Profile';
+
+const Stack = createNativeStackNavigator<MomentParamlist>();
 
 const MomentScreen: React.FC<MomentScreenProps> = () => {
-  const data = [{key: '1', value: 'Nguyễn Quang Trường'}];
-  const user = useAppSelector(state => state.Authentication.myAccount);
-  const [moments, setmoments] = useState<MomentModel[]>([]);
-  const [isRefresh, setIsRefresh] = useState(false);
-  const dispatch = useAppDispatch();
-
-  // lấy khoảnh khắc
-  const getMoments = async () => {
-    const res = await getData(
-      'http://' +
-        ID_ADRESS +
-        ':3000/api/moment/getFriendMoments?id=' +
-        user._id,
-    );
-    if (res.result) {
-      setmoments(res.moments);
-      dispatch(SAVE_MYFRIENDMOMENTS(res.moments));
-    }
-  };
-
-  useEffect(() => {
-    getMoments();
-  }, [isRefresh]);
-
   return (
-    <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
-      {/* body */}
-        <TakeAMoment />
-        <ShowMoments moments={moments}/>
-    </ScrollView>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}>
+      <Stack.Screen name="ShowMoments" component={ShowMoments} />
+      <Stack.Screen name="Profile" component={Profile} />
+    </Stack.Navigator>
   );
 };
 

@@ -23,6 +23,7 @@ interface MomentModel {
     createdat: Number,
     content: String,
     caption: String,
+    isimage: Boolean
 }
 
 interface FriendModel {
@@ -72,5 +73,15 @@ interface LikesModel {
     createdat: Number,
 }
 
+interface ResponseCommentModel {
+    _id: String,
+    userid: String,
+    username: String,
+    avatar: String,
+    momentid: String,
+    content: String,
+    createdat: Number
+}
 
-export type { UserModel, DiaryModel, MomentModel, FriendModel, RequestModel, TodoList, ItemTodolist, ResponseTodo, CommentsModel, LikesModel }
+
+export type { UserModel, DiaryModel, MomentModel, FriendModel, RequestModel, TodoList, ItemTodolist, ResponseTodo, CommentsModel, LikesModel, ResponseCommentModel }
