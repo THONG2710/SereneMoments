@@ -13,9 +13,10 @@ import ButtonIcon from '../../../Components/Buttons/ButtonIcon';
 import Post from '../components/Post';
 import {ListDiarieProps} from './type';
 import {useAppDispatch, useAppSelector} from '../../../Redux/Hook';
-import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
+import {ID_ADRESS, getData, postData} from '../../../Service/RequestMethod';
 import {DiaryModel} from '../../../Models/Model';
 import FriendsComponent from '../components/FriendsComponent';
+import {SAVE_ID_TODOLIST} from '../../../Redux/Action/WorkAction';
 
 const ListDiariesScreen: React.FC<ListDiarieProps> = props => {
   const {navigation} = props;
@@ -92,8 +93,35 @@ const ListDiariesScreen: React.FC<ListDiarieProps> = props => {
     }
   };
 
+  // tạo một todolist
+  const onCreateTodolist = async () => {
+    const date = Math.floor(Number(new Date().getTime() / 1000));
+    const data = {userid: user._id, createdat: date};
+    const url = 'http://' + ID_ADRESS + ':3000/api/todolist/createToDoList';
+    const res = await postData(url, data);
+    if (res.result) {
+      console.log('success');
+      dispatch(SAVE_ID_TODOLIST(res.todolist._id));
+    } else {
+      console.log('failed to create todolist');
+      const res = await getData(
+        'http://' +
+          ID_ADRESS +
+          ':3000/api/todolist/getCheckTodolist?id=' +
+          user._id +
+          '&createdat=' +
+          date,
+      );
+      if (res.result) {
+        console.log('successfull for get id');
+        dispatch(SAVE_ID_TODOLIST(res.todolist._id));
+      }
+    }
+  };
+
   useEffect(() => {
     getDiaries();
+    onCreateTodolist();
   }, [refreshing]);
 
   // tải lại trang

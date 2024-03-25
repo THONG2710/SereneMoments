@@ -82,6 +82,7 @@ const ItemMoment: React.FC<ItemMomentProps> = props => {
         for (const like of response) {
           if (myAccount._id === like.userid) {
             setIdLiked(like._id);
+            setIsAvailableLike(true);
           }
         }
       }
