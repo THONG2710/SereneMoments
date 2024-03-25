@@ -1,8 +1,8 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
-import {ChatParamlist} from '../../StoryBoard/ChatStoryboard';
 import BoxChatScreen from './BoxChat/BoxChat';
+import { ChatParamlist } from '../../StoryBoard/ChatStoryboard';
 import Chat from './Chat/Chat';
 
 const stack = createStackNavigator<ChatParamlist>();

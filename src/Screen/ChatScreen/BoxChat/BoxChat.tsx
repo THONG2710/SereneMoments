@@ -5,12 +5,16 @@ import {
   View,
   Image,
   TextInput,
+  Dimensions,
+  FlatList,
 } from 'react-native';
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {BoxChatScreenProps} from './type';
 import {useAppSelector} from '../../../Redux/Hook';
 import {ChatSchema, RealmContext} from '../../../Models/ChatSchema';
 import {BSON} from 'realm';
+import ItemChat from '../../../Components/Items/ItemChat';
+import ItemMessage from '../../../Components/Items/ItemMessage';
 
 const {useQuery, useRealm} = RealmContext;
 
@@ -18,27 +22,35 @@ const BoxChatScreen: React.FC<BoxChatScreenProps> = props => {
   const {navigation} = props;
   const {friend} = props.route.params;
   const user = useAppSelector(state => state.Authentication.myAccount);
+  const [message, setMessage] = useState('');
   const realm = useRealm();
-  const chats = useQuery(ChatSchema);
   const friendChats = useQuery(ChatSchema, chats => {
-    return chats.filtered(
-      'sender == $0',
-      new BSON.ObjectId(user._id.toString()),
-    );
+    return chats
+      .filtered(
+        'sender == $0 && receiver == $1 OR receiver == $0 && sender == $1',
+        new BSON.ObjectId(user._id.toString()),
+        new BSON.ObjectId(friend._id.toString()),
+      )
+      .sorted('createdat');
   });
 
-  const addTask = useCallback(() => {
-    realm.write(() => {
-      realm.create('chatmessages', {
-        _id: new BSON.ObjectID(),
-        receiver: 'objectId',
-        content: 'string',
-        createdat: 'float',
-        sender: 'objectId',
-        seen: 'bool',
+  const onSendMessage = () => {
+    if (message != '') {
+      realm.write(() => {
+        realm.create('chatmessages', {
+          _id: new BSON.ObjectID(),
+          receiver: new BSON.ObjectId(friend._id.toString()),
+          content: message,
+          createdat: Math.floor(Number(new Date().getTime() / 1000)),
+          sender: new BSON.ObjectId(user._id.toString()),
+          seen: false,
+        });
+        setMessage('');
       });
-    });
-  }, [realm]);
+    } else {
+      console.log('emty');
+    }
+  };
 
   useEffect(() => {
     realm.subscriptions.update(mutableSubs => {
@@ -48,45 +60,50 @@ const BoxChatScreen: React.FC<BoxChatScreenProps> = props => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.viewButton}>
+      {/* header */}
+      <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.navigate('Chat')}>
           <Image
             source={require('../../../Resource/images/btn_back.png')}></Image>
         </TouchableOpacity>
-        <TouchableOpacity>
-          <Image
-            source={require('../../../Resource/images/title_name.png')}></Image>
-        </TouchableOpacity>
+        <View>
+          <TouchableOpacity style={styles.viewName}>
+            <Image
+              source={
+                friend.avatar
+                  ? {uri: friend.avatar}
+                  : require('../../../Resource/images/avatar.png')
+              }
+              style={styles.imageView}></Image>
+            <Text style={styles.textName}>{friend.username}</Text>
+          </TouchableOpacity>
+        </View>
         <TouchableOpacity>
           <Image
             source={require('../../../Resource/images/btn_menu.png')}></Image>
         </TouchableOpacity>
-      </TouchableOpacity>
-      <View style={styles.boxView}>
-        <Image
-          source={require('../../../Resource/images/message_1.png')}
-          style={styles.text1}></Image>
-        <Image
-          source={require('../../../Resource/images/message_2.png')}
-          style={styles.text2}></Image>
-        <Image
-          source={require('../../../Resource/images/reply.png')}
-          style={styles.text3}></Image>
-        <Image
-          source={require('../../../Resource/images/message_3.png')}
-          style={styles.text4}></Image>
       </View>
-      <TouchableOpacity style={styles.viewButton1}>
+      {/* body */}
+      <View style={styles.boxView}>
+        <FlatList
+          data={friendChats}
+          renderItem={({item}) => <ItemMessage message={item}/>}
+          keyExtractor={item => item._id.toString()}
+        />
+      </View>
+      {/* footer */}
+      <TouchableOpacity style={styles.footer}>
         <TouchableOpacity>
           <Image
             source={require('../../../Resource/images/btn_send.png')}></Image>
         </TouchableOpacity>
-
         <TextInput
           style={styles.textInput}
-          placeholder="Tìm kiếm..."></TextInput>
-
-        <TouchableOpacity>
+          onChangeText={value => setMessage(value)}
+          value={message}
+          placeholder="Tin nhắn"
+        />
+        <TouchableOpacity onPress={onSendMessage}>
           <Image
             source={require('../../../Resource/images/btn_url.png')}></Image>
         </TouchableOpacity>
@@ -104,58 +121,67 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     //justifyContent: 'center',
   },
-
-  viewButton: {
+  viewName: {
     flexDirection: 'row',
-    flex: 1,
+    backgroundColor: 'white',
+    padding: 7,
     alignItems: 'center',
-    justifyContent: 'space-between',
-    position: 'absolute',
-    top: 24,
-    width: 347,
-    height: 30,
+    borderRadius: 7,
+    marginTop: -5,
+  },
+  textName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'black',
+    paddingLeft: 6,
+  },
+  imageView: {
+    width: 25,
+    height: 25,
+    borderRadius: 3,
+    backgroundColor: 'black',
   },
 
-  viewButton1: {
+  header: {
     flexDirection: 'row',
-    flex: 1,
+    justifyContent: 'space-between',
+    width: Dimensions.get('screen').width - 32,
+    height: 40,
+    marginVertical: 15,
+    alignItems: 'center',
+  },
+
+  footer: {
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    position: 'absolute',
-    top: 700,
-    width: 365,
+    width: Dimensions.get('screen').width - 20,
     height: 40,
+    marginBottom: 10,
   },
 
   textInput: {
-    width: 250,
+    width: (Dimensions.get('screen').width / 3) * 2,
     height: 40,
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
-
-    padding: 10,
+    paddingVertical: 10,
+    marginTop: -5,
+    paddingHorizontal: 15,
   },
 
   boxView: {
-    top: 90,
-    width: 400,
-    height: 600,
-    // backgroundColor: '#F94747',
-  },
-  text1: {
-    left: 340,
+    flex: 1,
   },
 
-  text2: {
-    top: 5,
-    left: 247,
-  },
-
-  text3: {
-    top: 15,
-  },
-  text4: {
-    top: 15,
-    left: 336,
+  messagesRight: {
+    paddingVertical: 10,
+    marginVertical: 5,
+    backgroundColor: '#4913F6',
+    maxWidth: '80%',
+    flexDirection: 'row',
+    alignSelf: 'flex-end',
+    borderRadius: 15,
+    paddingHorizontal: 10,
   },
 });

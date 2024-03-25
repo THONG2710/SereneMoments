@@ -83,5 +83,14 @@ interface ResponseCommentModel {
     createdat: Number
 }
 
+interface MessageModel {
+    _id: String,
+    receiver: String,
+    content: string,
+    createdat: Number,
+    sender: String,
+    seen: boolean,
+}
 
-export type { UserModel, DiaryModel, MomentModel, FriendModel, RequestModel, TodoList, ItemTodolist, ResponseTodo, CommentsModel, LikesModel, ResponseCommentModel }
+
+export type { UserModel, DiaryModel, MomentModel, FriendModel, RequestModel, TodoList, ItemTodolist, ResponseTodo, CommentsModel, LikesModel, ResponseCommentModel, MessageModel }
