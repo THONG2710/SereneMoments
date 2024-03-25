@@ -9,36 +9,31 @@ import {
   Image,
   Alert,
   FlatList,
+  Dimensions,
 } from 'react-native';
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {ChatScreenProps} from './type';
-import {RealmContext, Task} from '../../../Models/Task';
-import { BSON } from 'realm';
-import {Realm} from '@realm/react'
+import {RealmContext, ChatSchema} from '../../../Models/ChatSchema';
+import {BSON} from 'realm';
+import {Realm} from '@realm/react';
+import {Colors} from '../../../Resource/colors';
+import ItemChat from '../../../Components/Items/ItemChat';
+import {useAppSelector} from '../../../Redux/Hook';
+import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
+import {UserModel} from '../../../Models/Model';
 // import { useQuery, useRealm } from '@realm/react';
-
-const {useQuery, useRealm} = RealmContext;
 
 const Chat: React.FC<ChatScreenProps> = props => {
   const {navigation} = props;
-  const realm = useRealm();
-  const tasks = useQuery(Task);
+  const user = useAppSelector(state => state.Authentication.myAccount);
+  const friend = useAppSelector(state => state.Friends.myFriends);
 
-  const addTask = useCallback(() => {
-    realm.write(() => {
-      realm.create('Task', {
-        _id: new BSON.ObjectID(),
-        title: 'walk the dog',
-        description: 'bring an umbrella',
-      });
-    });
-  }, [realm]);
+  // đến trang box chat
+  const onMoveToBoxChat = (friend: UserModel) => {
+    navigation.navigate('BoxChatScreen', {friend: friend});
+  };
 
-  useEffect(() => {
-    realm.subscriptions.update(mutableSubs => {
-      mutableSubs.add(realm.objects(Task));
-    });
-  }, [realm]);
+  useEffect(() => {}, []);
 
   const pressHandler = () => {
     Alert.alert(
@@ -53,20 +48,26 @@ const Chat: React.FC<ChatScreenProps> = props => {
 
   return (
     <View style={styles.container}>
-      <View>
+      {/* header */}
+      <View style={styles.header}>
         <Text style={styles.text3}> Tin nhắn</Text>
+        <TextInput
+          style={styles.textInput}
+          placeholder="Tìm kiếm..."></TextInput>
       </View>
-      <TextInput style={styles.textInput} placeholder="Tìm kiếm..."></TextInput>
-
-      <FlatList
-        data={tasks}
-        renderItem={({item}) => (
-          <Text>{`${item.title} - ${item.description}`}</Text>
-        )}
-      />
-      <TouchableOpacity style={{backgroundColor: 'yellow'}} onPress={addTask}>
-        <Text>{'new task'}</Text>
-      </TouchableOpacity>
+      {/* body */}
+      <View style={styles.body}>
+        <FlatList
+          data={friend}
+          renderItem={({item}) => (
+            <ItemChat
+              onMoveToBoxChat={() => onMoveToBoxChat(item)}
+              user={item}
+            />
+          )}
+          keyExtractor={item => item._id.toString()}
+        />
+      </View>
       {/* <View>
         <Text style={styles.text4}>Gần đây</Text>
       </View>
@@ -120,50 +121,31 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#B4D4FF',
     alignItems: 'center',
-    //justifyContent: 'center',
+    justifyContent: 'flex-start',
+  },
+
+  header: {
+    width: '100%',
+    height: Dimensions.get('screen').height / 8,
   },
 
   textInput: {
-    position: 'absolute',
-    width: 354,
-    height: 40,
+    width: Dimensions.get('screen').width - 32,
+    marginHorizontal: 16,
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
-    top: 60,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 10,
-  },
-
-  viewButton: {
-    //left : 20,
-    flexDirection: 'row',
-    position: 'absolute',
-    width: 354,
-    height: 70,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    top: 150,
-    padding: 10,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
-    elevation: 3,
+    paddingHorizontal: 15,
   },
 
   viewButton2: {
-    //left : 20,
     flexDirection: 'row',
-    position: 'absolute',
-    width: 354,
-    height: 70,
-    backgroundColor: 'white',
+    width: Dimensions.get('screen').width - 32,
+    marginHorizontal: 16,
+    height: Dimensions.get('screen').height / 11,
+    backgroundColor: Colors.WHITE,
     borderRadius: 10,
-    top: 230,
     padding: 10,
     shadowColor: '#000',
     shadowOffset: {
@@ -173,26 +155,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
     elevation: 3,
-  },
-
-  viewButton3: {
-    //left : 20,
-    flexDirection: 'row',
-    position: 'absolute',
-    width: 354,
-    height: 70,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    top: 310,
-    padding: 10,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
-    elevation: 3,
+    marginVertical: 5,
   },
 
   text1: {
@@ -208,23 +171,18 @@ const styles = StyleSheet.create({
     fontWeight: 'normal',
     color: '#666666',
   },
+
   text3: {
-    width: 354,
-    height: 40,
-    left: 0,
+    width: Dimensions.get('screen').width,
     fontSize: 24,
     fontWeight: 'bold',
     color: 'white',
-    top: 22,
+    marginHorizontal: 15,
+    marginVertical: 10,
   },
 
-  text4: {
-    width: 354,
-    height: 40,
-    left: 0,
-    fontSize: 16,
-    fontWeight: 'normal',
-    color: 'white',
-    top: 80,
+  body: {
+    flex: 1,
+    marginTop: 15,
   },
 });

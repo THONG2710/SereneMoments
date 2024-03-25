@@ -3,8 +3,8 @@ import React, {useEffect, useState} from 'react';
 import {useApp} from '@realm/react';
 import {OpenRealmBehaviorType} from 'realm';
 import App from './App';
-import {RealmContext, Task} from './src/Models/Task';
 import {Realm} from '@realm/react'
+import { RealmContext } from './src/Models/ChatSchema';
 const {RealmProvider} = RealmContext;
 
 function RealmWrapper(): JSX.Element {

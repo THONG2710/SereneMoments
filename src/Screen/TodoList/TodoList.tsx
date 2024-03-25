@@ -132,7 +132,7 @@ const TodoList = () => {
       </View>
       {/* CENTER */}
 
-      {listTodo ? (
+      {unfinishedWorks.length > 0 || finishedWork.length > 0 ? (
         <ScrollView style={styles.center}>
           {unfinishedWorks.length > 0 && (
             <Text style={styles.textUnfinished}>Chưa hoàn thành</Text>

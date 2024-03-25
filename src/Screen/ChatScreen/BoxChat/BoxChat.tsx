@@ -6,12 +6,46 @@ import {
   Image,
   TextInput,
 } from 'react-native';
-import React from 'react';
-import { BoxChatScreenProps } from './type';
+import React, {useCallback, useEffect} from 'react';
+import {BoxChatScreenProps} from './type';
+import {useAppSelector} from '../../../Redux/Hook';
+import {ChatSchema, RealmContext} from '../../../Models/ChatSchema';
+import {BSON} from 'realm';
 
-const BoxChatScreen:React.FC<BoxChatScreenProps> = (props) => {
-  
+const {useQuery, useRealm} = RealmContext;
+
+const BoxChatScreen: React.FC<BoxChatScreenProps> = props => {
   const {navigation} = props;
+  const {friend} = props.route.params;
+  const user = useAppSelector(state => state.Authentication.myAccount);
+  const realm = useRealm();
+  const chats = useQuery(ChatSchema);
+  const friendChats = useQuery(ChatSchema, chats => {
+    return chats.filtered(
+      'sender == $0',
+      new BSON.ObjectId(user._id.toString()),
+    );
+  });
+
+  const addTask = useCallback(() => {
+    realm.write(() => {
+      realm.create('chatmessages', {
+        _id: new BSON.ObjectID(),
+        receiver: 'objectId',
+        content: 'string',
+        createdat: 'float',
+        sender: 'objectId',
+        seen: 'bool',
+      });
+    });
+  }, [realm]);
+
+  useEffect(() => {
+    realm.subscriptions.update(mutableSubs => {
+      mutableSubs.add(realm.objects(ChatSchema));
+    });
+  }, [realm]);
+
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.viewButton}>
@@ -106,22 +140,22 @@ const styles = StyleSheet.create({
     top: 90,
     width: 400,
     height: 600,
-   // backgroundColor: '#F94747',
+    // backgroundColor: '#F94747',
   },
   text1: {
     left: 340,
   },
 
   text2: {
-    top : 5,
+    top: 5,
     left: 247,
   },
 
   text3: {
-    top : 15,
+    top: 15,
   },
   text4: {
-    top : 15,
+    top: 15,
     left: 336,
   },
 });
