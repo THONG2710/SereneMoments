@@ -14,12 +14,13 @@ import {
   SET_ISLOGGED,
 } from '../../../Redux/Action/AuthenticationActions';
 import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
-import {DiaryModel, FriendModel, MomentModel} from '../../../Models/Model';
+import {DiaryModel, FriendModel, MomentModel, TodoList} from '../../../Models/Model';
 import {getDataFromStorage, setDataToStorage} from '../../../Service/Service';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {SAVE_MYMOMENTS} from '../../../Redux/Action/MomentActions';
 import { SAVE_MYFRIENDS } from '../../../Redux/Action/FriendsActions';
 import { SAVE_MYDIARIES } from '../../../Redux/Action/DiaryActions';
+import Dialog from '../../Dialog/Dialog';
 
 const Profile: React.FC<ProfileProps> = props => {
   const {navigation} = props;
@@ -28,6 +29,8 @@ const Profile: React.FC<ProfileProps> = props => {
   const [diaries, setdiaries] = useState<DiaryModel[]>([]);
   const [moments, setmoments] = useState<MomentModel[]>([]);
   const [friends, setfriends] = useState<FriendModel[]>([]);
+  const [todoList, setTodoList] = useState<TodoList[]>([]); // [todoList, setTodoList
+  const [showAlert, setShowAlert] = useState<boolean>(false);
 
   // lấy nhật kí
   const getDiaries = async () => {
@@ -92,6 +95,11 @@ const Profile: React.FC<ProfileProps> = props => {
   const onMoveToMyFriends = () => {
     navigation.navigate('MyFriends');
   };
+
+  //đến todo list 
+  const onMoveToTodoList = () => {
+    navigation.navigate('TodoList');
+  }
   
   // đến trang nhật kí của tôi
   const onMoveToMyDiary = () => {
@@ -136,20 +144,7 @@ const Profile: React.FC<ProfileProps> = props => {
       });
   };
 
-  // xác nhận đăng xuất
-  const onConfirmLogout = () => {
-    Alert.alert('', 'Bạn muốn đăng xuất?', [
-      {
-        text: 'Đóng',
-        style: 'cancel',
-      },
-      {
-        text: 'Đăng xuất',
-        onPress: onHandleLogout,
-      },
-    ]);
-  };
-
+ 
   // chỉnh sửa thông tin cá nhân
   const onEditProfile = () => {
     navigation.navigate('EditProfile');
@@ -207,6 +202,18 @@ const Profile: React.FC<ProfileProps> = props => {
         </TouchableOpacity>
 
         <TouchableOpacity
+          style={styles.itemContentTwo}
+          onPress={onMoveToTodoList}>
+          <View style={styles.itemContentLeft}>
+            <Image
+              style={styles.imageItem}
+              source={require('../../../Resource/images/icon-list.png')}></Image>
+            <Text style={styles.textItem}>Công việc</Text>
+          </View>
+          <Text style={styles.notificationItem}>{todoList.length}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
           style={styles.itemContentThree}
           onPress={onMoveToMyFriends}>
           <View style={styles.itemContentLeft}>
@@ -256,7 +263,7 @@ const Profile: React.FC<ProfileProps> = props => {
         </View>
         <TouchableOpacity
           style={styles.itemContentOne}
-          onPress={onConfirmLogout}>
+          onPress={()=>setShowAlert(true)}>
           <View style={styles.itemContentLeft}>
             <Image
               style={styles.imageItem}
@@ -274,6 +281,14 @@ const Profile: React.FC<ProfileProps> = props => {
           </View>
         </TouchableOpacity>
       </View>
+      <Dialog
+        message="Bạn có muốn đăng xuất ?"
+        title="Thông báo!"
+        isvisible={showAlert}
+        onConfirm={onHandleLogout}
+        onCancel={() => {
+          setShowAlert(false);
+        }} />
     </View>
   );
 };

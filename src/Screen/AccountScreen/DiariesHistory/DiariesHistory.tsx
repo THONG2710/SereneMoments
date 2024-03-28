@@ -8,24 +8,27 @@ import {
   Pressable,
   FlatList,
   Dimensions,
+  Modal,
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import moment from 'moment';
-import {DiariesHistorProps} from './type';
-import {Colors} from '../../../Resource/colors';
+import { DiariesHistorProps } from './type';
+import { Colors } from '../../../Resource/colors';
 import Deck_Swiper from 'react-native-deck-swiper';
 import { useAppSelector } from '../../../Redux/Hook';
 import { DiaryModel } from '../../../Models/Model';
 import ItemMyDiary from '../../../Components/Items/ItemMyDiary';
 
 const DiariesHistory: React.FC<DiariesHistorProps> = props => {
-  const {navigation} = props;
+  const { navigation } = props;
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(date);
   const [diaries, setDiaries] = useState<DiaryModel[]>([]);
   const myDiaries = useAppSelector(state => state.Diary.myDiary);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [diary, setDiary] = useState<DiaryModel>();
 
   // quay trở lại
   const onGoBack = () => {
@@ -35,7 +38,7 @@ const DiariesHistory: React.FC<DiariesHistorProps> = props => {
   useEffect(() => {
     setDiaries(myDiaries);
   }, [])
-  
+
 
   return (
     // CONTAINER
@@ -69,24 +72,53 @@ const DiariesHistory: React.FC<DiariesHistorProps> = props => {
         }}
       />
       <View style={styles.center}>
-          <Deck_Swiper
-            // infinite={true}
-            cards={myDiaries}
-            renderCard={(diary, index) => <ItemMyDiary diary={diary}/>}
-            onSwiped={diaryIndex => {
-              console.log(diaryIndex);
-            }}
-            onSwipedAll={() => {
-              console.log('onSwipedAll');
-            }}
-            cardIndex={0}
-            backgroundColor={'#4FD0E9'}
-            stackSize={3}>
-          </Deck_Swiper>
+        <Deck_Swiper
+          // infinite={true}
+          cards={myDiaries}
+          renderCard={(diary, index) =>
+            <TouchableOpacity onPress={() => {
+              setDiary(diary), setModalVisible(true)
+            }}>
+              <ItemMyDiary diary={diary} />
+
+            </TouchableOpacity>
+
+          }
+          onSwiped={diaryIndex => {
+            console.log(diaryIndex);
+          }}
+          onSwipedAll={() => {
+            console.log('onSwipedAll');
+          }}
+          cardIndex={0}
+          backgroundColor={'#4FD0E9'}
+          stackSize={3}>
+        </Deck_Swiper>
       </View>
       {/* FOOTER */}
       <View style={styles.footer}></View>
+      <Modal
+        animationType="fade"
+        visible={modalVisible}
+        transparent={true}
+        onRequestClose={() => setModalVisible(false)}
+
+      >
+        <TouchableOpacity onPress={() => setModalVisible(false)} style={{ width:'100%',height:'100%', backgroundColor: 'black',marginTop:-40}} >
+          <ItemMyDiary
+            style={{ 
+              width: '100%',
+              height:  Dimensions.get('screen').height-200,
+              marginTop: 60,
+              marginLeft: 20,
+              }}
+            diary={diary}
+
+          />
+        </TouchableOpacity>
+      </Modal>
     </View>
+
   );
 };
 
