@@ -251,8 +251,8 @@ const TakeMoment: React.FC<TakeMomentProps> = props => {
               dropdownStyles={styles.dropdownStylesSelected}
               dropdownTextStyles={styles.textDropdownStyles}
               setSelected={(value: React.SetStateAction<string>) => {
-                setSelected(value);
                 getMomentByFriends(value.toString());
+                setSelected(value);
               }}
               data={data}
               save={'value'}

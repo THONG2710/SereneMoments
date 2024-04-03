@@ -20,6 +20,7 @@ import Chat from './src/Screen/ChatScreen/Chat/Chat';
 import { Provider } from 'react-redux';
 import { store } from './src/Redux/Store';
 import { MenuProvider } from 'react-native-popup-menu';
+import TodolistHistory from './src/Screen/AccountScreen/TodoListHistory/TodolistHistory';
 
 function App(): JSX.Element {
   return (

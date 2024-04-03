@@ -268,6 +268,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get('screen').width,
     height: Dimensions.get('screen').height - 120,
     backgroundColor: '#B4D4FF',
+    zIndex:-1
   },
 
   //HEADER
