@@ -16,6 +16,7 @@ import {firebase} from '@react-native-firebase/storage';
 import {ID_ADRESS, postData} from '../../../Service/RequestMethod';
 import {useDispatch} from 'react-redux';
 import {SAVE_USER} from '../../../Redux/Action/AuthenticationActions';
+import DialogConfirmSuccess from '../../Dialog/DialogConfirmSuccess';
 
 const EditProfile: React.FC<EditProfileProps> = props => {
   const {navigation} = props;
@@ -25,6 +26,7 @@ const EditProfile: React.FC<EditProfileProps> = props => {
   const [avatar, setAvatar] = useState<any>('');
   const user = useAppSelector(state => state.Authentication.myAccount);
   const dispatch = useAppDispatch();
+  const [showAlert, setShowAlert] = useState<boolean>(false);
 
   //   quay lại
   const onGoBack = () => {
@@ -80,12 +82,7 @@ const EditProfile: React.FC<EditProfileProps> = props => {
         phoneNumber: res.user.phonenumber,
       };
       dispatch(SAVE_USER(userCurrent));
-      Alert.alert('Thông báo!', 'Cập nhật thành công', [
-        {
-          text: 'OK',
-          onPress: onGoBack,
-        },
-      ]);
+      setShowAlert(true);
     }
   };
 
@@ -208,6 +205,14 @@ const EditProfile: React.FC<EditProfileProps> = props => {
           <Text style={styles.textUpdate}>Cập nhật thông tin</Text>
         </TouchableOpacity>
       </View>
+      <DialogConfirmSuccess
+        message="Cập nhật thành công"
+        title="Thông báo!"
+        isvisible={showAlert}
+        onConfirm={onGoBack}
+        onCancel={() => {
+          setShowAlert(false);
+        }} />
     </View>
   );
 };
