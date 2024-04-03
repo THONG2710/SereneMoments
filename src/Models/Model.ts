@@ -93,4 +93,9 @@ interface MessageModel {
 }
 
 
-export type { UserModel, DiaryModel, MomentModel, FriendModel, RequestModel, TodoList, ItemTodolist, ResponseTodo, CommentsModel, LikesModel, ResponseCommentModel, MessageModel }
+interface ChatMessageModel {
+    friend: UserModel,
+    message: MessageModel
+}
+
+export type { UserModel, DiaryModel, MomentModel, FriendModel, RequestModel, TodoList, ItemTodolist, ResponseTodo, CommentsModel, LikesModel, ResponseCommentModel, MessageModel, ChatMessageModel }

@@ -70,7 +70,8 @@ const TodoList = () => {
       '&createdat=' +
       date;
     const res = await getData(url);
-
+    console.log(idTodolist);
+    
     if (res.result) {
       setListTodo(res.todolist);
       setUnfinishedWorks(res.todolist.unfinishedWork);
@@ -90,7 +91,9 @@ const TodoList = () => {
       'http://' + ID_ADRESS + ':3000/api/itemTodo/createItem',
       data,
     );
-    if (res) {
+    if (res.result) {
+      console.log('create work success');
+      
       setNewTask('');
       setIsRefresh(!isRefresh);
     }

@@ -4,6 +4,7 @@ import {
   StyleSheet,
   Text,
   TextStyle,
+  TouchableOpacity,
   View,
   ViewProps,
 } from 'react-native';
@@ -18,9 +19,9 @@ interface TextButtonProps extends ViewProps {
 const TextButton: React.FC<TextButtonProps> = props => {
   const {label, style, onPress} = props;
   return (
-    <Pressable onPress={onPress}>
+    <TouchableOpacity onPress={onPress}>
       <Text style={style}>{label}</Text>
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 

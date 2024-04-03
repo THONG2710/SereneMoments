@@ -9,7 +9,7 @@ export class ChatSchema extends Realm.Object {
     createdat!: Number;
     sender!: Realm.BSON.ObjectId;
     seen!: boolean;
-
+    isimage!: boolean;
     static schema = {
         name: 'chatmessages',
         primaryKey: '_id',
@@ -20,6 +20,7 @@ export class ChatSchema extends Realm.Object {
             createdat: 'float',
             sender: 'objectId',
             seen: 'bool',
+            isimage: 'bool',
         }
     };
 };

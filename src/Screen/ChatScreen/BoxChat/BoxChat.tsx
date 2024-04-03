@@ -7,14 +7,18 @@ import {
   TextInput,
   Dimensions,
   FlatList,
+  Alert,
 } from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {BoxChatScreenProps} from './type';
-import {useAppSelector} from '../../../Redux/Hook';
+import {useAppDispatch, useAppSelector} from '../../../Redux/Hook';
 import {ChatSchema, RealmContext} from '../../../Models/ChatSchema';
 import {BSON} from 'realm';
 import ItemChat from '../../../Components/Items/ItemChat';
 import ItemMessage from '../../../Components/Items/ItemMessage';
+import {IS_REFRESH} from '../../../Redux/Action/AuthenticationActions';
+import {launchImageLibrary} from 'react-native-image-picker';
+import {firebase} from '@react-native-firebase/storage';
 
 const {useQuery, useRealm} = RealmContext;
 
@@ -24,6 +28,8 @@ const BoxChatScreen: React.FC<BoxChatScreenProps> = props => {
   const user = useAppSelector(state => state.Authentication.myAccount);
   const [message, setMessage] = useState('');
   const realm = useRealm();
+  const listRef = useRef<FlatList>(null);
+
   const friendChats = useQuery(ChatSchema, chats => {
     return chats
       .filtered(
@@ -34,6 +40,23 @@ const BoxChatScreen: React.FC<BoxChatScreenProps> = props => {
       .sorted('createdat');
   });
 
+  const updateChat = async () => {
+    realm.write(() => {
+      const chats = realm
+        .objects('chatmessages')
+        .filtered(
+          'sender == $1 && receiver == $0 && seen == $2',
+          new BSON.ObjectId(user._id.toString()),
+          new BSON.ObjectId(friend._id.toString()),
+          false,
+        );
+      chats.forEach(chat => {
+        chat.seen = true;
+      });
+    });
+  };
+
+  // gửi tin nhắn
   const onSendMessage = () => {
     if (message != '') {
       realm.write(() => {
@@ -44,6 +67,7 @@ const BoxChatScreen: React.FC<BoxChatScreenProps> = props => {
           createdat: Math.floor(Number(new Date().getTime() / 1000)),
           sender: new BSON.ObjectId(user._id.toString()),
           seen: false,
+          isimage: false,
         });
         setMessage('');
       });
@@ -52,10 +76,60 @@ const BoxChatScreen: React.FC<BoxChatScreenProps> = props => {
     }
   };
 
+  // chọn ảnh từ thư viện
+  const getImageFromLibrary = () => {
+    launchImageLibrary({mediaType: 'photo'}, response => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.errorMessage) {
+        console.log('ImagePicker Error:', response.errorMessage);
+      } else {
+        // Hình ảnh đã được chọn thành công
+        if (response.assets && response.assets.length > 0) {
+          const source = {uri: response.assets[0].uri};
+          const reference = firebase
+            .storage()
+            .ref()
+            .child(new Date().getTime() + '.png');
+          const upload = reference.putFile(source.uri);
+          upload.on(
+            firebase.storage.TaskEvent.STATE_CHANGED,
+            snapshot => {
+              const progress =
+                (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              console.log(`Upload is ${progress}% done`);
+            },
+            error => {
+              console.log('Upload error:', error);
+            },
+            () => {
+              upload.snapshot?.ref.getDownloadURL().then(async downloadURL => {
+                realm.write(() => {
+                  realm.create('chatmessages', {
+                    _id: new BSON.ObjectID(),
+                    receiver: new BSON.ObjectId(friend._id.toString()),
+                    content: downloadURL,
+                    createdat: Math.floor(Number(new Date().getTime() / 1000)),
+                    sender: new BSON.ObjectId(user._id.toString()),
+                    seen: false,
+                    isimage: true,
+                  });
+                  setMessage('');
+                });
+              });
+            },
+          );
+        }
+      }
+    });
+  };
+
   useEffect(() => {
     realm.subscriptions.update(mutableSubs => {
       mutableSubs.add(realm.objects(ChatSchema));
     });
+    updateChat();
+    listRef.current?.scrollToEnd({animated: true});
   }, [realm]);
 
   return (
@@ -86,14 +160,20 @@ const BoxChatScreen: React.FC<BoxChatScreenProps> = props => {
       {/* body */}
       <View style={styles.boxView}>
         <FlatList
+          showsVerticalScrollIndicator={false}
+          ref={listRef}
+          onContentSizeChange={() =>
+            listRef.current?.scrollToEnd({animated: true})
+          }
+          onLayout={() => listRef.current?.scrollToEnd({animated: true})}
           data={friendChats}
-          renderItem={({item}) => <ItemMessage message={item}/>}
+          renderItem={({item}) => <ItemMessage message={item} />}
           keyExtractor={item => item._id.toString()}
         />
       </View>
       {/* footer */}
       <TouchableOpacity style={styles.footer}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={getImageFromLibrary}>
           <Image
             source={require('../../../Resource/images/btn_send.png')}></Image>
         </TouchableOpacity>
@@ -158,6 +238,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get('screen').width - 20,
     height: 40,
     marginBottom: 10,
+    marginTop: 15,
   },
 
   textInput: {
@@ -172,6 +253,7 @@ const styles = StyleSheet.create({
 
   boxView: {
     flex: 1,
+    alignItems: 'flex-start',
   },
 
   messagesRight: {

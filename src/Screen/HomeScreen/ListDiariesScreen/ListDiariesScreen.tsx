@@ -79,6 +79,11 @@ const ListDiariesScreen: React.FC<ListDiarieProps> = props => {
     navigation.navigate('ListFriends');
   };
 
+  // Di chuyển đến trang thông báo
+  const onNotifications = () => {
+    navigation.navigate('Notification');
+  };
+
   // lấy nhật kí từ database
   const getDiaries = async () => {
     const result = await getData(
@@ -99,21 +104,24 @@ const ListDiariesScreen: React.FC<ListDiarieProps> = props => {
     const data = {userid: user._id, createdat: date};
     const url = 'http://' + ID_ADRESS + ':3000/api/todolist/createToDoList';
     const res = await postData(url, data);
+    console.log(url, data);
     if (res.result) {
       console.log('success');
       dispatch(SAVE_ID_TODOLIST(res.todolist._id));
     } else {
       console.log('failed to create todolist');
-      const res = await getData(
+      const url =
         'http://' +
-          ID_ADRESS +
-          ':3000/api/todolist/getCheckTodolist?id=' +
-          user._id +
-          '&createdat=' +
-          date,
-      );
+        ID_ADRESS +
+        ':3000/api/todolist/getTodolist?userid=' +
+        user._id +
+        '&createdat=' +
+        date;
+      const res = await getData(url);
+      // console.log(url);
       if (res.result) {
         console.log('successfull for get id');
+        console.log(res.todolist);
         dispatch(SAVE_ID_TODOLIST(res.todolist._id));
       }
     }
@@ -140,6 +148,7 @@ const ListDiariesScreen: React.FC<ListDiarieProps> = props => {
           placeholder="Tìm kiếm..."
         />
         <ButtonIcon
+          onPress={onNotifications}
           styles={styles.header_btnICon}
           url={require('../../../Resource/images/icon_bell.png')}
         />

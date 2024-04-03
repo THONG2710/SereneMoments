@@ -20,31 +20,74 @@ import {Colors} from '../../../Resource/colors';
 import ItemChat from '../../../Components/Items/ItemChat';
 import {useAppSelector} from '../../../Redux/Hook';
 import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
-import {UserModel} from '../../../Models/Model';
-// import { useQuery, useRealm } from '@realm/react';
+import {ChatMessageModel, UserModel} from '../../../Models/Model';
+
+const {useQuery, useRealm} = RealmContext;
 
 const Chat: React.FC<ChatScreenProps> = props => {
   const {navigation} = props;
   const user = useAppSelector(state => state.Authentication.myAccount);
-  const friend = useAppSelector(state => state.Friends.myFriends);
+  const [txtSerch, setTxtSerch] = useState<string>('');
+  const [listSearch, setListSearch] = useState<ChatMessageModel[]>([]);
+  const [listFull, setListFull] = useState<ChatMessageModel[]>([]);
+  const realm = useRealm();
+  const [isReFresh, setisReFresh] = useState<boolean>(false);
 
   // đến trang box chat
   const onMoveToBoxChat = (friend: UserModel) => {
     navigation.navigate('BoxChatScreen', {friend: friend});
   };
 
-  useEffect(() => {}, []);
+  const message = useQuery(ChatSchema, chats => {
+    return chats
+      .filtered(
+        'sender == $0 OR receiver == $0',
+        new BSON.ObjectId(user._id.toString()),
+      )
+      .sorted('createdat', true);
+  });
 
-  const pressHandler = () => {
-    Alert.alert(
-      'Xóa bạn bè',
-      'Bạn có chắc chắn muốn hủy kết bạn với người này không ?',
-      [
-        {text: 'Chấp nhận', onPress: () => console.log('Đã hủy kết bạn')},
-        {text: 'Hủy', onPress: () => console.log('...')},
-      ],
-    );
+  // tìm kiếm
+  const onSearch = (value: string) => {
+    setTxtSerch(value);
+    if (value == '') {
+      setListSearch(listFull);
+    } else {
+      const searchFriends = listSearch.filter(item =>
+        item.friend.username.toLocaleLowerCase().includes(value),
+      );
+      setListSearch(searchFriends);
+    }
   };
+
+  // lấy danh sách chat
+  const onGetNewChatMessage = async () => {
+    try {
+      const res = await getData(
+        'http://' +
+          ID_ADRESS +
+          ':3000/api/chatMessage/getNewMessages/' +
+          user._id,
+      );
+      if (res.result) {
+        const sort = res.messages.sort(
+          (a: ChatMessageModel, b: ChatMessageModel) =>
+            Number(b.message.createdat) - Number(a.message.createdat),
+        );
+        setListSearch(sort);
+        setListFull(sort);
+      }
+    } catch (error) {
+      console.log('failed to get new chat message: ' + error);
+    }
+  };
+
+  useEffect(() => {
+    onGetNewChatMessage();
+    realm.subscriptions.update(mutableSubs => {
+      mutableSubs.add(realm.objects(ChatSchema));
+    });
+  }, [realm, message.length, isReFresh]);
 
   return (
     <View style={styles.container}>
@@ -53,63 +96,23 @@ const Chat: React.FC<ChatScreenProps> = props => {
         <Text style={styles.text3}> Tin nhắn</Text>
         <TextInput
           style={styles.textInput}
+          value={txtSerch}
+          onChangeText={value => onSearch(value)}
           placeholder="Tìm kiếm..."></TextInput>
       </View>
       {/* body */}
       <View style={styles.body}>
         <FlatList
-          data={friend}
+          data={listSearch}
           renderItem={({item}) => (
             <ItemChat
-              onMoveToBoxChat={() => onMoveToBoxChat(item)}
-              user={item}
+              onMoveToBoxChat={() => onMoveToBoxChat(item.friend)}
+              user={item.friend}
             />
           )}
-          keyExtractor={item => item._id.toString()}
+          keyExtractor={item => item.friend._id.toString()}
         />
       </View>
-      {/* <View>
-        <Text style={styles.text4}>Gần đây</Text>
-      </View>
-      <TouchableOpacity
-        style={styles.viewButton}
-        onPress={() => navigation.navigate('BoxChatScreen')}
-        onLongPress={() => pressHandler()}>
-        <Image
-          source={require('../../../Resource/images/Ellipse3.png')}
-          // style={styles.image6}
-        ></Image>
-        <TouchableOpacity>
-          <Text style={styles.text1}>Nguyễn Ngọc Bảo Sơn</Text>
-          <Text style={styles.text2}>Xin chào</Text>
-        </TouchableOpacity>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.viewButton2}
-        onPress={() => navigation.navigate('BoxChatScreen')}>
-        <Image
-          source={require('../../../Resource/images/Ellipse3.png')}
-          // style={styles.image6}
-        ></Image>
-        <TouchableOpacity>
-          <Text style={styles.text1}>Nguyễn Ngọc Bảo Sơn</Text>
-          <Text style={styles.text2}>Xin chào</Text>
-        </TouchableOpacity>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.viewButton3}
-        onPress={() => navigation.navigate('BoxChatScreen')}>
-        <Image
-          source={require('../../../Resource/images/Ellipse3.png')}
-          // style={styles.image6}
-        ></Image>
-        <TouchableOpacity>
-          <Text style={styles.text1}>Nguyễn Ngọc Bảo Sơn</Text>
-          <Text style={styles.text2}>Xin chào</Text>
-        </TouchableOpacity>
-      </TouchableOpacity> */}
     </View>
   );
 };
