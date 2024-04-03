@@ -19,6 +19,7 @@ const AccountScreen = () => {
       <stack.Screen name='MomentHistor' component={MomentHistory}/>
       <stack.Screen name='MyFriends' component={MyFriend}/>
       <stack.Screen name='DiariesHistory' component={DiariesHistory}/>
+      {/* <stack.Screen /> */}
     </stack.Navigator>
   );
 };

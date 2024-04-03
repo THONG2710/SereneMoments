@@ -12,23 +12,23 @@ import {onConvertEpochtime} from '../../Service/Service';
 import { Colors } from '../../Resource/colors';
 
 interface ItemMyDiaryProps extends ViewProps {
-  diary: DiaryModel;
+  diary?: DiaryModel;
 }
 
 const ItemMyDiary: React.FC<ItemMyDiaryProps> = props => {
   const {diary} = props;
 
   useEffect(() => {
-    console.log(diary.diary);
+    console.log(diary?.diary);
   }, []);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.txtDate}>{onConvertEpochtime(Number(diary.createdat))}</Text>
+      <Text style={styles.txtDate}>{onConvertEpochtime(Number(diary?.createdat))}</Text>
       <Image
         style={styles.img}
         source={
-          diary.diary
+          diary?.diary
             ? {uri: diary.diary}
             : require('../../Resource/images/img.jpg')
         }
