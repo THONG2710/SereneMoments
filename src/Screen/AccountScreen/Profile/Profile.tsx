@@ -207,6 +207,18 @@ const Profile: React.FC<ProfileProps> = props => {
         </TouchableOpacity>
 
         <TouchableOpacity
+          style={styles.itemContentTwo}
+          onPress={onMoveToMoment}>
+          <View style={styles.itemContentLeft}>
+            <Image
+              style={styles.imageItem}
+              source={require('../../../Resource/images/tdo.png')}></Image>
+            <Text style={styles.textItem}>Công việc</Text>
+          </View>
+          <Text style={styles.notificationItem}>{moments.length}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
           style={styles.itemContentThree}
           onPress={onMoveToMyFriends}>
           <View style={styles.itemContentLeft}>
@@ -423,6 +435,7 @@ const styles = StyleSheet.create({
   imageItem: {
     width: 20,
     height: 20,
+    tintColor:'#fff'
   },
 
   notificationItem: {

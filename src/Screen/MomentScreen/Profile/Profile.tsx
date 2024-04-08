@@ -143,6 +143,8 @@ const Profile: React.FC<ProfileProps> = props => {
           <Text style={styles.notificationItem}>{moments.length}</Text>
         </TouchableOpacity>
 
+       
+
         <TouchableOpacity style={styles.itemContentThree}>
           <View style={styles.itemContentLeft}>
             <Image
