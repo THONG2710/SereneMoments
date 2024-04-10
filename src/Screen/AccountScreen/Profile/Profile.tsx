@@ -21,6 +21,7 @@ import {SAVE_MYMOMENTS} from '../../../Redux/Action/MomentActions';
 import { SAVE_MYFRIENDS } from '../../../Redux/Action/FriendsActions';
 import { SAVE_MYDIARIES } from '../../../Redux/Action/DiaryActions';
 import Dialog from '../../Dialog/Dialog';
+import { LoginManager } from 'react-native-fbsdk-next';
 
 const Profile: React.FC<ProfileProps> = props => {
   const {navigation} = props;
@@ -134,6 +135,8 @@ const Profile: React.FC<ProfileProps> = props => {
       phoneNumber: '',
     };
     useDispatch(SAVE_USER(user));
+    await LoginManager.logOut();
+    console.log('Logged out successfully!');
     // xử lí đăng xuất
     navigation
       .getParent()

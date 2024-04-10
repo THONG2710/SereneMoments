@@ -2,21 +2,28 @@ import {View, Text, Image, TouchableOpacity} from 'react-native';
 import React, {useEffect} from 'react';
 import styles from './styles';
 import {LoginProps} from './type';
-import {useAppSelector} from '../../../Redux/Hook';
+import {useAppDispatch, useAppSelector} from '../../../Redux/Hook';
 import {
   LoginButton,
   AccessToken,
   LoginManager,
   GraphRequest,
   GraphRequestManager,
+  GraphRequestCallback,
 } from 'react-native-fbsdk-next';
 import {Settings, Profile} from 'react-native-fbsdk-next';
+import {ID_ADRESS, getData, postData} from '../../../Service/RequestMethod';
+import {
+  SAVE_USER,
+  SET_ISLOGGED,
+} from '../../../Redux/Action/AuthenticationActions';
+import {setDataToStorage} from '../../../Service/Service';
 
 const Login: React.FC<LoginProps> = props => {
   const {navigation} = props;
-  const is_logged = useAppSelector(state => state.Authentication.isLogged);
   Settings.setAppID('3561957340731174');
   Settings.initializeSDK();
+  const dispatch = useAppDispatch();
 
   const onLoginWithAccount = () => {
     navigation.navigate('LoginWithAccount');
@@ -30,36 +37,112 @@ const Login: React.FC<LoginProps> = props => {
     navigation.navigate('AuthorizedNavigation');
   };
 
-  const handleLogout = async () => {
+  // xử lí đăng nhập
+  const handleLogin = async (
+    username: string,
+    password: string,
+    email: string,
+    avatar: string,
+    phonenumber: string,
+    createdat: number,
+  ) => {
     try {
-      await LoginManager.logOut();
-      console.log('Logged out successfully!');
-      // Xử lý logout thành công
+      const res = await getData(
+        'http://' + ID_ADRESS + ':3000/api/users/checkEmail?email=' + email,
+      );
+      console.log(res);
+      
+      if (!res.user) {
+        const data = {
+          username: username,
+          password: password,
+          email: email,
+          avatar: avatar,
+          phonenumber: phonenumber,
+          createdat: createdat,
+        };
+        const response = await postData(
+          'http://' + ID_ADRESS + ':3000/api/users/register',
+          data,
+        );
+        if (response.result) {
+          const userCurrent = {
+            _id: response.user._id,
+            username: response.user.username,
+            password: response.user.password,
+            email: response.user.email,
+            available: response.user.available,
+            avatar: response.user.avatar,
+            createdat: response.user.createdat,
+            phoneNumber: response.user.phonenumber,
+          };
+          dispatch(SAVE_USER(userCurrent));
+          setDataToStorage('IS_LOGGED', true);
+          setDataToStorage('ACCOUNT', userCurrent);
+          dispatch(SET_ISLOGGED(true));
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'AuthorizedNavigation'}],
+          });
+        }
+      } else {
+        const response = await getData(
+          'http://' +
+            ID_ADRESS +
+            ':3000/api/users/getAccountByEmail?email=' +
+            email,
+        );
+        if (response.result) {
+          const userCurrent = {
+            _id: response.user._id,
+            username: response.user.username,
+            password: response.user.password,
+            email: response.user.email,
+            available: response.user.available,
+            avatar: response.user.avatar,
+            createdat: response.user.createdat,
+            phoneNumber: response.user.phonenumber,
+          };
+          dispatch(SAVE_USER(userCurrent));
+          setDataToStorage('IS_LOGGED', true);
+          setDataToStorage('ACCOUNT', userCurrent);
+          dispatch(SET_ISLOGGED(true));
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'AuthorizedNavigation'}],
+          });
+        }
+      }
     } catch (error) {
-      console.log('Logout error:', error);
-      // Xử lý lỗi logout
+      console.log('failed to login: ', error);
     }
   };
 
-  const handleLogin = async () => {
+  const handleLoginFacebook = async () => {
     try {
       const result = await LoginManager.logInWithPermissions([
         'public_profile',
         'email',
+        'user_friends',
       ]);
       if (result.isCancelled) {
         console.log('Login cancelled');
       } else {
         const tokenData = await AccessToken.getCurrentAccessToken();
-        console.log('Logged in successfully!', tokenData);
-        const fetchUserAvatar = async () => {
-          const responseCallback = (error, result) => {
+        // console.log('Logged in successfully!', tokenData);
+        const fetchUserAvatar = async (): Promise<void> => {
+          const responseCallback: GraphRequestCallback = (
+            error,
+            result: any,
+          ) => {
             if (error) {
               console.log('Error fetching user avatar:', error);
               // Xử lý lỗi khi không thể lấy thông tin
             } else {
-              console.log('User avatar:', result.picture.data.url);
-              // Xử lý thông tin avatar
+              const {name, email} = result;
+              const avatar = result?.picture.data.url;
+              const date = Math.floor(Number(new Date().getTime() / 1000));
+              handleLogin(name, '', email, avatar, '', date);
             }
           };
 
@@ -68,10 +151,10 @@ const Login: React.FC<LoginProps> = props => {
             {
               parameters: {
                 fields: {
-                  string: 'picture.type(large)',
+                  string: 'picture.type(large), name, birthday, email',
                 },
                 access_token: {
-                  string: tokenData.accessToken,
+                  string: tokenData?.accessToken,
                 },
               },
             },
@@ -107,7 +190,7 @@ const Login: React.FC<LoginProps> = props => {
           <Text style={styles.txtBtn}>Đăng nhập bằng gmail</Text>
         </View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={handleLogin}>
+      <TouchableOpacity onPress={handleLoginFacebook}>
         <View style={styles.btnLogin}>
           <Image
             style={styles.imgIcon}

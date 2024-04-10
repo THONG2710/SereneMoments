@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 const styles = StyleSheet.create({
   container: {
@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#8D6666',
     textAlign: 'center',
-    marginTop: 50,
+    marginTop: 20,
   },
   sayHello2: {
     fontSize: 30,
@@ -22,8 +22,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   img: {
-    width: 275,
-    height: 242,
+    width: Dimensions.get('screen').width / 2,
+    height: Dimensions.get('screen').height / 4,
   },
   btnRegister: {
     backgroundColor: '#E7E7E7',
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingLeft: 20,
-    marginTop: 30,
+    marginTop: 15,
     justifyContent: 'center',
   },
   imgIcon: {

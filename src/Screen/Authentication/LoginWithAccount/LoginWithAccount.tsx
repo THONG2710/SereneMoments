@@ -56,15 +56,17 @@ const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
         ]);
       }, 5000);
     } else {
+      console.log();
+      
       const userCurrent = {
-        _id: res.user._id,
-        username: res.user.username,
-        password: res.user.password,
-        email: res.user.email,
-        available: res.user.available,
-        avatar: res.user.avatar,
-        createdat: res.user.createdat,
-        phoneNumber: res.user.phonenumber,
+        _id: res.user[0]._id,
+        username: res.user[0].username,
+        password: res.user[0].password,
+        email: res.user[0].email,
+        available: res.user[0].available,
+        avatar: res.user[0].avatar,
+        createdat: res.user[0].createdat,
+        phoneNumber: res.user[0].phonenumber,
       };
       usdispath(SAVE_USER(userCurrent));
       setDataToStorage('IS_LOGGED', true);

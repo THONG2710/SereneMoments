@@ -92,10 +92,19 @@ interface MessageModel {
     seen: boolean,
 }
 
-
 interface ChatMessageModel {
     friend: UserModel,
     message: MessageModel
 }
 
-export type { UserModel, DiaryModel, MomentModel, FriendModel, RequestModel, TodoList, ItemTodolist, ResponseTodo, CommentsModel, LikesModel, ResponseCommentModel, MessageModel, ChatMessageModel }
+interface NotifiicationModel {
+    _id: String,
+    receiver: String,
+    sender: String,
+    content: String,
+    createdat: Number,
+    moment: String,
+    diary: String,
+}
+
+export type { UserModel, DiaryModel, MomentModel, FriendModel, RequestModel, TodoList, ItemTodolist, ResponseTodo, CommentsModel, LikesModel, ResponseCommentModel, MessageModel, ChatMessageModel, NotifiicationModel }
