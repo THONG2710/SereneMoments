@@ -201,7 +201,7 @@ const TodoList = () => {
 
       {/* FOOTER */}
       {/* ADD TODOLIST */}
-      <View style={styles.footer}>
+      {/* <View style={styles.footer}>
         <View style={styles.addTodo}>
           <TouchableOpacity style={styles.checkbox}></TouchableOpacity>
           <TextInput
@@ -214,7 +214,7 @@ const TodoList = () => {
         <TouchableOpacity style={styles.btnAdd} onPress={onCreateWork}>
           <Text style={styles.textAdd}>Lưu</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
     </View>
   );
 };
