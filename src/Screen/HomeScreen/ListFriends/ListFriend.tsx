@@ -1,5 +1,4 @@
 import {
-  FlatList,
   Image,
   ScrollView,
   StyleSheet,
@@ -8,56 +7,51 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Dialog from '../../Dialog/Dialog';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import DialogConfirmSuccess from '../../Dialog/DialogConfirmSuccess';
 import DialogConfirmFailure from '../../Dialog/DialogConfirmFailure';
-import {ListFriendsProps} from './type';
-import {UserModel} from '../../../Models/Model';
+import { ListFriendsProps } from './type';
+import { UserModel } from '../../../Models/Model';
 import ButtonIcon from '../../../Components/Buttons/ButtonIcon';
-import {Colors} from '../../../Resource/colors';
-import {ID_ADRESS, getData, postData} from '../../../Service/RequestMethod';
-import {useAppDispatch, useAppSelector} from '../../../Redux/Hook';
+import { Colors } from '../../../Resource/colors';
+import { ID_ADRESS, getData } from '../../../Service/RequestMethod';
+import { useAppSelector } from '../../../Redux/Hook';
 import ButtonText from '../../../Components/Buttons/ButtonText';
-import {SAVE_MYFRIENDS} from '../../../Redux/Action/FriendsActions';
-import LoadingScreen from '../../../Components/Screen/LoadingScreen';
-import InputBox from '../../../Components/Inputs/InputBox';
+import LinearButtonAdd from '../../../Components/Buttons/LinearButtonAdd';
+import ButtonUnfriend from '../../../Components/Buttons/ButtonUnFriend';
 
 const ListFriend: React.FC<ListFriendsProps> = props => {
-  const {navigation} = props;
+  const { navigation } = props;
   const [showAlert, setShowAlert] = useState(false);
+  const [friends, setFriends] = useState<UserModel[]>([]);
   const [selectedFriend, setSelectedFriend] = useState<UserModel>();
   const user = useAppSelector(state => state.Authentication.myAccount);
-  const dispatch = useAppDispatch();
-  const myFriends = useAppSelector(state => state.Friends.myFriends);
-  const [isRefreshing, setisRefreshing] = useState(false);
-  const [isVisibleSearch, setIsVisibleSearch] = useState(false);
-  const [search, setSearch] = useState('');
-  const [friends, setFriends] = useState<UserModel[]>([]);
 
   //   quay lại
   const onGoBack = () => {
     navigation.goBack();
   };
-
-  // tìm bạn bè
-  const onFindFriend = () => {
-    if (search != '') {
-      const content = search.toLocaleLowerCase();
-      const resFriends: UserModel[] = [];
-      myFriends.filter(item => {
-        const itemName = item.username.toLocaleLowerCase();
-        if (itemName.includes(content)) {
-          resFriends.push(item);
-        }
-      });
-      setFriends(resFriends);
+  //   lấy danh sách bạn bè từ database
+  const getFriendsFromDatabase = async () => {
+    try {
+      const res = await getData(
+        'http://' +
+        ID_ADRESS +
+        ':3000/api/friend/getInforFriendsById?id=' +
+        user._id,
+      );
+      if (res) {
+        setFriends(res.friends);
+      }
+    } catch (error) {
+      console.log('get friends failed: ' + error);
     }
   };
 
   useEffect(() => {
-    setFriends(myFriends);
+    getFriendsFromDatabase();
   }, []);
 
   //   xóa bạn bè
@@ -67,33 +61,13 @@ const ListFriend: React.FC<ListFriendsProps> = props => {
   };
 
   //   xác nhận xóa bạn bè
-  const handleConfirmDelete = async () => {
-    setShowAlert(false);
-    setisRefreshing(true);
-    const updatedFriends = myFriends.filter(
+  const handleConfirmDelete = () => {
+    const updatedFriends = friends.filter(
       item => item._id !== selectedFriend?._id,
     );
-    const res = await getData(
-      'http://' +
-        ID_ADRESS +
-        ':3000/api/friend/findFriendRequest?myId=' +
-        user._id +
-        '&friendId=' +
-        selectedFriend?._id,
-    );
-    if (res.result) {
-      const id = res.request._id;
-      const response = await postData(
-        'http://' + ID_ADRESS + ':3000/api/friend/cancelRequest/' + id,
-        {},
-      );
-      if (response.result) {
-        console.log('delete request successful');
-        dispatch(SAVE_MYFRIENDS(updatedFriends));
-        setSelectedFriend(undefined);
-        setisRefreshing(false);
-      }
-    }
+    setFriends(updatedFriends);
+    setSelectedFriend(undefined);
+    setShowAlert(false);
   };
 
   //   hiện danh sách bạn bè
@@ -101,12 +75,15 @@ const ListFriend: React.FC<ListFriendsProps> = props => {
     return (
       <View key={item._id.toString()} style={styles.itemFriend}>
         <View style={styles.itemFriendLeft}>
-          <Image style={styles.imgAvatar} source={{uri: item.avatar}}></Image>
+          <View style={styles.bgrAVT}>
+            <Image style={styles.imgAvatar} source={{ uri: item.avatar }}></Image>
+          </View>
           <View style={styles.friend}>
             <Text style={styles.nameFriend}>{item.username}</Text>
+            {/* <Text style={styles.manutalFriend}>{item.manutalFriend}</Text> */}
           </View>
         </View>
-        <ButtonText
+        <ButtonUnfriend
           onPress={() => handleDeleteFriend(item)}
           buttonStyle={styles.btnStyle}
           label="Xóa"
@@ -116,37 +93,36 @@ const ListFriend: React.FC<ListFriendsProps> = props => {
   };
   return (
     // CONTAINER
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       {/* HEADER */}
       <View style={styles.header}>
+        {/* <View style={styles.search}>
+          <TouchableOpacity>
+            <Image
+              style={styles.imgSearchFriend}
+              source={require('../../../Resource/Image2/search.png')}></Image>
+          </TouchableOpacity>
+          <TextInput
+            style={styles.ipSearchFriend}
+            placeholder="Tìm kiếm bạn bè"></TextInput>
+        </View> */}
         <ButtonIcon
           onPress={onGoBack}
-          styles={styles.btnBack}
+          styles={styles.iconHead}
           url={require('../../../Resource/images/icon_back3.png')}
         />
-        <InputBox
-          onSearch={onFindFriend}
-          onChangeText={value => setSearch(value)}
-          placeholder="Tìm kiếm..."
+        <Text style={styles.headerTitle}>Bạn bè</Text>
+
+        <ButtonIcon
+          styles={styles.iconHead}
+          url={require('../../../Resource/images/icon_search3.png')}
         />
       </View>
       {/* CENTER */}
-      {isRefreshing ? (
-        <LoadingScreen />
-      ) : friends.length > 0 ? (
-        <View style={styles.center}>
-          <Text style={styles.sumFriend}>{friends.length} bạn bè</Text>
-          <FlatList
-            data={friends}
-            renderItem={({item}) => renderItemFriend(item)}
-            keyExtractor={item => item._id.toString()}
-          />
-        </View>
-      ) : (
-        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-          <Text>Không có kết quả</Text>
-        </View>
-      )}
+      <View style={styles.center}>
+        <Text style={styles.sumFriend}>{friends.length} bạn bè</Text>
+        {friends.map(item => renderItemFriend(item))}
+      </View>
 
       <Dialog
         message="Bạn có chắc chắn muốn xóa người này không"
@@ -156,7 +132,7 @@ const ListFriend: React.FC<ListFriendsProps> = props => {
         onCancel={() => {
           setShowAlert(false);
         }}></Dialog>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -170,31 +146,61 @@ const styles = StyleSheet.create({
   },
 
   // HEADER
-  searchInput: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    paddingHorizontal: 10,
-    margin: 10,
-  },
-
   header: {
-    height: 50,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: Colors.BLUE,
-    paddingHorizontal: 20,
+    height: 60,
+    paddingHorizontal: 15,
   },
 
-  btnBack: {
+  iconHead: {
     width: 30,
     height: 30,
+  },
+
+  headerTitle: {
+    fontSize: 21,
+    fontWeight: 'bold',
+    color: Colors.WHITE,
+  },
+
+  search: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#E0E1E3',
+    marginTop: 10,
+    borderRadius: 20,
+  },
+
+  bgrAVT:
+  {
+    width:55,
+    height:55,
+    borderWidth:1,
+    justifyContent:'center',
+    alignItems:'center',
+    borderRadius:50,
+    borderColor:'#97D4EB'
+  },
+
+  imgSearchFriend: {
+    width: 24,
+    height: 24,
+    marginLeft: 15,
+  },
+
+  ipSearchFriend: {
+    height: 45,
+    fontSize: 14,
   },
 
   btnStyle: {
     width: 70,
     height: 40,
+    justifyContent:'center',
+    alignItems:'center'
   },
 
   // CENTER
@@ -239,8 +245,8 @@ const styles = StyleSheet.create({
   },
 
   imgAvatar: {
-    width: 50,
-    height: 50,
+    width: 45,
+    height: 45,
     borderRadius: 30,
   },
 
