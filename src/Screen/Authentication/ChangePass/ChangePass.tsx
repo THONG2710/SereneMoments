@@ -4,7 +4,7 @@ import styles from './styles'
 import { ChangePasswordProps } from './type'
 
 const ChangePass: React.FC<ChangePasswordProps> = (props) => {
-    const {navigation} = props;
+    const { navigation } = props;
 
     const ChangePassword = () => {
         navigation.goBack();
@@ -14,7 +14,7 @@ const ChangePass: React.FC<ChangePasswordProps> = (props) => {
         <View style={styles.container}>
             <Text style={styles.sayHello2}>Đổi mật khẩu</Text>
             <View style={styles.containerImg}>
-                <Image style={styles.img} source={require('../../../Resource/images/img_logo2.png')} />
+                <Image style={styles.img} source={require('../../../Resource/images/logo.png')} />
             </View>
             <View style={styles.btnRegister}>
                 <Image style={styles.imgIcon} source={require('../../../Resource/images/icon_key.png')} />

@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
   sayHello: {
     fontSize: 50,
     fontWeight: 'bold',
-    color: '#8D6666',
+    color: '#1B90B7',
     textAlign: 'center',
     marginTop: 50,
   },
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     height: 24,
   },
   btnLogin: {
-    backgroundColor: '#A87070',
+    backgroundColor: '#59AEEF',
     borderRadius: 30,
     marginHorizontal: 15,
     height: 50,
@@ -48,12 +48,12 @@ const styles = StyleSheet.create({
   },
   txtRegister: {
     fontSize: 15,
-    color: '#9F7474',
+    color: 'black',
     fontWeight: '600',
   },
   register: {
     fontSize: 15,
-    color: 'black',
+    color: '#1B90B7',
     fontWeight: '600',
     marginLeft: 5,
   },
@@ -70,6 +70,5 @@ const styles = StyleSheet.create({
     color: 'black',
     textAlign: 'center',
   },
-  
 });
 export default styles;
