@@ -110,7 +110,7 @@ const Login: React.FC<LoginProps> = props => {
       <TouchableOpacity onPress={handleLogin}>
         <View style={styles.btnLogin}>
           <Image
-            style={styles.imgIcon}
+            style={styles.imgIconFB}
             source={require('../../../Resource/images/icon_facebook.png')}
           />
           <Text style={styles.txtBtn}>Đăng nhập bằng facebook</Text>

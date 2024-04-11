@@ -19,6 +19,8 @@ import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
 import {useAppSelector} from '../../../Redux/Hook';
 import ButtonText from '../../../Components/Buttons/ButtonText';
 import {MyFriendsProps} from './type';
+import LinearButtonCancel from '../../../Components/Buttons/LinearButtonCancel';
+import ButtonUnfriend from '../../../Components/Buttons/ButtonUnFriend';
 
 const MyFriend: React.FC<MyFriendsProps> = props => {
   const {navigation} = props;
@@ -65,7 +67,7 @@ const MyFriend: React.FC<MyFriendsProps> = props => {
             {/* <Text style={styles.manutalFriend}>{item.manutalFriend}</Text> */}
           </View>
         </View>
-        <ButtonText
+        <ButtonUnfriend
           onPress={() => handleDeleteFriend(item)}
           buttonStyle={styles.btnStyle}
           label="Xóa"
