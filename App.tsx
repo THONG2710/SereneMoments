@@ -21,6 +21,7 @@ import { Provider } from 'react-redux';
 import { store } from './src/Redux/Store';
 import { MenuProvider } from 'react-native-popup-menu';
 import TodolistHistory from './src/Screen/AccountScreen/TodoListHistory/TodolistHistory';
+import DetailTodoListHistory from './src/Screen/AccountScreen/DetailTodoListHistory/DetailTodoListHistory';
 
 function App(): JSX.Element {
   return (
@@ -33,11 +34,11 @@ function App(): JSX.Element {
     // <AuthorizedNavigation/>
     // <Profile/>
     // <RealmProvider>
-    <Provider store={store}>
-      <MenuProvider>
-      <RootNavigation />
-      </MenuProvider>
-    </Provider>
+    // <Provider store={store}>
+    //   <MenuProvider>
+    //   <RootNavigation />
+    //   </MenuProvider>
+    // </Provider>
     // </RealmProvider>
     // <HomeScreen/>
     // <ItemMoment/>
@@ -45,6 +46,7 @@ function App(): JSX.Element {
     // <TestSnapshot/>
     // <TestDragable/>
     // <Chat/>
+    <DetailTodoListHistory></DetailTodoListHistory>
   );
 }
 
