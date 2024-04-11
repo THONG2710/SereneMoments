@@ -6,24 +6,24 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {ProfileProps} from './type';
-import {useAppDispatch, useAppSelector} from '../../../Redux/Hook';
+import React, { useEffect, useState } from 'react';
+import { ProfileProps } from './type';
+import { useAppDispatch, useAppSelector } from '../../../Redux/Hook';
 import {
   SAVE_USER,
   SET_ISLOGGED,
 } from '../../../Redux/Action/AuthenticationActions';
-import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
-import {DiaryModel, FriendModel, MomentModel, TodoList} from '../../../Models/Model';
-import {getDataFromStorage, setDataToStorage} from '../../../Service/Service';
+import { ID_ADRESS, getData } from '../../../Service/RequestMethod';
+import { DiaryModel, FriendModel, MomentModel, TodoList } from '../../../Models/Model';
+import { getDataFromStorage, setDataToStorage } from '../../../Service/Service';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {SAVE_MYMOMENTS} from '../../../Redux/Action/MomentActions';
+import { SAVE_MYMOMENTS } from '../../../Redux/Action/MomentActions';
 import { SAVE_MYFRIENDS } from '../../../Redux/Action/FriendsActions';
 import { SAVE_MYDIARIES } from '../../../Redux/Action/DiaryActions';
 import Dialog from '../../Dialog/Dialog';
 
 const Profile: React.FC<ProfileProps> = props => {
-  const {navigation} = props;
+  const { navigation } = props;
   const useDispatch = useAppDispatch();
   const myAccount = useAppSelector(state => state.Authentication.myAccount);
   const [diaries, setdiaries] = useState<DiaryModel[]>([]);
@@ -37,9 +37,9 @@ const Profile: React.FC<ProfileProps> = props => {
     try {
       const response = await getData(
         'http://' +
-          ID_ADRESS +
-          ':3000/api/diary/getDiariesByIdUser?id=' +
-          myAccount._id,
+        ID_ADRESS +
+        ':3000/api/diary/getDiariesByIdUser?id=' +
+        myAccount._id,
       );
       if (response.result) {
         setdiaries(response.diaries);
@@ -55,9 +55,9 @@ const Profile: React.FC<ProfileProps> = props => {
     try {
       const response = await getData(
         'http://' +
-          ID_ADRESS +
-          ':3000/api/moment/getMomentsById?id=' +
-          myAccount._id,
+        ID_ADRESS +
+        ':3000/api/moment/getMomentsById?id=' +
+        myAccount._id,
       );
       if (response.result) {
         setmoments(response.moments);
@@ -73,9 +73,9 @@ const Profile: React.FC<ProfileProps> = props => {
     try {
       const response = await getData(
         'http://' +
-          ID_ADRESS +
-          ':3000/api/friend/getInforFriendsById?id=' +
-          myAccount._id,
+        ID_ADRESS +
+        ':3000/api/friend/getInforFriendsById?id=' +
+        myAccount._id,
       );
       if (response.result) {
         setfriends(response.friends);
@@ -100,7 +100,7 @@ const Profile: React.FC<ProfileProps> = props => {
   const onMoveToTodoList = () => {
     navigation.navigate('TodoList');
   }
-  
+
   // đến trang nhật kí của tôi
   const onMoveToMyDiary = () => {
     navigation.navigate('DiariesHistory');
@@ -135,16 +135,19 @@ const Profile: React.FC<ProfileProps> = props => {
     };
     useDispatch(SAVE_USER(user));
     // xử lí đăng xuất
-    navigation
-      .getParent()
-      ?.getParent()
-      ?.reset({
+    const parent = navigation.getParent();
+    const grandparent = parent?.getParent();
+
+    if (grandparent) {
+      grandparent.reset({
         index: 0,
-        routes: [{name: 'AuthenticationNavigation'}],
+        routes: [{ name: 'AuthenticationNavigation' }],
       });
+    }
+
   };
 
- 
+
   // chỉnh sửa thông tin cá nhân
   const onEditProfile = () => {
     navigation.navigate('EditProfile');
@@ -160,7 +163,7 @@ const Profile: React.FC<ProfileProps> = props => {
             style={styles.imgAVT}
             source={
               myAccount.avatar
-                ? {uri: myAccount.avatar}
+                ? { uri: myAccount.avatar }
                 : require('../../../Resource/images/avatar.png')
             }></Image>
         </View>
@@ -263,7 +266,7 @@ const Profile: React.FC<ProfileProps> = props => {
         </View>
         <TouchableOpacity
           style={styles.itemContentOne}
-          onPress={()=>setShowAlert(true)}>
+          onPress={() => setShowAlert(true)}>
           <View style={styles.itemContentLeft}>
             <Image
               style={styles.imageItem}
@@ -277,7 +280,7 @@ const Profile: React.FC<ProfileProps> = props => {
             <Image
               style={styles.imageItem}
               source={require('../../../Resource/images/icon_delete.png')}></Image>
-            <Text style={[styles.textItem, {color: 'red'}]}>Xóa tài khoản</Text>
+            <Text style={[styles.textItem, { color: 'red' }]}>Xóa tài khoản</Text>
           </View>
         </TouchableOpacity>
       </View>
