@@ -58,7 +58,7 @@ const DetailTodoListHistory = () => {
             {/* HEADER */}
             <View style={styles.header}>
                 <View style={styles.backgroundHeader}>
-                    <Text style={styles.textHeader}>Cố gắng hoàn thành bạn nhé !</Text>
+                    <Text style={styles.textHeader}>Lịch sử công việc của bạn !</Text>
                     <Image source={require('../../../Resource/Image2/imgtodo.png')} style={styles.imgHeader}></Image>
                 </View>
             </View>
@@ -71,7 +71,6 @@ const DetailTodoListHistory = () => {
                     {dataToDoList.map(item => (
                         !checked.includes(item.task) && (
                             <View key={item._id} style={styles.task}>
-                                {/* Checkbox code */}
                                 <Text style={styles.textTask}>{item.task}</Text>
                             </View>
                         )
@@ -88,7 +87,6 @@ const DetailTodoListHistory = () => {
                    {dataToDoList.map(item => (
                        !checked.includes(item.task) && (
                            <View key={item._id} style={styles.task}>
-                               {/* Checkbox code */}
                               
                                <Text style={styles.textTask}>{item.task}</Text>
                            </View>

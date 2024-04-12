@@ -22,6 +22,7 @@ import { store } from './src/Redux/Store';
 import { MenuProvider } from 'react-native-popup-menu';
 import TodolistHistory from './src/Screen/AccountScreen/TodoListHistory/TodolistHistory';
 import DetailTodoListHistory from './src/Screen/AccountScreen/DetailTodoListHistory/DetailTodoListHistory';
+import DetailMomentHistory from './src/Screen/AccountScreen/DetailMomentHistory/DetailMomentHistory';
 
 function App(): JSX.Element {
   return (
@@ -46,7 +47,7 @@ function App(): JSX.Element {
     // <TestSnapshot/>
     // <TestDragable/>
     // <Chat/>
-    <DetailTodoListHistory></DetailTodoListHistory>
+    <DetailMomentHistory></DetailMomentHistory>
   );
 }
 
