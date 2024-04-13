@@ -69,8 +69,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     position: 'absolute',
-    bottom: 85,
-
+    bottom: 70,
   },
 
   alertContainer:
