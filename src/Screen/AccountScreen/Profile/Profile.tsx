@@ -1,6 +1,7 @@
 import {
   Alert,
   Image,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -161,7 +162,7 @@ const Profile: React.FC<ProfileProps> = props => {
 
   return (
     //CONTAINER
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       {/* HEADER */}
       <View style={styles.header}>
         <View style={styles.background}>
@@ -290,7 +291,7 @@ const Profile: React.FC<ProfileProps> = props => {
           </View>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
