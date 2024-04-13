@@ -92,6 +92,10 @@ const Profile: React.FC<ProfileProps> = props => {
   const onMoveToMyFriends = () => {
     navigation.navigate('MyFriends');
   };
+
+  const onMoveToTodoListHistory = () => {
+    navigation.navigate('TodoListHistory');
+  };
   
   // đến trang nhật kí của tôi
   const onMoveToMyDiary = () => {
@@ -208,7 +212,7 @@ const Profile: React.FC<ProfileProps> = props => {
 
         <TouchableOpacity
           style={styles.itemContentTwo}
-          onPress={onMoveToMoment}>
+          onPress={onMoveToTodoListHistory}>
           <View style={styles.itemContentLeft}>
             <Image
               style={styles.imageItem}

@@ -4,13 +4,19 @@ import moment from 'moment';
 import DatePicker from 'react-native-date-picker';
 import { Colors } from '../../../Resource/colors';
 import LinearGradient from 'react-native-linear-gradient';
+import { TodoListHistoryProps } from './type';
 
-const TodolistHistory = () => {
+const TodoListHistory: React.FC<TodoListHistoryProps> = props => {
+    const {navigation} = props;
     const [date, setDate] = useState(new Date())
     const [open, setOpen] = useState(false)
     const handleOpenDatePicker = () => {
         setOpen(true);
     }
+
+    const onMoveToDetailTodoListHistory = () => {
+        navigation.navigate('DetailTodoListHistory');
+      };
 
     return (
         <ScrollView style={styles.container}>
@@ -22,7 +28,7 @@ const TodolistHistory = () => {
                         style={styles.imgSearch}
                         source={require('../../../Resource/images/icon_back3.png')}></Image>
                 </TouchableOpacity>
-                <TouchableOpacity  onPress={handleOpenDatePicker}
+                <TouchableOpacity onPress={handleOpenDatePicker}
                     style={styles.btnOpenDatePicker}>
                     <Text style={styles.textDate}>{date.toLocaleDateString()}</Text>
                 </TouchableOpacity>
@@ -45,7 +51,7 @@ const TodolistHistory = () => {
             <View style={styles.center}>
                 <View>
                     {History.map((item, i) => (
-                        <TouchableOpacity style={styles.listDateTodo} key={item._id}>
+                        <TouchableOpacity onPress={onMoveToDetailTodoListHistory} style={styles.listDateTodo} key={item._id}>
                             <LinearGradient style={styles.background} colors={['#53C3F3', '#60C8E9', '#97D4EB']}>
                                 <Text style={styles.columns}>{i + 1}.</Text>
                                 <Text style={styles.date}>{item.date}</Text>
@@ -60,7 +66,7 @@ const TodolistHistory = () => {
     )
 }
 
-export default TodolistHistory
+export default TodoListHistory
 
 const styles = StyleSheet.create({
     // CONTAINER
@@ -170,58 +176,58 @@ const styles = StyleSheet.create({
 const History = [
     {
         '_id': '1',
-                'date': '24/08/2024'
+        'date': '24/08/2024'
     },
 
     {
         '_id': '2',
-        
+
         'date': '24/08/2024'
     },
 
     {
         '_id': '3',
-        
+
         'date': '24/08/2024'
     },
 
     {
         '_id': '4',
-        
+
         'date': '24/08/2024'
     },
 
     {
         '_id': '5',
-        
+
         'date': '24/08/2024'
     },
     {
         '_id': '6',
-                'date': '24/08/2024'
+        'date': '24/08/2024'
     },
 
     {
         '_id': '7',
-        
+
         'date': '24/08/2024'
     },
 
     {
         '_id': '8',
-        
+
         'date': '24/08/2024'
     },
 
     {
         '_id': '9',
-        
+
         'date': '24/08/2024'
     },
 
     {
         '_id': '10',
-        
+
 
         'date': '24/08/2024'
     },

@@ -35,11 +35,11 @@ function App(): JSX.Element {
     // <AuthorizedNavigation/>
     // <Profile/>
     // <RealmProvider>
-    // <Provider store={store}>
-    //   <MenuProvider>
-    //   <RootNavigation />
-    //   </MenuProvider>
-    // </Provider>
+    <Provider store={store}>
+      <MenuProvider>
+      <RootNavigation />
+      </MenuProvider>
+    </Provider>
     // </RealmProvider>
     // <HomeScreen/>
     // <ItemMoment/>
@@ -47,7 +47,7 @@ function App(): JSX.Element {
     // <TestSnapshot/>
     // <TestDragable/>
     // <Chat/>
-    <DetailMomentHistory></DetailMomentHistory>
+    // <DetailMomentHistory></DetailMomentHistory>
   );
 }
 
