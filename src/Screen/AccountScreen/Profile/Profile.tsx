@@ -30,7 +30,7 @@ const Profile: React.FC<ProfileProps> = props => {
   const [diaries, setdiaries] = useState<DiaryModel[]>([]);
   const [moments, setmoments] = useState<MomentModel[]>([]);
   const [friends, setfriends] = useState<FriendModel[]>([]);
-  const [isDialogVisible, setDialogVisible] = useState(true);
+  const [showAlert, setShowAlert] = useState(false);
 
 
   // lấy nhật kí
@@ -161,12 +161,12 @@ const Profile: React.FC<ProfileProps> = props => {
   // };
 
   const onConfirmLogout = () => {
-    setDialogVisible(true);
+    setShowAlert(true);
   };
 
   const handleLogout = () => {
     onHandleLogout()
-    setDialogVisible(false);
+    setShowAlert(false);
   };
 
 
@@ -306,13 +306,13 @@ const Profile: React.FC<ProfileProps> = props => {
           </View>
         </TouchableOpacity>
       </View>
-      {isDialogVisible && (
-        <Dialog
-          title="Đăng xuất"
-          message="Bạn muốn đăng xuất chứ ?"
-          onCancel={() => setDialogVisible(false)}
-          onConfirm={handleLogout} isvisible={false}/>
-      )}
+
+      <Dialog message='Bạn chắc chắn muốn đăng xuất chứ'
+        title='Đăng xuất'
+        isvisible={showAlert}
+        onConfirm={handleLogout}
+        onCancel={() => { setShowAlert(false) }}></Dialog>
+
     </ScrollView>
   );
 };
