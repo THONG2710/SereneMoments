@@ -9,25 +9,25 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
-import {styles} from './style';
+import React, { useEffect, useRef, useState } from 'react';
+import { styles } from './style';
 import ButtonIcon from '../../../Components/Buttons/ButtonIcon';
-import {Shadow} from 'react-native-shadow-2';
+import { Shadow } from 'react-native-shadow-2';
 import ItemOption from '../components/ItemOption';
 import ButtonText from '../../../Components/Buttons/ButtonText';
-import {CreateDiaryProps} from './type';
+import { CreateDiaryProps } from './type';
 import ViewShot from 'react-native-view-shot';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {firebase} from '@react-native-firebase/storage';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { firebase } from '@react-native-firebase/storage';
 import Modal from 'react-native-modal';
 import DialogOptions from '../components/DialogOptions';
 import Draggable from 'react-native-draggable';
 import ButtonDragable from '../../../Components/Buttons/ButtonDragable';
 import DialogText from '../components/DialogText';
-import {useAppSelector} from '../../../Redux/Hook';
-import {ID_ADRESS, postData} from '../../../Service/RequestMethod';
+import { useAppSelector } from '../../../Redux/Hook';
+import { ID_ADRESS, postData } from '../../../Service/RequestMethod';
 import LoadingDialog from '../../../Components/Dialogs/LoadingDialog';
-import {Colors} from '../../../Resource/colors';
+import { Colors } from '../../../Resource/colors';
 import DialogBackground from '../components/DialogBackground';
 import {
   Menu,
@@ -36,6 +36,7 @@ import {
   MenuTrigger,
 } from 'react-native-popup-menu';
 import DialogPrivacy from '../components/DialogPrivacy';
+import DialogConfirmSuccess from '../../Dialog/DialogConfirmSuccess';
 
 const listOptions = [
   {
@@ -66,7 +67,7 @@ const listOptions = [
 ];
 
 const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
-  const {navigation} = props;
+  const { navigation } = props;
   const [status, setStatus] = useState('');
   const inputRef = useRef<TextInput>(null);
   const viewShotRef = useRef<ViewShot>(null);
@@ -89,10 +90,11 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
   const [backgroundColor, setbackgroundColor] = useState<string>(Colors.WHITE);
   const [isVisiblePrivacy, setIsVisiblePrivacy] = useState(false);
   const [privacy, setPrivacy] = useState(2);
+  const [showAlert, setShowAlert] = useState(false);
 
   // chọn ảnh từ thư viện
   const getImageFromLibrary = () => {
-    launchImageLibrary({mediaType: 'photo'}, response => {
+    launchImageLibrary({ mediaType: 'photo' }, response => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.errorMessage) {
@@ -100,11 +102,11 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
       } else {
         // Hình ảnh đã được chọn thành công
         if (response.assets && response.assets[0]) {
-          const source = {uri: response.assets[0].uri};
+          const source = { uri: response.assets[0].uri };
           onCreateOneItem(
             <Image
-              style={{width: 50, height: 50}}
-              source={{uri: source.uri}}
+              style={{ width: 50, height: 50 }}
+              source={{ uri: source.uri }}
             />,
           );
         }
@@ -139,19 +141,6 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
     setbackgroundColor(color);
   };
 
-  // xác nhận đăng
-  const onConfirmPostDiary = () => {
-    Alert.alert('Xác nhận', 'Bạn muốn đăng bài này?', [
-      {
-        text: 'Hủy',
-        style: 'cancel',
-      },
-      {
-        text: 'Đăng',
-        onPress: () => onCreateDiary(),
-      },
-    ]);
-  };
 
   // xóa một item trên diary
   const onDeleteItem = (id: Number) => {
@@ -213,7 +202,7 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
             const data = {
               userid: user._id.toString(),
               diary: downloadURL.toString(),
-              createdat: date ,
+              createdat: date,
               privacy: privacy,
             };
             const res = await postData(
@@ -313,7 +302,7 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
           <DialogOptions
             onCreateItem={item =>
               onCreateOneItem(
-                <Image style={{width: 50, height: 50}} source={item.uri} />,
+                <Image style={{ width: 50, height: 50 }} source={item.uri} />,
               )
             }
             onCancel={onCancelSticker}
@@ -364,7 +353,7 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
           <View style={styles.hdLeft}>
             <Shadow style={styles.hdl_shadow} distance={2} offset={[0, 5]}>
               <Pressable style={styles.hdl_btn}>
-                <Image source={{uri: user.avatar}} style={styles.hdl_img} />
+                <Image source={{ uri: user.avatar }} style={styles.hdl_img} />
               </Pressable>
             </Shadow>
           </View>
@@ -385,12 +374,12 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
       </View>
       {/* body */}
       <Pressable style={styles.body} onPress={onFocusInContent}>
-        <ViewShot style={{backgroundColor: 'red'}} ref={viewShotRef}>
+        <ViewShot style={{ backgroundColor: 'red' }} ref={viewShotRef}>
           <Shadow distance={7} offset={[5, 5]} style={styles.bodyShadow}>
             <View
-              style={[styles.customize, {backgroundColor: backgroundColor}]}>
+              style={[styles.customize, { backgroundColor: backgroundColor }]}>
               <TextInput
-                style={{fontFamily: font, fontSize: textSize, color: textColor}}
+                style={{ fontFamily: font, fontSize: textSize, color: textColor }}
                 onChangeText={(value: string) => setContent(value)}
                 ref={inputRef}
                 multiline
@@ -403,8 +392,17 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
       </Pressable>
       {/* footer */}
       <View style={styles.footer}>
-        <ButtonText onPress={onConfirmPostDiary} label="Lưu" />
+        <ButtonText onPress={() => setShowAlert(true)} label="Lưu" />
       </View>
+
+      <DialogConfirmSuccess
+        message="Bạn có muốn đăng bài này không ?"
+        title="Thông báo!"
+        isvisible={showAlert}
+        onConfirm={onCreateDiary}
+        onCancel={() => {
+          setShowAlert(false);
+        }} />
     </View>
   );
 };

@@ -6,9 +6,9 @@ import {
   View,
   ViewProps,
 } from 'react-native';
-import React, {useEffect} from 'react';
-import {DiaryModel} from '../../Models/Model';
-import {onConvertEpochtime} from '../../Service/Service';
+import React, { useEffect } from 'react';
+import { DiaryModel } from '../../Models/Model';
+import { onConvertEpochtime } from '../../Service/Service';
 import { Colors } from '../../Resource/colors';
 
 interface ItemMyDiaryProps extends ViewProps {
@@ -16,7 +16,7 @@ interface ItemMyDiaryProps extends ViewProps {
 }
 
 const ItemMyDiary: React.FC<ItemMyDiaryProps> = props => {
-  const {diary} = props;
+  const { diary, style,  } = props;
 
   useEffect(() => {
     console.log(diary.diary);
@@ -24,12 +24,14 @@ const ItemMyDiary: React.FC<ItemMyDiaryProps> = props => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.txtDate}>{onConvertEpochtime(Number(diary.createdat))}</Text>
+      <Text  style={styles.txtDate}>{onConvertEpochtime(Number(diary.createdat))}</Text>
       <Image
-        style={styles.img}
+        style={style ?? styles.img}
+       
+
         source={
           diary.diary
-            ? {uri: diary.diary}
+            ? { uri: diary.diary }
             : require('../../Resource/images/img.jpg')
         }
       />

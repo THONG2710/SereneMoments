@@ -1,17 +1,17 @@
-import {View, Text, Image, TextInput, TouchableOpacity} from 'react-native';
+import { View, Text, Image, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import React from 'react';
 import styles from './styles';
-import {RegisterProps} from './type';
-import {useEffect, useState} from 'react';
+import { RegisterProps } from './type';
+import { useEffect, useState } from 'react';
 import ButtonIcon from '../../../Components/Buttons/ButtonIcon';
-import {text} from 'stream/consumers';
+import { text } from 'stream/consumers';
 import {
   isValidPassword,
   isValidPhoneNumber,
   isValidRePassword,
 } from '../../Validations/Validate';
 const Register: React.FC<RegisterProps> = props => {
-  const {navigation} = props;
+  const { navigation } = props;
 
   const [isVisible, setIsvisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -39,7 +39,7 @@ const Register: React.FC<RegisterProps> = props => {
       <View style={styles.containerImg}>
         <Image
           style={styles.img}
-          source={require('../../../Resource/images/img_logo2.png')}
+          source={require('../../../Resource/images/logo.png')}
         />
       </View>
       <View style={styles.btnRegister}>
@@ -71,7 +71,7 @@ const Register: React.FC<RegisterProps> = props => {
       </View>
       <View style={styles.btnRegister}>
         <Image
-          style={{width: 25, height: 25}}
+          style={{ width: 25, height: 25, tintColor: '#59AEEF' }}
           source={require('../../../Resource/images/icon_key.png')}
         />
         <TextInput
@@ -99,7 +99,7 @@ const Register: React.FC<RegisterProps> = props => {
       {/* <Text style={styles.txtError}>{errorPassWord}</Text> */}
       <View style={styles.btnRegister}>
         <Image
-          style={{width: 25, height: 25}}
+          style={{ width: 25, height: 25, tintColor: '#59AEEF' }}
           source={require('../../../Resource/images/icon_key.png')}
         />
         <TextInput
@@ -114,7 +114,7 @@ const Register: React.FC<RegisterProps> = props => {
           style={styles.txtBtn}
           placeholder="Nhập lại mật khẩu"
           secureTextEntry={!isVisible}></TextInput>
-        
+
         <ButtonIcon
           styles={styles.icon_eye}
           onPress={onChangeVisiblePassword}
