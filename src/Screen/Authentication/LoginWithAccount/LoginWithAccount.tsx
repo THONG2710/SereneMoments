@@ -5,6 +5,8 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  KeyboardAvoidingView,
+  ScrollView,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import styles from './styles';
@@ -95,7 +97,7 @@ const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <LoadingDialog isVisible={isLoading} />
       <Text style={styles.sayHello}>Xin chào.</Text>
       <Text style={styles.sayHello2}>Đăng nhập vào Semo ^.^</Text>
@@ -148,7 +150,7 @@ const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
           <Text style={styles.btnNote}>Bấm vào đây</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
