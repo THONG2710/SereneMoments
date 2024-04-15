@@ -30,16 +30,41 @@ export const setDataToStorage = async (key: string, value: any) => {
         console.log('failed to set storage: ', error);
     }
 }
- 
+
 // đọc giá trị asyncStorage
 export const getDataFromStorage = async (key: string) => {
     try {
         const value = await AsyncStorage.getItem(key);
         if (value !== null) {
             return value;
-        } 
+        }
         return null;
     } catch (error) {
         console.log('failed to get storage: ', error);
+    }
+}
+
+// chuyển đổi ngày 
+export const onConvertDay = (day: number) => {
+    if (day == 0) {
+        return 'Chủ nhật';
+    }
+    if (day == 1) {
+        return 'Thứ hai'
+    }
+    if (day == 2) {
+        return 'Thứ ba';
+    }
+    if (day == 3) {
+        return 'Thứ tư';
+    }
+    if (day == 4) {
+        return 'Thứ năm'
+    }
+    if (day == 5) {
+        return 'Thứ sáu'
+    }
+    if (day == 6) {
+        return 'Thứ bảy'
     }
 }

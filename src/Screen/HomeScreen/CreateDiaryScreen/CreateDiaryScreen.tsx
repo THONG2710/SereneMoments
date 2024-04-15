@@ -38,6 +38,12 @@ import {
 import DialogPrivacy from '../components/DialogPrivacy';
 import DialogConfirmSuccess from '../../Dialog/DialogConfirmSuccess';
 import DialogTime from '../components/DialogTime';
+import {
+  onConvertDay,
+  onConvertEpochtime,
+  onFormatNumber,
+} from '../../../Service/Service';
+import {TextTrackType} from 'react-native-video';
 
 const listOptions = [
   {
@@ -93,6 +99,11 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
   const [privacy, setPrivacy] = useState(2);
   const [showAlert, setShowAlert] = useState(false);
   const [isVisibleDialogTime, setisVisibleDialogTime] = useState(false);
+  const [day, setday] = useState(0);
+  const [date, setdate] = useState(0);
+  const [month, setmonth] = useState(0);
+  const [year, setyear] = useState(0);
+  const [customTime, setCustomTime] = useState(0);
 
   // chọn ảnh từ thư viện
   const getImageFromLibrary = () => {
@@ -143,6 +154,11 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
     setbackgroundColor(color);
   };
 
+  // chọn thời gian
+  const onSelectTime = (selected: number) => {
+    setCustomTime(selected);
+  };
+
   // xóa một item trên diary
   const onDeleteItem = (id: Number) => {
     console.log(childs);
@@ -174,7 +190,16 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
     setReRender(!reRender);
   };
 
-  useEffect(() => {}, [reRender]);
+  useEffect(() => {
+    const date = new Date();
+    const day = date.getDay();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    setday(day);
+    setmonth(month);
+    setyear(year);
+    setdate(date.getDate());
+  }, [reRender]);
 
   // đăng bài
   const onCreateDiary = () => {
@@ -305,6 +330,23 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
     setisVisibleDialogTime(false);
   };
 
+  // đến trang profile
+  const onMoveToProfile = () => {
+    navigation.getParent()?.navigate('AccountScreen')
+  }
+
+  // xử lí icon quyền riêng tư
+  const onHandlePrivacy = (privacy: number) => {
+    switch (privacy) {
+      case 1:
+        return require('../../../Resource/images/icon_editPrivate.png');
+      case 2:
+        return require('../../../Resource/images/icon_friends2.png');
+      case 3:
+        return require('../../../Resource/images/icon_earth.png');
+    }
+  };
+
   return (
     <View style={styles.container}>
       {/* dialog */}
@@ -365,14 +407,19 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
       {/* Dialog time  */}
       <Modal
         isVisible={isVisibleDialogTime}
-        children={<DialogTime onCancel={onCancelDialogTime} />}
+        children={
+          <DialogTime
+            onChooseTime={selected => onSelectTime(selected)}
+            onCancel={onCancelDialogTime}
+          />
+        }
       />
       {/* header */}
       <View style={styles.topComponent}>
         <View style={styles.header}>
           <View style={styles.hdLeft}>
             <Shadow style={styles.hdl_shadow} distance={2} offset={[0, 5]}>
-              <Pressable style={styles.hdl_btn}>
+              <Pressable style={styles.hdl_btn} onPress={onMoveToProfile}>
                 <Image source={{uri: user.avatar}} style={styles.hdl_img} />
               </Pressable>
             </Shadow>
@@ -381,7 +428,7 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
             <ButtonIcon
               onPress={onSetPrivacy}
               styles={styles.hdr_btnPrivate}
-              url={require('../../../Resource/images/icon_editPrivate.png')}
+              url={onHandlePrivacy(privacy)}
             />
             <ButtonIcon
               styles={styles.hdr_btnClose}
@@ -398,6 +445,140 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
           <Shadow distance={7} offset={[5, 5]} style={styles.bodyShadow}>
             <View
               style={[styles.customize, {backgroundColor: backgroundColor}]}>
+              <View style={styles.timeGroup}>
+                {/* kiểu bình thường */}
+                {customTime == 0 ? (
+                  <View style={styles.normalTimeGroup}>
+                    <Text
+                      style={[
+                        styles.normalTimeTxt,
+                        {
+                          fontFamily: font,
+                          fontSize: textSize > 20 ? 20 : textSize,
+                          color: textColor,
+                        },
+                      ]}>
+                      {onConvertDay(day)}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.normalTimeTxt,
+                        {
+                          fontFamily: font,
+                          fontSize: textSize > 20 ? 20 : textSize,
+                          color: textColor,
+                        },
+                      ]}>
+                      {' '}
+                      ngày {onFormatNumber(date)}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.normalTimeTxt,
+                        {
+                          fontFamily: font,
+                          fontSize: textSize > 20 ? 20 : textSize,
+                          color: textColor,
+                        },
+                      ]}>
+                      {' '}
+                      tháng {onFormatNumber(month)}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.normalTimeTxt,
+                        {
+                          fontFamily: font,
+                          fontSize: textSize > 20 ? 20 : textSize,
+                          color: textColor,
+                        },
+                      ]}>
+                      {' '}
+                      năm {year}
+                    </Text>
+                  </View>
+                ) : null}
+                {/* kiểu tối giản */}
+                {customTime == 1 ? (
+                  <View style={styles.simplifyTimeGroup}>
+                    <View style={styles.simplifyUp}>
+                      <Text
+                        style={[styles.simplifyTimetxt, {color: textColor}]}>
+                        {onConvertDay(day)}
+                      </Text>
+                      <Text
+                        style={[styles.simplifyTimetxt, {color: textColor}]}>
+                        {' '}
+                        ngày {onFormatNumber(date)}
+                      </Text>
+                    </View>
+                    <View style={styles.simplifyDown}>
+                      <Text
+                        style={[styles.simplifyTimetxt, {color: textColor}]}>
+                        {' '}
+                        tháng {onFormatNumber(month)}
+                      </Text>
+                      <Text
+                        style={[styles.simplifyTimetxt, {color: textColor}]}>
+                        {' '}
+                        năm {year}
+                      </Text>
+                    </View>
+                  </View>
+                ) : null}
+                {/* cách điệu */}
+                {customTime == 2 ? (
+                  <View style={styles.styleTimeGroup}>
+                    <Text style={[styles.styleDaytxt, {color: textColor}]}>
+                      {onConvertDay(day)}
+                    </Text>
+                    <View
+                      style={[
+                        styles.styleDateGroup,
+                        {backgroundColor: textColor},
+                      ]}>
+                      <Text style={styles.styleTimetxt}>
+                        Ngày {onFormatNumber(date)}
+                      </Text>
+                      <Text style={styles.styleTimetxt}>
+                        {' '}
+                        tháng {onFormatNumber(month)}
+                      </Text>
+                      <Text style={styles.styleTimetxt}>
+                        {' '}
+                        năm {onFormatNumber(year)}
+                      </Text>
+                    </View>
+                  </View>
+                ) : null}
+                {/* nghệ thuật */}
+                {customTime == 3 ? (
+                  <View style={styles.artTimeGroup}>
+                    <Text style={styles.artDateTxt}>
+                      {onFormatNumber(date)}
+                    </Text>
+                    <Text style={styles.artMonthtxt}>
+                      Tháng {onFormatNumber(month)}
+                    </Text>
+                    <Text style={styles.artYearTxt}>{year}</Text>
+                  </View>
+                ) : null}
+                {/* Đơn giản 2 */}
+                {customTime == 4 ? (
+                  <View style={styles.simpleTimeGroup2}>
+                    <View style={styles.simpleSmallGroup2}>
+                      <Text style={styles.simpleDateTxt2}>
+                        {onFormatNumber(date)}
+                      </Text>
+                      <Text style={styles.simpleMonthTxt2}>
+                        {onFormatNumber(month)}
+                      </Text>
+                      <Text style={styles.simpleYearTxt2}>{year}</Text>
+                    </View>
+                    <Text style={styles.simpleDayTxt}>{onConvertDay(day)}</Text>
+                  </View>
+                ) : null}
+              </View>
               <TextInput
                 style={{fontFamily: font, fontSize: textSize, color: textColor}}
                 onChangeText={(value: string) => setContent(value)}

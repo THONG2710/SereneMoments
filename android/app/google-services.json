@@ -12,7 +12,20 @@
           "package_name": "com.serenemoments"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "193796832270-lql5ds65etold55v6svi71qb5kjfag9u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.serenemoments",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "193796832270-ndghe5n576vkr7s3sg8eo3ndbvropte9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBoCG6kVTdkQ7Qv8tY3MdAoh_a1z3ZjeWg"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "193796832270-ndghe5n576vkr7s3sg8eo3ndbvropte9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

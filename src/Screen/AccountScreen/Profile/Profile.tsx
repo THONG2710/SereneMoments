@@ -22,6 +22,8 @@ import { SAVE_MYFRIENDS } from '../../../Redux/Action/FriendsActions';
 import { SAVE_MYDIARIES } from '../../../Redux/Action/DiaryActions';
 import Dialog from '../../Dialog/Dialog';
 import { LoginManager } from 'react-native-fbsdk-next';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { Colors } from '../../../Resource/colors';
 
 const Profile: React.FC<ProfileProps> = props => {
   const {navigation} = props;
@@ -136,6 +138,7 @@ const Profile: React.FC<ProfileProps> = props => {
     };
     useDispatch(SAVE_USER(user));
     await LoginManager.logOut();
+    await GoogleSignin.signOut();
     console.log('Logged out successfully!');
     // xử lí đăng xuất
     navigation
@@ -225,7 +228,7 @@ const Profile: React.FC<ProfileProps> = props => {
               source={require('../../../Resource/images/icon_friends_d.png')}></Image>
             <Text style={styles.textItem}>Bạn bè</Text>
           </View>
-          <Text style={styles.notificationItem}>{friends.length}</Text>
+          <Text style={styles.notificationItem}>{friends?.length}</Text>
         </TouchableOpacity>
       </View>
       {/* CENTERBOTTOM */}
@@ -237,7 +240,15 @@ const Profile: React.FC<ProfileProps> = props => {
             source={require('../../../Resource/images/icon_setting_d.png')}></Image>
         </View>
 
-        <TouchableOpacity style={styles.itemContentOne}>
+        {
+          myAccount.password == '' ? <TouchableOpacity disabled={true} style={[styles.itemContentOne, {backgroundColor: Colors.LIGHT_GRAY}]} >
+          <View style={styles.itemContentLeft}>
+            <Image
+              style={styles.imageItem}
+              source={require('../../../Resource/images/icon_password.png')}></Image>
+            <Text style={styles.textItem}>Đặt mật khẩu</Text>
+          </View>
+        </TouchableOpacity> : <TouchableOpacity style={styles.itemContentOne}>
           <View style={styles.itemContentLeft}>
             <Image
               style={styles.imageItem}
@@ -245,6 +256,7 @@ const Profile: React.FC<ProfileProps> = props => {
             <Text style={styles.textItem}>Đặt mật khẩu</Text>
           </View>
         </TouchableOpacity>
+        }
 
         <TouchableOpacity style={styles.itemContentThree}>
           <View style={styles.itemContentLeft}>

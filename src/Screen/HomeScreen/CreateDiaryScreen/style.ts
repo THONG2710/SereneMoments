@@ -58,7 +58,7 @@ export const styles = StyleSheet.create({
     hdr_btnClose: {
         width: 30,
         height: 30,
-        transform: [{rotate: '45deg'}],
+        transform: [{ rotate: '45deg' }],
     },
 
     // =========== options =================
@@ -111,5 +111,149 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingRight: 15,
         marginBottom: 10,
-    }
+    },
+
+    // =========== time ============
+    timeGroup: {
+
+    },
+
+    // ============================
+    normalTimeGroup: {
+        flexDirection: 'row',
+        width: '100%',
+        justifyContent: 'flex-end',
+        marginVertical: 10,
+    },
+
+    normalTimeTxt: {
+        fontSize: 18,
+        color: Colors.BLACK,
+        textAlign: 'right',
+    },
+
+    // ==================================
+    simplifyTimeGroup: {
+        flexDirection: 'column',
+        marginLeft: 20,
+        marginTop: 10,
+    },
+
+    simplifyUp: {
+        flexDirection: 'row',
+        marginLeft: 15,
+    },
+
+    simplifyDown: {
+        flexDirection: 'row',
+    },
+
+    simplifyTimetxt: {
+        fontSize: 20,
+        color: Colors.BROWN,
+        fontFamily: 'Lobster-Regular',
+    },
+
+    // ===================================================
+    styleTimeGroup: {
+        width: '100%',
+        alignItems: 'flex-start',
+    },
+
+    styleDaytxt: {
+        fontSize: 40,
+        fontFamily: 'Playball-Regular',
+        color: Colors.BLUE,
+    },
+
+    styleDateGroup: {
+        flexDirection: 'row',
+        backgroundColor: Colors.BLUE,
+        paddingHorizontal: 15,
+        paddingVertical: 7,
+        marginLeft: 20,
+    },
+
+    styleTimetxt: {
+        color: Colors.WHITE,
+        fontSize: 16,
+        fontFamily: 'Parisienne-Regular',
+    },
+
+    // ==========================================
+    artTimeGroup: {
+        width: 120,
+        height: 100,
+        alignItems: 'center',
+        justifyContent: 'center',
+        // backgroundColor: 'red'
+    },
+
+    artDateTxt: {
+        fontSize: 80,
+        color: Colors.BLACK,
+        fontFamily: 'BodoniModa-VariableFont_opsz,wght'
+    },
+
+    artMonthtxt: {
+        position: 'absolute',
+        zIndex: 10,
+        backgroundColor: Colors.WHITE,
+        fontFamily: 'PinyonScript-Regular',
+        color: Colors.BLACK,
+        fontSize: 16,
+    },
+
+    artYearTxt: {
+        position: 'absolute',
+        top: 10,
+        right: -3,
+        color: Colors.BLACK,
+    },
+
+    // ======================================================
+    simpleTimeGroup2: {
+        alignItems: "center",
+    },
+
+    simpleSmallGroup2: {
+        flexDirection: 'row',
+        width: 150,
+        borderTopWidth: 1,
+        borderBottomWidth: 1,
+        paddingVertical: 5,
+        marginVertical: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+
+    simpleDateTxt2: {
+        fontFamily: 'Playball-Regular',
+        paddingHorizontal: 10,
+        color: Colors.BLACK,
+        fontSize: 18,
+        borderRightWidth: 1,
+    },
+
+    simpleMonthTxt2: {
+        fontFamily: 'Playball-Regular',
+        paddingHorizontal: 10,
+        color: Colors.BLACK,
+        fontSize: 18,
+        borderRightWidth: 1,
+    },
+
+    simpleYearTxt2: {
+        fontFamily: 'Playball-Regular',
+        paddingHorizontal: 10,
+        color: Colors.BLACK,
+        fontSize: 18,
+    },
+
+    simpleDayTxt: {
+        color: Colors.BLACK,
+        fontSize: 24,
+        fontFamily: 'OoohBaby-Regular',
+        marginTop: -10,
+    },
 })

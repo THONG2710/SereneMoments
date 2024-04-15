@@ -1,8 +1,10 @@
 import {Pressable, StyleSheet, Text, View, ViewProps} from 'react-native';
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import Draggable from 'react-native-draggable';
 import {Colors} from '../../Resource/colors';
 import ButtonIcon from './ButtonIcon';
+import Modal from 'react-native-modal';
+import DialogSettingItemDiary from '../Dialogs/DialogSettingItemDiary';
 
 interface ButtonDragableProps extends ViewProps {
   isSlected: boolean;
@@ -13,9 +15,16 @@ interface ButtonDragableProps extends ViewProps {
 const ButtonDragable: React.FC<ButtonDragableProps> = props => {
   const {component, onDelete} = props;
   const [isSlected, setIsSlected] = useState(true);
+
   return (
     <Draggable x={50} y={50}>
       <Pressable onPress={() => setIsSlected(!isSlected)}>
+        <Modal
+          isVisible={isSlected}
+          children={
+            <DialogSettingItemDiary onCancel={() => setIsSlected(!isSlected)} />
+          }
+        />
         {isSlected ? (
           <ButtonIcon
             styleBtn={styles.btnClose}
@@ -38,7 +47,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderColor: Colors.GRAY,
     borderRadius: 5,
-    zIndex: -5
+    zIndex: -5,
   },
 
   btnClose: {
@@ -53,5 +62,5 @@ const styles = StyleSheet.create({
   iconbtn: {
     width: 20,
     height: 20,
-  }
+  },
 });

@@ -1,5 +1,5 @@
-import {View, Text, Image, TouchableOpacity} from 'react-native';
-import React, {useEffect} from 'react';
+import {View, Text, Image, TouchableOpacity, Button} from 'react-native';
+import React, {ErrorInfo, useEffect} from 'react';
 import styles from './styles';
 import {LoginProps} from './type';
 import {useAppDispatch, useAppSelector} from '../../../Redux/Hook';
@@ -18,6 +18,17 @@ import {
   SET_ISLOGGED,
 } from '../../../Redux/Action/AuthenticationActions';
 import {setDataToStorage} from '../../../Service/Service';
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
+import firebase from 'firebase/compat/app';
+
+GoogleSignin.configure({
+  scopes: ['https://www.googleapis.com/auth/drive.readonly'],
+  webClientId: '193796832270-ndghe5n576vkr7s3sg8eo3ndbvropte9.apps.googleusercontent.com',
+});
 
 const Login: React.FC<LoginProps> = props => {
   const {navigation} = props;
@@ -39,10 +50,10 @@ const Login: React.FC<LoginProps> = props => {
 
   // xử lí đăng nhập
   const handleLogin = async (
-    username: string,
+    username: string | null,
     password: string,
     email: string,
-    avatar: string,
+    avatar: string | null,
     phonenumber: string,
     createdat: number,
   ) => {
@@ -50,9 +61,9 @@ const Login: React.FC<LoginProps> = props => {
       const res = await getData(
         'http://' + ID_ADRESS + ':3000/api/users/checkEmail?email=' + email,
       );
-      console.log(res);
-      
+      // console.log('đã có tài khoản');
       if (!res.user) {
+        // console.log('chưa có tài khoản');
         const data = {
           username: username,
           password: password,
@@ -61,10 +72,13 @@ const Login: React.FC<LoginProps> = props => {
           phonenumber: phonenumber,
           createdat: createdat,
         };
+        console.log(data);
         const response = await postData(
           'http://' + ID_ADRESS + ':3000/api/users/register',
           data,
         );
+        console.log(response);
+        
         if (response.result) {
           const userCurrent = {
             _id: response.user._id,
@@ -76,6 +90,8 @@ const Login: React.FC<LoginProps> = props => {
             createdat: response.user.createdat,
             phoneNumber: response.user.phonenumber,
           };
+          console.log(userCurrent);
+          
           dispatch(SAVE_USER(userCurrent));
           setDataToStorage('IS_LOGGED', true);
           setDataToStorage('ACCOUNT', userCurrent);
@@ -118,6 +134,7 @@ const Login: React.FC<LoginProps> = props => {
     }
   };
 
+  // đăng nhập bằng facebook
   const handleLoginFacebook = async () => {
     try {
       const result = await LoginManager.logInWithPermissions([
@@ -172,6 +189,38 @@ const Login: React.FC<LoginProps> = props => {
       // Xử lý lỗi đăng nhập
     }
   };
+
+  // đăng nhập bằng google
+  const signIn = async () => {
+    try { 
+      await GoogleSignin.hasPlayServices();
+      const {idToken} = await GoogleSignin.signIn();
+      console.log('Logged in with Google!');
+      const currentUser = await GoogleSignin.getCurrentUser();;
+      if (currentUser) {
+        console.log('User ID:', currentUser.user.id);
+        console.log('Email:', currentUser.user.email);
+        console.log('Display Name:', currentUser.user.name);
+        console.log('Photo URL:', currentUser.user.photo);
+        const username =  currentUser.user.name;
+        const email = currentUser.user.email;
+        const avatar = currentUser.user.photo;
+        const date = new Date().getTime() / 1000;
+        handleLogin(username, '', email, avatar, '', date);
+      }
+    } catch (error: any) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        // user cancelled the login flow
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        // operation (e.g. sign in) is in progress already
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        // play services not available or outdated
+      } else {
+        // some other error happened
+      }
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.sayHello}>Xin chào.</Text>
@@ -181,7 +230,7 @@ const Login: React.FC<LoginProps> = props => {
           source={require('../../../Resource/images/img_logo.png')}
         />
       </View>
-      <TouchableOpacity onPress={onLogin}>
+      <TouchableOpacity onPress={signIn}>
         <View style={styles.btnLogin}>
           <Image
             style={styles.imgIcon}
