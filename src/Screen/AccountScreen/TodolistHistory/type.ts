@@ -2,11 +2,11 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AccountParamlist } from "../../../StoryBoard/AccountStoryboard";
 import { RouteProp } from "@react-navigation/native";
 
-export type TodolistHistoryNavigationProps = NativeStackNavigationProp<AccountParamlist, 'TodoList'>;
+export type TodoListHistoryNavigationProps = NativeStackNavigationProp<AccountParamlist, 'TodoListHistory'>;
 
-export type TodolistHistoryRouterProps = RouteProp<AccountParamlist, 'TodoList'>;
+export type TodoListHistoryRouterProps = RouteProp<AccountParamlist, 'TodoListHistory'>;
 
-export type TodolistHistoryProps = {
-    navigation: TodolistHistoryNavigationProps,
-    route: TodolistHistoryRouterProps,
+export type TodoListHistoryProps = {
+    navigation: TodoListHistoryNavigationProps,
+    route: TodoListHistoryRouterProps,
 }
