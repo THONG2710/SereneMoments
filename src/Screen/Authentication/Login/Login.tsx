@@ -227,7 +227,7 @@ const Login: React.FC<LoginProps> = props => {
       <View style={styles.containerImg}>
         <Image
           style={styles.img}
-          source={require('../../../Resource/images/img_logo.png')}
+          source={require('../../../Resource/images/logo.png')}
         />
       </View>
       <TouchableOpacity onPress={signIn}>
@@ -242,7 +242,7 @@ const Login: React.FC<LoginProps> = props => {
       <TouchableOpacity onPress={handleLoginFacebook}>
         <View style={styles.btnLogin}>
           <Image
-            style={styles.imgIcon}
+            style={styles.imgIconFB}
             source={require('../../../Resource/images/icon_facebook.png')}
           />
           <Text style={styles.txtBtn}>Đăng nhập bằng facebook</Text>

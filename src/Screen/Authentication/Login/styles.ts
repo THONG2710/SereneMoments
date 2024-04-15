@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
   sayHello: {
     fontSize: 50,
     fontWeight: 'bold',
-    color: '#8D6666',
+    color: '#176B87',
     textAlign: 'center',
     marginTop: 50,
   },
@@ -25,9 +25,15 @@ const styles = StyleSheet.create({
   imgIcon: {
     width: 25,
     height: 24,
+    tintColor:'#1976d2'
+  },
+
+  imgIconFB: {
+    width: 25,
+    height: 24,
   },
   btnLogin: {
-    backgroundColor: '#A87070',
+    backgroundColor: '#C5E6FF',
     borderRadius: 30,
     marginHorizontal: 15,
     height: 50,
@@ -38,7 +44,7 @@ const styles = StyleSheet.create({
   },
   txtBtn: {
     marginLeft: 15,
-    color: 'white',
+    color: '#176B87',
     fontSize: 15,
   },
   containerRegister: {
@@ -48,26 +54,26 @@ const styles = StyleSheet.create({
   },
   txtRegister: {
     fontSize: 15,
-    color: '#9F7474',
+    color: '#176B87',
     fontWeight: '600',
   },
   register: {
     fontSize: 15,
-    color: 'black',
+    color: '#176B87',
     fontWeight: '600',
     marginLeft: 5,
   },
   txtNote: {
     fontSize: 15,
     fontWeight: '400',
-    color: 'black',
+    color: '#176B87',
     textAlign: 'center',
     marginTop: 50,
   },
   btnNote: {
     fontSize: 15,
     fontWeight: '600',
-    color: 'black',
+    color: '#176B87',
     textAlign: 'center',
   },
   

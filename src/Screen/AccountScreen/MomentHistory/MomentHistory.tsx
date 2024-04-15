@@ -29,6 +29,10 @@ const MomentHistory: React.FC<MomentHistorProps> = props => {
     navigation.goBack();
   };
 
+  const onMoveDetailMomentHistory = () => {
+    navigation.navigate('DetailMomentHistory')
+  }
+
   return (
     // CONTAINER
     <View style={styles.container}>
@@ -80,7 +84,7 @@ const MomentHistory: React.FC<MomentHistorProps> = props => {
           numColumns={3}
           data={moments}
           renderItem={({item}) => (
-            <TouchableOpacity
+            <TouchableOpacity onPress={onMoveDetailMomentHistory}
               key={item._id.toString()}
               style={styles.itemHistory}>
               <Image

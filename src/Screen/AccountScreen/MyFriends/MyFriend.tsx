@@ -7,23 +7,23 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Dialog from '../../Dialog/Dialog';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import DialogConfirmSuccess from '../../Dialog/DialogConfirmSuccess';
 import DialogConfirmFailure from '../../Dialog/DialogConfirmFailure';
-import { UserModel } from '../../../Models/Model';
+import {UserModel} from '../../../Models/Model';
 import ButtonIcon from '../../../Components/Buttons/ButtonIcon';
-import { Colors } from '../../../Resource/colors';
-import { ID_ADRESS, getData } from '../../../Service/RequestMethod';
-import { useAppSelector } from '../../../Redux/Hook';
+import {Colors} from '../../../Resource/colors';
+import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
+import {useAppSelector} from '../../../Redux/Hook';
 import ButtonText from '../../../Components/Buttons/ButtonText';
-import { MyFriendsProps } from './type';
-import LinearButtonAdd from '../../../Components/Buttons/LinearButtonAdd';
+import {MyFriendsProps} from './type';
 import LinearButtonCancel from '../../../Components/Buttons/LinearButtonCancel';
+import ButtonUnfriend from '../../../Components/Buttons/ButtonUnFriend';
 
 const MyFriend: React.FC<MyFriendsProps> = props => {
-  const { navigation } = props;
+  const {navigation} = props;
   const [showAlert, setShowAlert] = useState(false);
   const [friends, setFriends] = useState<UserModel[]>([]);
   const [selectedFriend, setSelectedFriend] = useState<UserModel>();
@@ -37,7 +37,7 @@ const MyFriend: React.FC<MyFriendsProps> = props => {
 
   useEffect(() => {
     setFriends(myFriends);
-
+    
   }, []);
 
   //   xóa bạn bè
@@ -61,15 +61,15 @@ const MyFriend: React.FC<MyFriendsProps> = props => {
     return (
       <View key={item._id.toString()} style={styles.itemFriend}>
         <View style={styles.itemFriendLeft}>
-          <Image style={styles.imgAvatar} source={item.avatar ? { uri: item.avatar } : require('../../../Resource/images/avatar.png')}></Image>
+          <Image style={styles.imgAvatar} source={item.avatar ? {uri: item.avatar} : require('../../../Resource/images/avatar.png')}></Image>
           <View style={styles.friend}>
             <Text style={styles.nameFriend}>{item.username}</Text>
             {/* <Text style={styles.manutalFriend}>{item.manutalFriend}</Text> */}
           </View>
         </View>
-        <LinearButtonCancel
+        <ButtonUnfriend
           onPress={() => handleDeleteFriend(item)}
-          style={styles.right_btnStyleCancel}
+          buttonStyle={styles.btnStyle}
           label="Xóa"
         />
       </View>
@@ -242,12 +242,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-  right_btnStyleCancel: {
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 5,
-    color: Colors.WHITE,
-    fontWeight: 'bold',
-  },
   // DIALOG
 });

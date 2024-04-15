@@ -6,21 +6,21 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './styles';
-import {LoginWithAccountProps} from './type';
-import {ID_ADRESS, postData} from '../../../Service/RequestMethod';
-import {useAppDispatch, useAppSelector} from '../../../Redux/Hook';
+import { LoginWithAccountProps } from './type';
+import { ID_ADRESS, postData } from '../../../Service/RequestMethod';
+import { useAppDispatch, useAppSelector } from '../../../Redux/Hook';
 import {
   SAVE_USER,
   SET_ISLOGGED,
 } from '../../../Redux/Action/AuthenticationActions';
 import ButtonIcon from '../../../Components/Buttons/ButtonIcon';
 import LoadingDialog from '../../../Components/Dialogs/LoadingDialog';
-import {setDataToStorage} from '../../../Service/Service';
+import { setDataToStorage } from '../../../Service/Service';
 
 const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
-  const {navigation} = props;
+  const { navigation } = props;
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const is_logged = useAppSelector(state => state.Authentication.isLogged);
@@ -37,7 +37,7 @@ const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
   };
 
   const onLogin = async () => {
-    const data = {phoneNumber: phoneNumber, password: password};
+    const data = { phoneNumber: phoneNumber, password: password };
     const res = await postData(
       'http://' + ID_ADRESS + ':3000/api/users/loginWithPhoneNumber',
       data,
@@ -75,7 +75,7 @@ const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
       usdispath(SET_ISLOGGED(true));
       navigation.getParent()?.reset({
         index: 0,
-        routes: [{name: 'AuthorizedNavigation'}],
+        routes: [{ name: 'AuthorizedNavigation' }],
       });
     }
   };
@@ -88,7 +88,7 @@ const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
       <View style={styles.containerImg}>
         <Image
           style={styles.img}
-          source={require('../../../Resource/images/img_logo2.png')}
+          source={require('../../../Resource/images/logo.png')}
         />
       </View>
       <View style={styles.btnRegister}>
@@ -103,7 +103,7 @@ const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
       </View>
       <View style={styles.btnRegister}>
         <Image
-          style={{width: 25, height: 25}}
+          style={{ width: 25, height: 25, tintColor: '#59AEEF' }}
           source={require('../../../Resource/images/icon_key.png')}
         />
         <TextInput
