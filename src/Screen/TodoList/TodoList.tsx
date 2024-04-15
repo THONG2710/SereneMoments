@@ -201,9 +201,9 @@ const TodoList = () => {
 
       {/* FOOTER */}
       {/* ADD TODOLIST */}
-      {/* <View style={styles.footer}>
+      <View style={styles.footer}>
         <View style={styles.addTodo}>
-          <TouchableOpacity style={styles.checkbox}></TouchableOpacity>
+          {/* <TouchableOpacity style={styles.checkbox}></TouchableOpacity> */}
           <TextInput
             style={styles.addInput}
             placeholder="Kế hoạch gì nhờ..."
@@ -214,7 +214,7 @@ const TodoList = () => {
         <TouchableOpacity style={styles.btnAdd} onPress={onCreateWork}>
           <Text style={styles.textAdd}>Lưu</Text>
         </TouchableOpacity>
-      </View> */}
+      </View>
     </View>
   );
 };
@@ -382,11 +382,13 @@ const styles = StyleSheet.create({
 
   addInput: {
     height: 40,
+    paddingLeft: 15,
   },
 
   btnAdd: {
     backgroundColor: '#499EDC',
     borderRadius: 10,
+    height: 40,
   },
 
   textAdd: {

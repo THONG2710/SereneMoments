@@ -1,7 +1,8 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View, TextInput, ScrollView, Dimensions } from 'react-native'
 import React, { useState } from 'react'
+import { DetailTodoListHistoryProps } from './type';
 
-const DetailTodoListHistory = () => {
+const DetailTodoListHistory: React.FC<DetailTodoListHistoryProps> = () => {
     const [newTask, setNewTask] = useState('');
     const [completedTasks, setCompletedTasks] = useState([]);
     const [showCompletedTasks, setShowCompletedTasks] = useState(true);

@@ -10,6 +10,7 @@ import MyFriend from './MyFriends/MyFriend';
 import DiariesHistory from './DiariesHistory/DiariesHistory';
 import TodolistHistory from './TodolistHistory/TodolistHistory'
 import DetailMomentHistory from './DetailMomentHistory/DetailMomentHistory';
+import DetailTodoListHistory from './DetailTodoListHistory/DetailTodoListHistory';
 
 const stack = createStackNavigator<AccountParamlist>();
 
@@ -23,6 +24,7 @@ const AccountScreen = () => {
       <stack.Screen name='DiariesHistory' component={DiariesHistory}/>
       <stack.Screen name='TodoList' component={TodolistHistory}/>
       <stack.Screen name='DetailMomentHistory' component={DetailMomentHistory}/>
+      <stack.Screen name='DetailTodoListHistory' component={DetailTodoListHistory}/>
       {/* <stack.Screen /> */}
     </stack.Navigator>
   );

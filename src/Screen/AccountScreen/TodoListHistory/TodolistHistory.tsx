@@ -13,9 +13,9 @@ import moment from 'moment';
 import DatePicker from 'react-native-date-picker';
 import {Colors} from '../../../Resource/colors';
 import LinearGradient from 'react-native-linear-gradient';
-import {TodolistHistoryProps} from './type';
+import {TodoListHistoryProps} from './type';
 
-const TodolistHistory: React.FC<TodolistHistoryProps> = props => {
+const TodolistHistory: React.FC<TodoListHistoryProps> = props => {
   const {navigation} = props;
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
@@ -26,6 +26,10 @@ const TodolistHistory: React.FC<TodolistHistoryProps> = props => {
   // quay lại màn hình trước
   const onGoBack = () => {
     navigation.goBack();
+  };
+
+  const onMoveToDetail = () => {
+    navigation.navigate('DetailTodoListHistory');
   };
 
   return (
@@ -62,7 +66,7 @@ const TodolistHistory: React.FC<TodolistHistoryProps> = props => {
       <View style={styles.center}>
         <View>
           {History.map((item, i) => (
-            <TouchableOpacity style={styles.listDateTodo} key={item._id}>
+            <TouchableOpacity style={styles.listDateTodo} key={item._id} onPress={onMoveToDetail}>
               <LinearGradient
                 style={styles.background}
                 colors={['#53C3F3', '#60C8E9', '#97D4EB']}>

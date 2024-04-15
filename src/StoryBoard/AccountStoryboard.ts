@@ -5,5 +5,6 @@ export type AccountParamlist = {
     MyFriends: undefined,
     DiariesHistory: undefined,
     TodoList: undefined,
-    DetailMomentHistory: undefined
+    DetailMomentHistory: undefined,
+    DetailTodoListHistory: undefined
 }
