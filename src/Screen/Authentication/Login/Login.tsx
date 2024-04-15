@@ -1,4 +1,4 @@
-import {View, Text, Image, TouchableOpacity} from 'react-native';
+import {View, Text, Image, TouchableOpacity, ScrollView, KeyboardAvoidingView} from 'react-native';
 import React, {useEffect} from 'react';
 import styles from './styles';
 import {LoginProps} from './type';
@@ -90,7 +90,7 @@ const Login: React.FC<LoginProps> = props => {
     }
   };
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView  style={styles.container}>
       <Text style={styles.sayHello}>Xin chào.</Text>
       <View style={styles.containerImg}>
         <Image
@@ -136,7 +136,7 @@ const Login: React.FC<LoginProps> = props => {
       <TouchableOpacity>
         <Text style={styles.btnNote}>điều khoản & chính sách riêng tư</Text>
       </TouchableOpacity>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

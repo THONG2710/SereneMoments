@@ -33,7 +33,7 @@ const Register: React.FC<RegisterProps> = props => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.sayHello}>Xin chào.</Text>
       <Text style={styles.sayHello2}>Đăng ký ngay !! ^.^</Text>
       <View style={styles.containerImg}>
@@ -139,7 +139,7 @@ const Register: React.FC<RegisterProps> = props => {
           <Text style={styles.btnNote}>Đăng nhập</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
