@@ -14,16 +14,21 @@ import {
   SET_ISLOGGED,
 } from '../../../Redux/Action/AuthenticationActions';
 import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
-import {DiaryModel, FriendModel, MomentModel, TodoList} from '../../../Models/Model';
+import {
+  DiaryModel,
+  FriendModel,
+  MomentModel,
+  TodoList,
+} from '../../../Models/Model';
 import {getDataFromStorage, setDataToStorage} from '../../../Service/Service';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {SAVE_MYMOMENTS} from '../../../Redux/Action/MomentActions';
-import { SAVE_MYFRIENDS } from '../../../Redux/Action/FriendsActions';
-import { SAVE_MYDIARIES } from '../../../Redux/Action/DiaryActions';
+import {SAVE_MYFRIENDS} from '../../../Redux/Action/FriendsActions';
+import {SAVE_MYDIARIES} from '../../../Redux/Action/DiaryActions';
 import Dialog from '../../Dialog/Dialog';
-import { LoginManager } from 'react-native-fbsdk-next';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { Colors } from '../../../Resource/colors';
+import {LoginManager} from 'react-native-fbsdk-next';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {Colors} from '../../../Resource/colors';
 
 const Profile: React.FC<ProfileProps> = props => {
   const {navigation} = props;
@@ -82,7 +87,7 @@ const Profile: React.FC<ProfileProps> = props => {
       );
       if (response.result) {
         setfriends(response.friends);
-        useDispatch(SAVE_MYFRIENDS(response.friends))
+        useDispatch(SAVE_MYFRIENDS(response.friends));
       }
     } catch (error) {
       console.log('get friends failled: ' + error);
@@ -99,15 +104,15 @@ const Profile: React.FC<ProfileProps> = props => {
     navigation.navigate('MyFriends');
   };
 
-  //đến todo list 
+  //đến todo list
   const onMoveToTodoList = () => {
     navigation.navigate('TodoList');
-  }
-  
+  };
+
   // đến trang nhật kí của tôi
   const onMoveToMyDiary = () => {
     navigation.navigate('DiariesHistory');
-  }
+  };
   useEffect(() => {
     getDiaries();
     getMoments();
@@ -135,22 +140,31 @@ const Profile: React.FC<ProfileProps> = props => {
       avatar: '',
       createdat: 0,
       phoneNumber: '',
+      isavailable: false,
     };
     useDispatch(SAVE_USER(user));
     await LoginManager.logOut();
     await GoogleSignin.signOut();
     console.log('Logged out successfully!');
     // xử lí đăng xuất
-    navigation
-      .getParent()
-      ?.getParent()
-      ?.reset({
+    // navigation
+    //   .getParent()
+    //   ?.getParent()
+    //   ?.reset({
+    //     index: 0,
+    //     routes: [{name: 'AuthenticationNavigation'}],
+    //   });
+    const parentNavigation = navigation.getParent();
+    const grandParentNavigation = parentNavigation?.getParent();
+
+    if (grandParentNavigation) {
+      grandParentNavigation.reset({
         index: 0,
         routes: [{name: 'AuthenticationNavigation'}],
       });
+    }
   };
 
- 
   // chỉnh sửa thông tin cá nhân
   const onEditProfile = () => {
     navigation.navigate('EditProfile');
@@ -185,7 +199,9 @@ const Profile: React.FC<ProfileProps> = props => {
             style={styles.imgTitle}
             source={require('../../../Resource/images/icon_user_d.png')}></Image>
         </View>
-        <TouchableOpacity style={styles.itemContentOne} onPress={onMoveToMyDiary}>
+        <TouchableOpacity
+          style={styles.itemContentOne}
+          onPress={onMoveToMyDiary}>
           <View style={styles.itemContentLeft}>
             <Image
               style={styles.imageItem}
@@ -240,23 +256,30 @@ const Profile: React.FC<ProfileProps> = props => {
             source={require('../../../Resource/images/icon_setting_d.png')}></Image>
         </View>
 
-        {
-          myAccount.password == '' ? <TouchableOpacity disabled={true} style={[styles.itemContentOne, {backgroundColor: Colors.LIGHT_GRAY}]} >
-          <View style={styles.itemContentLeft}>
-            <Image
-              style={styles.imageItem}
-              source={require('../../../Resource/images/icon_password.png')}></Image>
-            <Text style={styles.textItem}>Đặt mật khẩu</Text>
-          </View>
-        </TouchableOpacity> : <TouchableOpacity style={styles.itemContentOne}>
-          <View style={styles.itemContentLeft}>
-            <Image
-              style={styles.imageItem}
-              source={require('../../../Resource/images/icon_password.png')}></Image>
-            <Text style={styles.textItem}>Đặt mật khẩu</Text>
-          </View>
-        </TouchableOpacity>
-        }
+        {myAccount.password == '' ? (
+          <TouchableOpacity
+            disabled={true}
+            style={[
+              styles.itemContentOne,
+              {backgroundColor: Colors.LIGHT_GRAY},
+            ]}>
+            <View style={styles.itemContentLeft}>
+              <Image
+                style={styles.imageItem}
+                source={require('../../../Resource/images/icon_password.png')}></Image>
+              <Text style={styles.textItem}>Đặt mật khẩu</Text>
+            </View>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.itemContentOne}>
+            <View style={styles.itemContentLeft}>
+              <Image
+                style={styles.imageItem}
+                source={require('../../../Resource/images/icon_password.png')}></Image>
+              <Text style={styles.textItem}>Đặt mật khẩu</Text>
+            </View>
+          </TouchableOpacity>
+        )}
 
         <TouchableOpacity style={styles.itemContentThree}>
           <View style={styles.itemContentLeft}>
@@ -278,7 +301,7 @@ const Profile: React.FC<ProfileProps> = props => {
         </View>
         <TouchableOpacity
           style={styles.itemContentOne}
-          onPress={()=>setShowAlert(true)}>
+          onPress={() => setShowAlert(true)}>
           <View style={styles.itemContentLeft}>
             <Image
               style={styles.imageItem}
@@ -303,7 +326,8 @@ const Profile: React.FC<ProfileProps> = props => {
         onConfirm={onHandleLogout}
         onCancel={() => {
           setShowAlert(false);
-        }} />
+        }}
+      />
     </View>
   );
 };

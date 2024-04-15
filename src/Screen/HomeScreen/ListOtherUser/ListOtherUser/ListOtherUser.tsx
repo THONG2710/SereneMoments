@@ -1,4 +1,4 @@
-import {FlatList, StyleSheet, Text, View} from 'react-native';
+import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import InputBox from '../../../../Components/Inputs/InputBox';
 import ButtonIcon from '../../../../Components/Buttons/ButtonIcon';
@@ -26,6 +26,8 @@ const ListOtherUser: React.FC<ListOtherUsersProps> = props => {
     const res = await getData(
       'http://' + ID_ADRESS + ':3000/api/friend/getOtherUsers/' + user._id,
     );
+    console.log(user._id);
+
     if (res.result) {
       setotherUsers(res.users);
     }
@@ -80,14 +82,14 @@ const ListOtherUser: React.FC<ListOtherUsersProps> = props => {
   return (
     <View style={styles.container}>
       {/* body */}
-      <View style={styles.body}>
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.body}>
         {usersSentRequest.length > 0 && (
           <View style={styles.listContainer}>
             <Text style={styles.title}>Gần đây</Text>
-            <FlatList
-              data={usersSentRequest}
-              renderItem={({item}) => (
+            {usersSentRequest.map(item => {
+              return (
                 <ItemUser
+                  key={item.user._id.toString()}
                   onCancelRequest={() =>
                     onCancelRequest(item.friend._id.toString())
                   }
@@ -95,27 +97,25 @@ const ListOtherUser: React.FC<ListOtherUsersProps> = props => {
                   isSent={true}
                   user={item.user}
                 />
-              )}
-              keyExtractor={item => item.user._id.toString()}
-            />
+              );
+            })}
           </View>
         )}
         <View style={styles.listContainer}>
           <Text style={styles.title}>Thêm bạn mới</Text>
-          <FlatList
-            data={otherUsers}
-            renderItem={({item}) => (
+          {otherUsers.map(item => {
+            return (
               <ItemUser
+                key={item._id.toString()}
                 onCancelRequest={() => null}
                 onHandlePress={id => onAddFriend(id)}
                 isSent={false}
                 user={item}
               />
-            )}
-            keyExtractor={item => item._id.toString()}
-          />
+            );
+          })}
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 };

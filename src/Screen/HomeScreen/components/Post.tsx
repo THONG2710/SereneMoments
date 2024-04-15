@@ -128,7 +128,7 @@ const Post: React.FC<PostProps> = props => {
     getUser();
   }, []);
 
-  return (
+  return diary.isavailable ? (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
@@ -219,7 +219,7 @@ const Post: React.FC<PostProps> = props => {
       {/* body */}
       <Image source={{uri: diary.diary.toString()}} style={styles.body}></Image>
     </View>
-  );
+  ) : null;
 };
 
 export default Post;

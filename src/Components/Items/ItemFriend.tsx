@@ -32,7 +32,7 @@ const ItemFriend: React.FC<ItemFriendProps> = props => {
           />
         </View>
       </Shadow>
-      <Text style={styles.txtName}>{information.username}</Text>
+      <Text numberOfLines={1} style={styles.txtName}>{information.username}</Text>
     </Pressable>
   );
 };

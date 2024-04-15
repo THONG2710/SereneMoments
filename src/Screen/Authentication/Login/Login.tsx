@@ -27,7 +27,8 @@ import firebase from 'firebase/compat/app';
 
 GoogleSignin.configure({
   scopes: ['https://www.googleapis.com/auth/drive.readonly'],
-  webClientId: '193796832270-ndghe5n576vkr7s3sg8eo3ndbvropte9.apps.googleusercontent.com',
+  webClientId:
+    '193796832270-ndghe5n576vkr7s3sg8eo3ndbvropte9.apps.googleusercontent.com',
 });
 
 const Login: React.FC<LoginProps> = props => {
@@ -78,7 +79,7 @@ const Login: React.FC<LoginProps> = props => {
           data,
         );
         console.log(response);
-        
+
         if (response.result) {
           const userCurrent = {
             _id: response.user._id,
@@ -89,9 +90,10 @@ const Login: React.FC<LoginProps> = props => {
             avatar: response.user.avatar,
             createdat: response.user.createdat,
             phoneNumber: response.user.phonenumber,
+            isavailable: response.user.isavailable,
           };
           console.log(userCurrent);
-          
+
           dispatch(SAVE_USER(userCurrent));
           setDataToStorage('IS_LOGGED', true);
           setDataToStorage('ACCOUNT', userCurrent);
@@ -192,17 +194,17 @@ const Login: React.FC<LoginProps> = props => {
 
   // đăng nhập bằng google
   const signIn = async () => {
-    try { 
+    try {
       await GoogleSignin.hasPlayServices();
       const {idToken} = await GoogleSignin.signIn();
       console.log('Logged in with Google!');
-      const currentUser = await GoogleSignin.getCurrentUser();;
+      const currentUser = await GoogleSignin.getCurrentUser();
       if (currentUser) {
         console.log('User ID:', currentUser.user.id);
         console.log('Email:', currentUser.user.email);
         console.log('Display Name:', currentUser.user.name);
         console.log('Photo URL:', currentUser.user.photo);
-        const username =  currentUser.user.name;
+        const username = currentUser.user.name;
         const email = currentUser.user.email;
         const avatar = currentUser.user.photo;
         const date = new Date().getTime() / 1000;

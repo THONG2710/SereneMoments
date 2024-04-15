@@ -1,42 +1,57 @@
-import { Image, ImageBackground, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
-import React, { useState } from 'react'
-import { Dimensions } from 'react-native';
-import { SelectList } from 'react-native-dropdown-select-list'
+import {
+  Image,
+  ImageBackground,
+  KeyboardAvoidingView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
+import React, {useState} from 'react';
+import {Dimensions} from 'react-native';
+import {SelectList} from 'react-native-dropdown-select-list';
+import {DetailMomentHistoryProps} from './type';
 
 const w = Dimensions.get('window').width;
 const h = Dimensions.get('window').height;
 
-
-const DetailMomentHistory = () => {
+const DetailMomentHistory: React.FC<DetailMomentHistoryProps> = props => {
   const [showAlert, setShowAlert] = useState(false);
 
-  const [selected, setSelected] = useState("");
-  const [heart, setHeart] = useState(false)
+  const [selected, setSelected] = useState('');
+  const [heart, setHeart] = useState(false);
   const Liked = () => {
-    setHeart(!heart)
-  }
-  const data = [
-    { key: '1', value: 'Nguyễn Trường' },
-  ]
+    setHeart(!heart);
+  };
+  const data = [{key: '1', value: 'Nguyễn Trường'}];
   return (
     //CONTAINER
     <ScrollView style={styles.container}>
       {/* HEADER */}
       <View style={styles.header}>
         <View style={styles.backgroundImage}>
-          <Image style={styles.imgAVT} source={require('../../../Resource/images/avatar.png')}></Image>
+          <Image
+            style={styles.imgAVT}
+            source={require('../../../Resource/images/avatar.png')}></Image>
         </View>
-       
+
         <View style={styles.backgroundImageMN}>
-          <View >
-            <Image style={styles.imgMN} source={require('../../../Resource/images/icon_menu.png')}></Image>
+          <View>
+            <Image
+              style={styles.imgMN}
+              source={require('../../../Resource/images/icon_menu.png')}></Image>
           </View>
         </View>
       </View>
 
       {/* CENTER */}
       <View style={styles.center}>
-        <ImageBackground source={require('../../../Resource/images/img.jpg')} resizeMode="cover" style={styles.image} imageStyle={{ borderRadius: 30 }}>
+        <ImageBackground
+          source={require('../../../Resource/images/img.jpg')}
+          resizeMode="cover"
+          style={styles.image}
+          imageStyle={{borderRadius: 30}}>
           <View style={styles.backgroundTextContent}>
             <Text style={styles.textContent}>Em người yêu cũ</Text>
           </View>
@@ -47,7 +62,9 @@ const DetailMomentHistory = () => {
         <View style={styles.poster}>
           <View style={styles.namePoster}>
             <View style={styles.backgroundImage}>
-              <Image style={styles.imgAVT} source={require('../../../Resource/images/avatar.png')}></Image>
+              <Image
+                style={styles.imgAVT}
+                source={require('../../../Resource/images/avatar.png')}></Image>
             </View>
             <Text style={styles.textPoster}>Trường sad boy</Text>
           </View>
@@ -58,38 +75,37 @@ const DetailMomentHistory = () => {
         </View>
 
         <View style={styles.interact}>
-          <View style={styles.interactLeft} >
-            <Image style={styles.imgInteract} source={require('../../../Resource/Image2/hearted.png')}></Image>
+          <View style={styles.interactLeft}>
+            <Image
+              style={styles.imgInteract}
+              source={require('../../../Resource/Image2/hearted.png')}></Image>
             <Text style={styles.textInteract}>30</Text>
           </View>
-          <Image style={styles.line} source={require('../../../Resource/images/Line.png')}></Image>
+          <Image
+            style={styles.line}
+            source={require('../../../Resource/images/Line.png')}></Image>
 
           <View style={styles.interactRight}>
             {/* <Image style={styles.imgInteract} source={{ uri: COMMENT }}></Image> */}
             <Text style={styles.textInteract}>64</Text>
           </View>
         </View>
-
-
       </View>
     </ScrollView>
-  )
-}
+  );
+};
 
-export default DetailMomentHistory
+export default DetailMomentHistory;
 
 const styles = StyleSheet.create({
   //CONTAINER
-  container:
-  {
+  container: {
     flex: 1,
-    backgroundColor: '#B4D4FF'
-
+    backgroundColor: '#B4D4FF',
   },
 
   //HEADER
-  header:
-  {
+  header: {
     marginHorizontal: 25,
     marginVertical: 25,
     justifyContent: 'space-between',
@@ -97,8 +113,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  backgroundImage:
-  {
+  backgroundImage: {
     width: 42,
     height: 42,
     backgroundColor: 'white',
@@ -107,7 +122,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     elevation: 15, // chỉ dùng cho Android
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
 
   dropdownContainer: {
@@ -115,11 +130,10 @@ const styles = StyleSheet.create({
     top: 0,
     zIndex: 1,
     alignItems: 'center',
-    left: 80
+    left: 80,
   },
 
-  selectedList:
-  {
+  selectedList: {
     backgroundColor: 'white',
     borderRadius: 50,
     borderWidth: 0,
@@ -130,38 +144,32 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  inputStylesSelected:
-  {
+  inputStylesSelected: {
     color: '#176B87',
     fontWeight: 'bold',
-    marginHorizontal: 10
-
+    marginHorizontal: 10,
   },
 
-  dropdownStylesSelected:
-  {
+  dropdownStylesSelected: {
     backgroundColor: 'white',
     borderWidth: 0,
     width: 200,
     fontWeight: 'bold',
-    zIndex: 1
+    zIndex: 1,
   },
 
-  textDropdownStyles:
-  {
+  textDropdownStyles: {
     color: '#176B87',
-    fontWeight: '500'
+    fontWeight: '500',
   },
 
-  imgAVT:
-  {
+  imgAVT: {
     width: 40,
     height: 40,
-    borderRadius: 20
+    borderRadius: 20,
   },
 
-  backgroundImageMN:
-  {
+  backgroundImageMN: {
     width: 30,
     height: 30,
     backgroundColor: 'white',
@@ -170,21 +178,19 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     elevation: 15, // chỉ dùng cho Android
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
 
-  imgMN:
-  {
+  imgMN: {
     width: 28,
     height: 28,
   },
 
   //CENTER
-  center:
-  {
+  center: {
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: -1
+    zIndex: -1,
   },
 
   image: {
@@ -193,69 +199,57 @@ const styles = StyleSheet.create({
     height: 400,
     marginTop: 10,
     borderRadius: 30,
-
   },
 
-  backgroundTextContent:
-  {
+  backgroundTextContent: {
     backgroundColor: 'rgba(255, 255, 255, 0.5)',
     marginBottom: 20,
     marginHorizontal: 15,
     borderRadius: 30,
     paddingHorizontal: 10,
-
   },
   textContent: {
     color: '#000',
     fontSize: 14,
     fontWeight: 'bold',
     textAlign: 'center',
-    padding: 10
+    padding: 10,
   },
 
   // FOOTER
-  footer:
-  {
-    marginTop: 30
-
+  footer: {
+    marginTop: 30,
   },
 
-  poster:
-  {
+  poster: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginHorizontal: 20,
-
   },
 
-  namePoster:
-  {
+  namePoster: {
     flexDirection: 'row',
     alignItems: 'center',
   },
 
-  textPoster:
-  {
+  textPoster: {
     fontSize: 14,
     marginLeft: 5,
     fontWeight: 'bold',
     color: '#000',
   },
 
-  timePoster:
-  {
+  timePoster: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
 
-  textTime:
-  {
+  textTime: {
     marginHorizontal: 2,
-    fontWeight: '500'
+    fontWeight: '500',
   },
 
-  interact:
-  {
+  interact: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginHorizontal: 20,
@@ -265,73 +259,63 @@ const styles = StyleSheet.create({
     padding: 5,
     borderRadius: 10,
     marginTop: 20,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 12,
     },
     shadowOpacity: 0.58,
-    shadowRadius: 16.00,
+    shadowRadius: 16.0,
 
     elevation: 24,
-
   },
 
-  interactLeft:
-  {
+  interactLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     marginLeft: 50,
-
   },
 
-  interactRight:
-  {
+  interactRight: {
     flexDirection: 'row',
     alignItems: 'center',
     marginRight: 50,
   },
 
-  imgInteract:
-  {
+  imgInteract: {
     width: 24,
-    height: 24
+    height: 24,
   },
 
-  textInteract:
-  {
+  textInteract: {
     color: '#000',
     fontWeight: '500',
-    marginLeft: 5
+    marginLeft: 5,
   },
 
-  line:
-  {
+  line: {
     width: 1,
-    height:25
+    height: 25,
   },
 
-  send:
-  {
+  send: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginHorizontal: 20,
     alignItems: 'center',
-    marginTop: 20
+    marginTop: 20,
   },
 
-  ipSend:
-  {
+  ipSend: {
     backgroundColor: '#fff',
     borderRadius: 20,
     width: w - w * 0.25,
     height: 40,
     paddingLeft: 20,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
 
-  backgroundImageSend:
-  {
+  backgroundImageSend: {
     width: 40,
     height: 40,
     backgroundColor: 'white',
@@ -341,12 +325,11 @@ const styles = StyleSheet.create({
     elevation: 15, // chỉ dùng cho Android
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 15
+    marginLeft: 15,
   },
 
-  imgSend:
-  {
+  imgSend: {
     width: 25,
-    height: 25
-  }
-})
+    height: 25,
+  },
+});

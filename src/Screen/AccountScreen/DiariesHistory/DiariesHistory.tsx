@@ -11,17 +11,17 @@ import {
   Modal,
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import moment from 'moment';
-import { DiariesHistorProps } from './type';
-import { Colors } from '../../../Resource/colors';
+import {DiariesHistorProps} from './type';
+import {Colors} from '../../../Resource/colors';
 import Deck_Swiper from 'react-native-deck-swiper';
-import { useAppSelector } from '../../../Redux/Hook';
-import { DiaryModel } from '../../../Models/Model';
+import {useAppSelector} from '../../../Redux/Hook';
+import {DiaryModel} from '../../../Models/Model';
 import ItemMyDiary from '../../../Components/Items/ItemMyDiary';
 
 const DiariesHistory: React.FC<DiariesHistorProps> = props => {
-  const { navigation } = props;
+  const {navigation} = props;
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(date);
@@ -37,8 +37,7 @@ const DiariesHistory: React.FC<DiariesHistorProps> = props => {
 
   useEffect(() => {
     setDiaries(myDiaries);
-  }, [])
-
+  }, []);
 
   return (
     // CONTAINER
@@ -75,15 +74,14 @@ const DiariesHistory: React.FC<DiariesHistorProps> = props => {
         <Deck_Swiper
           // infinite={true}
           cards={myDiaries}
-          renderCard={(diary, index) =>
-            <TouchableOpacity onPress={() => {
-              setDiary(diary), setModalVisible(true)
-            }}>
+          renderCard={(diary, index) => (
+            <Pressable
+              onPress={() => {
+                setDiary(diary), setModalVisible(true);
+              }}>
               <ItemMyDiary diary={diary} />
-
-            </TouchableOpacity>
-
-          }
+            </Pressable>
+          )}
           onSwiped={diaryIndex => {
             console.log(diaryIndex);
           }}
@@ -92,8 +90,7 @@ const DiariesHistory: React.FC<DiariesHistorProps> = props => {
           }}
           cardIndex={0}
           backgroundColor={'#4FD0E9'}
-          stackSize={3}>
-        </Deck_Swiper>
+          stackSize={3}></Deck_Swiper>
       </View>
       {/* FOOTER */}
       <View style={styles.footer}></View>
@@ -101,24 +98,30 @@ const DiariesHistory: React.FC<DiariesHistorProps> = props => {
         animationType="fade"
         visible={modalVisible}
         transparent={true}
-        onRequestClose={() => setModalVisible(false)}
-
-      >
-        <TouchableOpacity onPress={() => setModalVisible(false)} style={{ width:'100%',height:'100%', backgroundColor: 'black',marginTop:-40}} >
-          <ItemMyDiary
-            style={{ 
-              width: '100%',
-              height:  Dimensions.get('screen').height-200,
-              marginTop: 60,
-              marginLeft: 20,
-              }}
-            diary={diary}
-
+        onRequestClose={() => setModalVisible(false)}>
+        <Pressable
+          onPress={() => setModalVisible(false)}
+          style={{
+            width: Dimensions.get('screen').width,
+            height: Dimensions.get('screen').height,
+            backgroundColor: 'black',
+            marginTop: -40,
+          }}>
+          <Image
+            style={{
+              width: Dimensions.get('screen').width,
+              height: Dimensions.get('screen').height,
+              resizeMode: 'contain',
+            }}
+            source={
+              diary?.diary
+                ? {uri: diary.diary}
+                : require('../../../Resource/images/img.jpg')
+            }
           />
-        </TouchableOpacity>
+        </Pressable>
       </Modal>
     </View>
-
   );
 };
 
@@ -190,4 +193,3 @@ const styles = StyleSheet.create({
   // FOOTER
   footer: {},
 });
-

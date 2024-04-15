@@ -78,11 +78,14 @@ const ItemChat: React.FC<ItemChatProps> = props => {
         <View>
           <Text style={styles.text1}>{user.username}</Text>
           <Text style={styles.text2} numberOfLines={1}>
-            {message[0].isimage ? 'Hình ảnh' : message[0].content}
+            {message[0]?.isimage ? 'Hình ảnh' : message[0]?.content}
           </Text>
-          <Text style={styles.time}>
-            {onConvertEpochtime(Number(message[0].createdat))}
+          {
+            message.length == 0 ? null : <Text style={styles.time}>
+            {onConvertEpochtime(Number(message[0]?.createdat))}
           </Text>
+          }
+          
         </View>
       </View>
       {seen.length > 0 ? (

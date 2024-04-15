@@ -1,4 +1,4 @@
-import {FlatList, StyleSheet, Text, View} from 'react-native';
+import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect} from 'react';
 import {NotificationProps} from './type';
 import ButtonIcon from '../../../Components/Buttons/ButtonIcon';
@@ -18,7 +18,7 @@ const NotificationScreen: React.FC<NotificationProps> = props => {
   const notifications = useQuery(NotificationSchema, notis => {
     return notis
       .filtered('receiver == $0', new BSON.ObjectId(user._id.toString()))
-      .sorted('createdat');
+      .sorted('createdat', true);
   });
 
   // quay lại
@@ -33,7 +33,7 @@ const NotificationScreen: React.FC<NotificationProps> = props => {
   }, [realm]);
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       {/* header */}
       <View style={styles.header}>
         <ButtonIcon
@@ -43,13 +43,11 @@ const NotificationScreen: React.FC<NotificationProps> = props => {
         />
       </View>
       <View style={styles.body}>
-        <FlatList
-          data={notifications}
-          renderItem={({item}) => <ItemNotification item={item} />}
-          keyExtractor={item => item._id.toString()}
-        />
+        {notifications.map(item => {
+          return <ItemNotification key={item._id.toString()} item={item} />;
+        })}
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

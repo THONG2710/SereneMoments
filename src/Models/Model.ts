@@ -15,6 +15,7 @@ interface DiaryModel {
     diary: String,
     createdat: Number,
     privacy: Number,
+    isavailable: boolean,
 }
 
 interface MomentModel {
