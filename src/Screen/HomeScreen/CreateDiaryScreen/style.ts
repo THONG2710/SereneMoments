@@ -31,8 +31,8 @@ export const styles = StyleSheet.create({
     },
 
     hdl_img: {
-        width: 40,
-        height: 40,
+        width: 30,
+        height: 30,
         borderRadius: 50,
         borderWidth: 10,
     },
@@ -40,6 +40,7 @@ export const styles = StyleSheet.create({
     hdl_btn: {
         borderWidth: 2,
         borderRadius: 50,
+        padding: 2,
         borderColor: Colors.WHITE,
     },
     // ============ right ================
@@ -115,7 +116,7 @@ export const styles = StyleSheet.create({
 
     // =========== time ============
     timeGroup: {
-
+        zIndex: 1,
     },
 
     // ============================

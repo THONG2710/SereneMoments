@@ -81,6 +81,7 @@
     "@react-native/metro-config": "0.73.3",
     "@react-native/typescript-config": "0.73.1",
     "@types/react": "^18.2.6",
+    "@types/react-native-check-box": "^2.1.6",
     "@types/react-native-video-player": "^0.10.7",
     "@types/react-test-renderer": "^18.0.0",
     "babel-jest": "^29.6.3",
