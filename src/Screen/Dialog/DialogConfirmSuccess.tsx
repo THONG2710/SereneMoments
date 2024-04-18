@@ -22,6 +22,12 @@ const DialogConfirmSuccess: React.FC<DialogConfirmSuccessProps> = (props) => {
         message={message}
         messageStyle={styles.messageStyle}
         
+        showCancelButton={true}
+        cancelText='Hủy'
+        cancelButtonColor='#EEEEEE'
+        cancelButtonTextStyle={styles.cancelButtonTextStyle}
+        cancelButtonStyle={styles.buttonStyle}
+        onCancelPressed={onCancel}
 
         // CONFIRM BUTTON
         showConfirmButton={true}
@@ -97,25 +103,26 @@ const styles = StyleSheet.create({
   {
     color: 'black',
     fontSize: 16,
-    fontWeight: '500'
+    fontWeight: '500',
   },
 
   buttonStyle:
   {
-    width: '80%',
+    width: '40%',
     height: 45,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 20,
     marginHorizontal: 15,
-    top:20
+    top:20,
+    
   },
 
   confirmButtonTextStyle:
   {
     color: '#fff',
     fontSize: 16,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   }
 
 
