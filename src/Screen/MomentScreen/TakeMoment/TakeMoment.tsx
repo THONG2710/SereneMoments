@@ -90,7 +90,7 @@ const TakeMoment: React.FC<TakeMomentProps> = props => {
       } else if (response.errorMessage) {
         console.log('ImagePicker Error:', response.errorMessage);
       } else {
-        // Hình ảnh đã được chọn thành công
+        // Video đã được chọn thành công
         if (response.assets && response.assets.length > 0) {
           const source = {uri: response.assets[0].uri};
           setUriImage(source.uri);
@@ -211,6 +211,8 @@ const TakeMoment: React.FC<TakeMomentProps> = props => {
     setData(newFriends);
   };
 
+  
+
   // làm mới trang
   const onSetUp = () => {
     setSelected('');
@@ -252,6 +254,8 @@ const TakeMoment: React.FC<TakeMomentProps> = props => {
               dropdownTextStyles={styles.textDropdownStyles}
               setSelected={(value: React.SetStateAction<string>) => {
                 getMomentByFriends(value.toString());
+                console.log(getMomentByFriends(value.toString()));
+                
                 setSelected(value);
               }}
               data={data}
