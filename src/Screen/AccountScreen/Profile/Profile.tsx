@@ -29,6 +29,7 @@ import Dialog from '../../Dialog/Dialog';
 import {LoginManager} from 'react-native-fbsdk-next';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {Colors} from '../../../Resource/colors';
+import {SAVE_TODOLIST} from '../../../Redux/Action/WorkAction';
 
 const Profile: React.FC<ProfileProps> = props => {
   const {navigation} = props;
@@ -94,6 +95,24 @@ const Profile: React.FC<ProfileProps> = props => {
     }
   };
 
+  // lấy todolist
+  const getListTodo = async () => {
+    try {
+      const res = await getData(
+        'http://' +
+          ID_ADRESS +
+          ':3000/api/todolist/getTodolistByIdUser?id=' +
+          myAccount._id,
+      );
+      if (res.result) {
+        setTodoList(res.todolist);
+        useDispatch(SAVE_TODOLIST(res.todolist));
+      }
+    } catch (error) {
+      console.log('getListTodo failled: ' + error);
+    }
+  };
+
   // đến trang khoảnh khắc
   const onMoveToMoment = () => {
     navigation.navigate('MomentHistor');
@@ -117,6 +136,7 @@ const Profile: React.FC<ProfileProps> = props => {
     getDiaries();
     getMoments();
     getFriends();
+    getListTodo();
   }, []);
 
   // xử lí đăng xuất
@@ -146,14 +166,6 @@ const Profile: React.FC<ProfileProps> = props => {
     await LoginManager.logOut();
     await GoogleSignin.signOut();
     console.log('Logged out successfully!');
-    // xử lí đăng xuất
-    // navigation
-    //   .getParent()
-    //   ?.getParent()
-    //   ?.reset({
-    //     index: 0,
-    //     routes: [{name: 'AuthenticationNavigation'}],
-    //   });
     const parentNavigation = navigation.getParent();
     const grandParentNavigation = parentNavigation?.getParent();
 

@@ -14,11 +14,15 @@ import DatePicker from 'react-native-date-picker';
 import {Colors} from '../../../Resource/colors';
 import LinearGradient from 'react-native-linear-gradient';
 import {TodoListHistoryProps} from './type';
+import {useAppSelector} from '../../../Redux/Hook';
+import {onConvertEpochtime, onConvertTime} from '../../../Service/Service';
 
 const TodolistHistory: React.FC<TodoListHistoryProps> = props => {
   const {navigation} = props;
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
+  const listTodo = useAppSelector(state => state.Work.todolist);
+
   const handleOpenDatePicker = () => {
     setOpen(true);
   };
@@ -28,12 +32,12 @@ const TodolistHistory: React.FC<TodoListHistoryProps> = props => {
     navigation.goBack();
   };
 
-  const onMoveToDetail = () => {
-    navigation.navigate('DetailTodoListHistory');
+  const onMoveToDetail = (id: string) => {
+    navigation.navigate('DetailTodoListHistory', {id: id});
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       {/* HEADER */}
 
       <View style={styles.header}>
@@ -63,23 +67,26 @@ const TodolistHistory: React.FC<TodoListHistoryProps> = props => {
           setOpen(false);
         }}
       />
-      <View style={styles.center}>
-        <View>
-          {History.map((item, i) => (
-            <TouchableOpacity style={styles.listDateTodo} key={item._id} onPress={onMoveToDetail}>
-              <LinearGradient
-                style={styles.background}
-                colors={['#53C3F3', '#60C8E9', '#97D4EB']}>
-                <Text style={styles.columns}>{i + 1}.</Text>
-                <Text style={styles.date}>{item.date}</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </View>
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.center}>
+        {listTodo.map((item, i) => (
+          <TouchableOpacity
+            style={styles.listDateTodo}
+            key={item._id.toString()}
+            onPress={() => onMoveToDetail(item._id.toString())}>
+            <LinearGradient
+              style={styles.background}
+              colors={['#53C3F3', '#60C8E9', '#97D4EB']}>
+              <Text style={styles.columns}>{i + 1}.</Text>
+              <Text style={styles.date}>
+                {onConvertTime(Number(item.createdat.toString()))}
+              </Text>
+            </LinearGradient>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
       {/* FOOTER */}
       <View style={styles.footer}></View>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -138,7 +145,8 @@ const styles = StyleSheet.create({
   },
   // CENTER
   center: {
-    paddingBottom: 160,
+    flex: 1,
+    marginBottom: 5,
   },
 
   imgHistory: {
