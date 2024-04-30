@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">SereneMoments</string>
+
+    <string name="facebook_app_id">3561957340731174</string>
+    <string name="fb_login_protocol_scheme">fb1234</string>
+    <string name="facebook_client_token">8b183800fe99ca904d2225c9d2ce646d</string>
+
+
 </resources>
