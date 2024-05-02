@@ -132,12 +132,13 @@ const Profile: React.FC<ProfileProps> = props => {
   const onMoveToMyDiary = () => {
     navigation.navigate('DiariesHistory');
   };
+
   useEffect(() => {
     getDiaries();
     getMoments();
     getFriends();
     getListTodo();
-  }, []);
+  }, [diaries.length, moments.length, friends.length]);
 
   // xử lí đăng xuất
   const onHandleLogout = async () => {

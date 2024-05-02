@@ -24,7 +24,7 @@ import DialogOptions from '../components/DialogOptions';
 import Draggable from 'react-native-draggable';
 import ButtonDragable from '../../../Components/Buttons/ButtonDragable';
 import DialogText from '../components/DialogText';
-import {useAppSelector} from '../../../Redux/Hook';
+import {useAppDispatch, useAppSelector} from '../../../Redux/Hook';
 import {ID_ADRESS, postData} from '../../../Service/RequestMethod';
 import LoadingDialog from '../../../Components/Dialogs/LoadingDialog';
 import {Colors} from '../../../Resource/colors';
@@ -44,6 +44,7 @@ import {
   onFormatNumber,
 } from '../../../Service/Service';
 import {TextTrackType} from 'react-native-video';
+import { SAVE_MYDIARIES } from '../../../Redux/Action/DiaryActions';
 
 const listOptions = [
   {
@@ -105,6 +106,8 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
   const [year, setyear] = useState(0);
   const [customTime, setCustomTime] = useState(0);
   const [isVisibleRefresh, setisVisibleRefresh] = useState(false);
+  const dispatch = useAppDispatch();
+  const myDiaries = useAppSelector(state => state.Diary.myDiary)
 
   // chọn ảnh từ thư viện
   const getImageFromLibrary = () => {
@@ -237,6 +240,7 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
               setReRender(!reRender);
               setContent('');
               navigation.goBack();
+              dispatch(SAVE_MYDIARIES([...myDiaries, res.diary]))
             }
           });
         },

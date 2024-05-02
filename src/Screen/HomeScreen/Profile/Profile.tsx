@@ -49,6 +49,7 @@ const Profile: React.FC<ProfileProps> = props => {
     onGetUser();
     onCheckFriend();
     onGetSent();
+    getAll();
   }, []);
 
   // kiểm tra xem có phải bạn bè không

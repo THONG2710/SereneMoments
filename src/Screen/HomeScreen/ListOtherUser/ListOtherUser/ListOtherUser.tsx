@@ -33,12 +33,16 @@ const ListOtherUser: React.FC<ListOtherUsersProps> = props => {
       const list: UserModel[] = [];
       const users = res.users;
       if (users.length > 0 && friends.length > 0) {
-        users.forEach((user: UserModel, index: number) => {
-          friends.forEach((friend: UserModel) => {
-            user._id == friend._id ? null : list.push(user);
-          });
+        users.forEach((user: UserModel) => {
+          const hasSameId = friends.some(
+            (friend: UserModel) => friend._id !== user._id,
+          );
+          if (hasSameId) {
+            list.push(user);
+          }
         });
         setotherUsers(list);
+        console.log(list.length);
       } else {
         setotherUsers(users);
       }

@@ -10,6 +10,7 @@ import {
   Alert,
   FlatList,
   Dimensions,
+  RefreshControl,
 } from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import {ChatScreenProps} from './type';
@@ -80,6 +81,7 @@ const Chat: React.FC<ChatScreenProps> = props => {
     } catch (error) {
       console.log('failed to get new chat message: ' + error);
     }
+    setisReFresh(false);
   };
 
   useEffect(() => {
@@ -104,6 +106,12 @@ const Chat: React.FC<ChatScreenProps> = props => {
       {/* body */}
       <View style={styles.body}>
         <FlatList
+          refreshControl={
+            <RefreshControl
+              refreshing={isReFresh}
+              onRefresh={() => setisReFresh(true)}
+            />
+          }
           data={listSearch}
           renderItem={({item}) => (
             <ItemChat
