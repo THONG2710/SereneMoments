@@ -73,8 +73,9 @@ const Chat: React.FC<ChatScreenProps> = props => {
       if (res.result) {
         const sort = res.messages.sort(
           (a: ChatMessageModel, b: ChatMessageModel) =>
-            Number(b.message.createdat) - Number(a.message.createdat),
+            Number(a.message.createdat) - Number(b.message.createdat),
         );
+        
         setListSearch(sort);
         setListFull(sort);
       }
