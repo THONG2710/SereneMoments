@@ -11,7 +11,7 @@ import {ResponseCommentModel} from '../../Models/Model';
 import {onConvertEpochtime} from '../../Service/Service';
 import {Colors} from '../../Resource/colors';
 
-interface ItemCommentProps extends ViewProps {
+interface ItemCommentProps{
   comment: ResponseCommentModel;
 }
 

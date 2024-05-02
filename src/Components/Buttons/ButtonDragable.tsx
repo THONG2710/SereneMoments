@@ -6,7 +6,6 @@ import {
   StyleSheetProperties,
   Text,
   View,
-  ViewProps,
   ViewStyle,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
@@ -17,7 +16,7 @@ import Modal from 'react-native-modal';
 import DialogSettingItemDiary from '../Dialogs/DialogSettingItemDiary';
 import CheckBox from 'react-native-check-box';
 
-interface ButtonDragableProps extends ViewProps {
+interface ButtonDragableProps {
   isSlected: boolean;
   component: any;
   onDelete?: () => void;

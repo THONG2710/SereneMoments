@@ -39,6 +39,17 @@ const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
     navigation.navigate('ChangePasswordScreen');
   };
 
+  const onHandleLogin = () => {
+    const phoneNumberPattern = /^(08|09|03|05|07)\d{8}$/;
+    if (phoneNumber == '' || password == '') {
+      Alert.alert('', 'Vui lòng điền đầy đủ thông tin');
+    } else if (!phoneNumberPattern.test(phoneNumber)) {
+      Alert.alert('', 'Số điện thoại không hợp lệ')
+    } else {
+      onLogin()
+    }
+  };
+
   const onLogin = async () => {
     const data = {phoneNumber: phoneNumber, password: password};
     const res = await postData(
@@ -46,22 +57,10 @@ const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
       data,
     );
     setIsLoading(true);
-    if (!res.result) {
-      setTimeout(() => {
-        setIsLoading(false);
-        Alert.alert('Cảnh báo', 'Lỗi đăng nhập, vui lòng thử lại', [
-          {
-            text: 'Cancle',
-            onPress: () => {
-              setIsLoading(false);
-            },
-          },
-        ]);
-      }, 5000);
-    } else {
-      console.log(res.user[0].available);
-      
-      if (res.user[0].available) {
+    console.log(res.user);
+
+    if (res.result) {
+      if (res.user[0].available && res.user[0]._id !== '') {
         const userCurrent = {
           _id: res.user[0]._id,
           username: res.user[0].username,
@@ -81,6 +80,20 @@ const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
           index: 0,
           routes: [{name: 'AuthorizedNavigation'}],
         });
+      }
+      if (res.user[0]._id === '') {
+        Alert.alert(
+          'Cảnh báo',
+          'Tài khoản hoặc mật khẩu của bạn không chính xác, vui lòng thử lại',
+          [
+            {
+              text: 'Cancle',
+              onPress: () => {
+                setIsLoading(false);
+              },
+            },
+          ],
+        );
       } else {
         Alert.alert('', 'Tài khoản hiện tại không thể sử dụng', [
           {
@@ -93,6 +106,19 @@ const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
           },
         ]);
       }
+    }
+    if (!res.result) {
+      setTimeout(() => {
+        setIsLoading(false);
+        Alert.alert('Cảnh báo', 'Lỗi đăng nhập, vui lòng thử lại', [
+          {
+            text: 'Cancle',
+            onPress: () => {
+              setIsLoading(false);
+            },
+          },
+        ]);
+      }, 5000);
     }
   };
 
@@ -139,14 +165,14 @@ const LoginWithAccount: React.FC<LoginWithAccountProps> = props => {
           }
         />
       </View>
-      <TouchableOpacity onPress={onLogin}>
+      <TouchableOpacity onPress={onHandleLogin}>
         <View style={styles.btnLogin}>
           <Text style={styles.txtBtn2}>Đăng nhập</Text>
         </View>
       </TouchableOpacity>
       <View style={styles.containerNote}>
         <Text style={styles.txtNote}>Quên mật khẩu ?</Text>
-        <TouchableOpacity onPress={onForgotPassword}>
+        <TouchableOpacity disabled={true} onPress={onForgotPassword}>
           <Text style={styles.btnNote}>Bấm vào đây</Text>
         </TouchableOpacity>
       </View>

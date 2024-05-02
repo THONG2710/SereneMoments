@@ -17,7 +17,7 @@ import {useAppDispatch, useAppSelector} from '../../Redux/Hook';
 import {IS_REFRESH} from '../../Redux/Action/AuthenticationActions';
 import {onConvertEpochtime} from '../../Service/Service';
 
-interface ItemChatProps extends ViewProps {
+interface ItemChatProps {
   user: UserModel;
   onMoveToBoxChat: () => void;
 }

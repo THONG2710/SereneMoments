@@ -12,7 +12,7 @@ import React from 'react';
 import {Colors} from '../../../Resource/colors';
 import ButtonIcon from '../../../Components/Buttons/ButtonIcon';
 
-interface DialogProps extends ViewProps {
+interface DialogProps {
   onCancel?: () => void;
   onCreateItem: (item: any) => void;
 }

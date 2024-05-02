@@ -9,7 +9,7 @@ import {
 import React, {useState} from 'react';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import {Colors} from '../../Resource/colors';
-interface DialogConfirmSuccessProps extends ViewProps {
+interface DialogConfirmSuccessProps  {
   isvisible: boolean;
   onCancel?: () => void;
   onConfirm?: () => void;
@@ -111,12 +111,12 @@ const styles = StyleSheet.create({
   },
 
   buttonStyle: {
-    width: '80%',
+    width: '48%',
     height: 45,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 20,
-    marginHorizontal: 15,
+    marginHorizontal: 5,
     top: 20,
   },
 

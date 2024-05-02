@@ -20,6 +20,7 @@ import {onConvertEpochtime} from '../../../Service/Service';
 import Modal from 'react-native-modal';
 import TextButton from '../../../Components/Buttons/TextButton';
 import {useAppSelector} from '../../../Redux/Hook';
+import DialogConfirmSuccess from '../../Dialog/DialogConfirmSuccess';
 
 const reasonList = [
   {
@@ -48,7 +49,7 @@ const reasonList = [
   },
 ];
 
-interface PostProps extends ViewProps {
+interface PostProps {
   diary: DiaryModel;
   onPress: (id: string) => void;
 }
@@ -59,11 +60,14 @@ const Post: React.FC<PostProps> = props => {
   const [isVisibleRPort, setIsVisibleReport] = useState(false);
   const [isVisibleDialogReason, setIsVisibleDialogReason] = useState(false);
   const myAccount = useAppSelector(state => state.Authentication.myAccount);
+  const [isVisibleReport, setisVisibleReport] = useState(false);
+  const [reasonSelected, setReasonSelected] = useState('');
 
   // đóng dialog báo cáo
   const onCloseDialogReport = () => {
     setIsVisibleReport(false);
     setIsVisibleDialogReason(false);
+    setisVisibleReport(false);
   };
 
   // mở dialog nguyên do
@@ -72,31 +76,16 @@ const Post: React.FC<PostProps> = props => {
     setIsVisibleDialogReason(true);
   };
 
-  // xác nhận báo cáo
-  const onConfirmReport = (reason: string) => {
-    Alert.alert('', 'Bạn có muốn báo cáo bài viết này không ?', [
-      {
-        text: 'Báo cáo',
-        onPress: () => onReportDiary(reason),
-      },
-      {
-        text: 'Hủy',
-        onPress: () => onCloseDialogReport,
-        style: 'cancel',
-      },
-    ]);
-  };
-
   // báo cáo
-  const onReportDiary = async (reason: string) => {
+  const onReportDiary = async () => {
     try {
       const date = Math.floor(Number(new Date().getTime() / 1000));
       const data = {
         idDiary: diary._id,
         userid: myAccount._id,
         created: date,
-        reason: reason,
-        status: false,
+        reason: reasonSelected,
+        status: true,
       };
       console.log(data);
 
@@ -107,6 +96,7 @@ const Post: React.FC<PostProps> = props => {
       if (res.result) {
         setIsVisibleReport(false);
         setIsVisibleDialogReason(false);
+        setisVisibleReport(false);
       }
     } catch (error) {
       console.log('failed to report diary: ', error);
@@ -130,6 +120,15 @@ const Post: React.FC<PostProps> = props => {
 
   return diary.isavailable ? (
     <View style={styles.container}>
+      <DialogConfirmSuccess
+        isvisible={isVisibleReport}
+        txtButton="Báo cáo"
+        message="Bạn muốn báo cáo bài viết này?"
+        title="Thông báo"
+        onConfirm={() => onReportDiary()}
+        onCancel={() => onCloseDialogReport()}
+      />
+
       {/* Header */}
       <View style={styles.header}>
         {/* avatar */}
@@ -196,7 +195,11 @@ const Post: React.FC<PostProps> = props => {
                 data={reasonList}
                 renderItem={({item}) => (
                   <TextButton
-                    onPress={() => onConfirmReport(item.reason)}
+                    onPress={() => {
+                      onCloseDialogReport();
+                      setisVisibleReport(true);
+                      setReasonSelected(item.reason);
+                    }}
                     style={styles.btnDialogReason}
                     label={item.reason}
                   />

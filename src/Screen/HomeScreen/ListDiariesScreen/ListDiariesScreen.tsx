@@ -17,6 +17,7 @@ import {ID_ADRESS, getData, postData} from '../../../Service/RequestMethod';
 import {DiaryModel} from '../../../Models/Model';
 import FriendsComponent from '../components/FriendsComponent';
 import {SAVE_ID_TODOLIST} from '../../../Redux/Action/WorkAction';
+import DialogConfirmSuccess from '../../Dialog/DialogConfirmSuccess';
 
 const ListDiariesScreen: React.FC<ListDiarieProps> = props => {
   const {navigation} = props;

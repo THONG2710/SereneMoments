@@ -14,7 +14,7 @@ import {ID_ADRESS, getData} from '../../Service/RequestMethod';
 import {onConvertEpochtime} from '../../Service/Service';
 import {Colors} from '../../Resource/colors';
 
-interface ItemNotificationProps extends ViewProps {
+interface ItemNotificationProps {
   item: NotificationSchema;
 }
 

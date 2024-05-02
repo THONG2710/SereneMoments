@@ -1,18 +1,31 @@
-import {ButtonProps, Pressable, StyleProp, StyleSheet, Text, TextStyle, View, ViewProps, ViewStyle} from 'react-native';
+import {
+  ButtonProps,
+  Pressable,
+  StyleProp,
+  StyleSheet,
+  Text,
+  TextStyle,
+  View,
+  ViewStyle,
+} from 'react-native';
 import React from 'react';
 import {Colors} from '../../Resource/colors';
 
-interface ButtonTextProps extends ViewProps {
+interface ButtonTextProps {
   label: string;
   buttonStyle?: StyleProp<ViewStyle>;
   labelStyle?: StyleProp<TextStyle>;
   onPress?: () => void;
+  visible?: boolean;
 }
 
 const ButtonText: React.FC<ButtonTextProps> = props => {
-  const {label, onPress, buttonStyle} = props;
+  const {label, onPress, buttonStyle, visible} = props;
   return (
-    <Pressable onPress={onPress} style={[styles.container, buttonStyle]}>
+    <Pressable
+      disabled={visible}
+      onPress={onPress}
+      style={[styles.container, buttonStyle]}>
       <Text style={styles.labelStyle}>{label}</Text>
     </Pressable>
   );

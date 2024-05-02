@@ -10,7 +10,7 @@ import {
 import React from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 
-interface LinearButtonCancelrops extends ViewProps {
+interface LinearButtonCancelrops {
     label: string;
     style?: StyleProp<TextStyle>;
     onPress?: () => void;

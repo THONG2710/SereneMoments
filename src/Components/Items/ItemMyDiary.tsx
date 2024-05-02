@@ -11,7 +11,7 @@ import {DiaryModel} from '../../Models/Model';
 import {onConvertEpochtime} from '../../Service/Service';
 import { Colors } from '../../Resource/colors';
 
-interface ItemMyDiaryProps extends ViewProps {
+interface ItemMyDiaryProps {
   diary?: DiaryModel;
 }
 

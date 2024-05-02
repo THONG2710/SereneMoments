@@ -8,6 +8,7 @@ import {RequestModel, UserModel} from '../../../../Models/Model';
 import {useAppSelector} from '../../../../Redux/Hook';
 import ItemUser from '../../components/ItemUser';
 import {ListOtherUsersProps} from './type';
+import {startAfter} from 'firebase/firestore';
 
 const ListOtherUser: React.FC<ListOtherUsersProps> = props => {
   const {navigation} = props;
@@ -15,6 +16,7 @@ const ListOtherUser: React.FC<ListOtherUsersProps> = props => {
   const [usersSentRequest, setusersSentRequest] = useState<RequestModel[]>([]);
   const user = useAppSelector(state => state.Authentication.myAccount);
   const [refresh, setrefresh] = useState<boolean>(false);
+  const friends = useAppSelector(state => state.Friends.myFriends);
 
   // quay trở lại
   const onGoBack = () => {
@@ -26,10 +28,20 @@ const ListOtherUser: React.FC<ListOtherUsersProps> = props => {
     const res = await getData(
       'http://' + ID_ADRESS + ':3000/api/friend/getOtherUsers/' + user._id,
     );
-    console.log(user._id);
 
     if (res.result) {
-      setotherUsers(res.users);
+      const list: UserModel[] = [];
+      const users = res.users;
+      if (users.length > 0 && friends.length > 0) {
+        users.forEach((user: UserModel, index: number) => {
+          friends.forEach((friend: UserModel) => {
+            user._id == friend._id ? null : list.push(user);
+          });
+        });
+        setotherUsers(list);
+      } else {
+        setotherUsers(users);
+      }
     }
   };
 
@@ -42,7 +54,15 @@ const ListOtherUser: React.FC<ListOtherUsersProps> = props => {
         user._id,
     );
     if (res) {
-      setusersSentRequest(res.users);
+      const users = res.users;
+      users.forEach((user: UserModel, index: number) => {
+        friends.forEach((friend: UserModel) => {
+          if (user._id === friend._id) {
+            users.slice(index, 1);
+          }
+        });
+      });
+      setusersSentRequest(users);
     }
   };
 
@@ -74,6 +94,13 @@ const ListOtherUser: React.FC<ListOtherUsersProps> = props => {
     }
   };
 
+  // đến trang profile
+  const onMoveToProfile = (id: string) => {
+    console.log('sss');
+
+    navigation.getParent()?.navigate('Profile', {idUser: id});
+  };
+
   useEffect(() => {
     getOtherUsers();
     getUserSentRequest();
@@ -89,6 +116,7 @@ const ListOtherUser: React.FC<ListOtherUsersProps> = props => {
             {usersSentRequest.map(item => {
               return (
                 <ItemUser
+                  onPress={id => onMoveToProfile(id)}
                   key={item.user._id.toString()}
                   onCancelRequest={() =>
                     onCancelRequest(item.friend._id.toString())
@@ -106,6 +134,7 @@ const ListOtherUser: React.FC<ListOtherUsersProps> = props => {
           {otherUsers.map(item => {
             return (
               <ItemUser
+                onPress={id => onMoveToProfile(id)}
                 key={item._id.toString()}
                 onCancelRequest={() => null}
                 onHandlePress={id => onAddFriend(id)}

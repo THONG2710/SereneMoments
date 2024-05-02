@@ -15,7 +15,7 @@ import ButtonText from '../../../Components/Buttons/ButtonText';
 import TextButton from '../../../Components/Buttons/TextButton';
 import {assets} from '../../../../react-native.config';
 
-interface DialogTextProps extends ViewProps {
+interface DialogTextProps {
   onCancel?: () => void;
   onSelectFont: (fonts: string) => void;
   onSelectFontSize: (size: number) => void;

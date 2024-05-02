@@ -13,7 +13,7 @@ import {Colors} from '../../../Resource/colors';
 import LinearButtonAdd from '../../../Components/Buttons/LinearButtonAdd';
 import LinearButtonCancel from '../../../Components/Buttons/LinearButtonCancel';
 
-interface ItemRequestProps extends ViewProps {
+interface ItemRequestProps {
   user: UserModel;
   onPress?: () => void;
   onCancelRequest: () => void;
@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginVertical: 10,
     paddingHorizontal: 10,
+    width: '100%',
   },
 
   //   left

@@ -136,7 +136,7 @@ const BoxChatScreen: React.FC<BoxChatScreenProps> = props => {
     <View style={styles.container}>
       {/* header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.navigate('Chat')}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <Image
             source={require('../../../Resource/images/btn_back.png')}></Image>
         </TouchableOpacity>

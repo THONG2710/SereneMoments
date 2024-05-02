@@ -12,7 +12,7 @@ import ButtonIcon from '../Buttons/ButtonIcon';
 import Slider from '@react-native-community/slider';
 import CheckBox from 'react-native-check-box';
 
-interface DialogSettingItemDiaryProps extends ViewProps {
+interface DialogSettingItemDiaryProps{
   onCancel: () => void;
   onChangeSize: (value: number) => void;
   onChangeRotate: (value: number) => void;

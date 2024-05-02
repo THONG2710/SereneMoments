@@ -1,7 +1,7 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View, ViewProps } from 'react-native'
 import React, { useState } from 'react'
 import AwesomeAlert from 'react-native-awesome-alerts'
-interface DialogProps extends ViewProps {
+interface DialogProps  {
   isvisible: boolean;
   onCancel?: () => void;
   onConfirm?: () => void;

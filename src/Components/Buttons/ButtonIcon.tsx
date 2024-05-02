@@ -6,12 +6,11 @@ import {
   StyleSheet,
   Text,
   View,
-  ViewProps,
   ViewStyle,
 } from 'react-native';
 import React from 'react';
 
-interface ButtonIconProps extends ViewProps {
+interface ButtonIconProps  {
   url: any;
   styles?: StyleProp<ImageStyle>;
   onPress?: () => void;
