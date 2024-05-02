@@ -93,7 +93,8 @@ const ListDiariesScreen: React.FC<ListDiarieProps> = props => {
         ':3000/api/diary/getDiariesMyFriends?id=' +
         user._id,
     );
-    if (result.diaries) {
+
+    if (result.result) {
       setListDiaries(result.diaries);
       setrefreshing(false);
     }

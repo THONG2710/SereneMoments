@@ -74,8 +74,9 @@ const Chat: React.FC<ChatScreenProps> = props => {
           (a: ChatMessageModel, b: ChatMessageModel) =>
             Number(b.message.createdat) - Number(a.message.createdat),
         );
-        setListSearch(sort);
-        setListFull(sort);
+
+        setListSearch(res.messages);
+        setListFull(res.messages);
       }
     } catch (error) {
       console.log('failed to get new chat message: ' + error);
