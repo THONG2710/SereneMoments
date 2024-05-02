@@ -49,86 +49,72 @@ const TodoList = () => {
   // }
 
   //
-  const [newTask, setNewTask] = useState('');
+  const [newTask, setNewTask] = useState<string>('');
   const [unfinishedWorks, setUnfinishedWorks] = useState<ItemTodolist[]>([]);
   const [finishedWork, setfinishedWork] = useState<ItemTodolist[]>([]);
   const [isRefresh, setIsRefresh] = useState<boolean>(false);
   const [listTodo, setListTodo] = useState<ResponseTodo>();
   const user = useAppSelector(state => state.Authentication.myAccount);
-  const [idToday, setIdToday] = useState<string>();
+  const idTodolist = useAppSelector(state => state.Work.id_todolist);
+  const [isVisibleFinishWorks, setIsVisibleFinishWorks] =
+    useState<boolean>(false);
 
   // lấy todolist
   const getTodoList = async () => {
-    const date = new Date().getTime();
+    const date = Math.floor(Number(new Date().getTime() / 1000));
     const url =
       'http://' +
       ID_ADRESS +
-      ':3000/api/todolist/getTodolist?id=' +
+      ':3000/api/todolist/getTodolist?userid=' +
       user._id +
       '&createdat=' +
       date;
     const res = await getData(url);
+    console.log(idTodolist);
+    
     if (res.result) {
       setListTodo(res.todolist);
-      console.log(res.todolist);
-      setUnfinishedWorks(res.unfinishedWork);
-      setfinishedWork(res.finishedWork);
-    }
-  };
-
-  // tạo một todolist
-  const onCreateTodolist = async () => {
-    const date = new Date().getTime();
-    const data = {userid: user._id, createdat: date};
-    const url = 'http://' + ID_ADRESS + ':3000/api/todolist/createToDoList';
-    const res = await postData(url, data);
-    if (res.result) {
-      setIdToday(res.todolist._id);
-      setIsRefresh(!isRefresh);
-      onCreateWork(res?.todolist?._id);
-      console.log('success');
-    }
-  };
-
-  //  kiểm tra list hôm nay
-  const onCheckTodoList = async () => {
-    const date = new Date().getTime();
-    const url =
-      'http://' +
-      ID_ADRESS +
-      ':3000/api/todolist/getCheckTodolist?id=' +
-      user._id +
-      '&createdat=' +
-      date;
-    const res = await getData(url);
-    console.log(url);
-
-    if (res.result) {
-      console.log('Đã có todolist cho ngày hôm nay');
-      onCreateWork(res?.todolist?._id);
-    } else {
-      console.log('Chưa có todolist cho ngày hôm nay');
-      onCreateTodolist();
+      setUnfinishedWorks(res.todolist.unfinishedWork);
+      setfinishedWork(res.todolist.finishedWork);
     }
   };
 
   // tạo một item work
-  const onCreateWork = async (idTodo: string) => {
+  const onCreateWork = async () => {
     const data = {
       status: false,
       content: newTask,
       description: '',
-      todoid: idTodo,
+      todoid: idTodolist,
     };
-    console.log(data);
     const res = await postData(
       'http://' + ID_ADRESS + ':3000/api/itemTodo/createItem',
       data,
     );
-    if (res) {
+    if (res.result) {
+      console.log('create work success');
+      
       setNewTask('');
       setIsRefresh(!isRefresh);
     }
+  };
+
+  // cập nhật trạng thái của công việc
+  const onUpdateStatusWork = async (idWork: string, status: boolean) => {
+    try {
+      const res = await postData(
+        'http://' +
+          ID_ADRESS +
+          ':3000/api/itemTodo/updateWork?idWork=' +
+          idWork +
+          '&status=' +
+          status,
+        {},
+      );
+      if (res.result) {
+        setIsRefresh(!isRefresh);
+      }
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -149,18 +135,22 @@ const TodoList = () => {
       </View>
       {/* CENTER */}
 
-      {listTodo ? (
+      {unfinishedWorks.length > 0 || finishedWork.length > 0 ? (
         <ScrollView style={styles.center}>
-          {unfinishedWorks && (
+          {unfinishedWorks.length > 0 && (
             <Text style={styles.textUnfinished}>Chưa hoàn thành</Text>
           )}
           {/* TASK UNFINISHED */}
-          {unfinishedWorks && (
+          {unfinishedWorks.length > 0 && (
             <View style={styles.itemTask}>
               {unfinishedWorks.map((item: ItemTodolist) => (
                 <View key={item._id.toString()} style={styles.task}>
                   {/* Checkbox code */}
-                  <TouchableOpacity style={styles.checkbox}></TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.checkbox}
+                    onPress={() =>
+                      onUpdateStatusWork(item._id.toString(), true)
+                    }></TouchableOpacity>
                   <Text style={styles.textTask}>{item.content}</Text>
                 </View>
               ))}
@@ -168,30 +158,39 @@ const TodoList = () => {
           )}
 
           {/* TASK FINISHED */}
-          {finishedWork && (
-            <TouchableOpacity style={styles.finishTitle}>
+          {finishedWork.length > 0 && (
+            <TouchableOpacity
+              style={styles.finishTitle}
+              onPress={() => setIsVisibleFinishWorks(!isVisibleFinishWorks)}>
               <Text style={styles.textFinished}>Đã hoàn thành</Text>
               <Image
-                source={require('../../Resource/Image2/ic_check.png')}
-                style={styles.downFinish}
+                source={require('../../Resource/Image2/ic_down.png')}
+                style={
+                  isVisibleFinishWorks
+                    ? styles.downFinish
+                    : [styles.downFinish, {transform: [{rotate: '270deg'}]}]
+                }
               />
             </TouchableOpacity>
           )}
 
-          {finishedWork && (
+          {finishedWork.length > 0 && isVisibleFinishWorks ? (
             <View style={styles.itemTask}>
               {finishedWork.map((item: ItemTodolist) => (
                 <TouchableOpacity
+                  onPress={() => onUpdateStatusWork(item._id.toString(), false)}
                   key={item._id.toString()}
                   style={styles.finished}>
                   <Image
-                    source={require('../../Resource/Image2/ic_down.png')}
+                    source={require('../../Resource/images/icon_checked.png')}
                     style={styles.checked}
                   />
                   <Text style={styles.textTaskFinished}>{item.content}</Text>
                 </TouchableOpacity>
               ))}
             </View>
+          ) : (
+            <View></View>
           )}
         </ScrollView>
       ) : (
@@ -202,9 +201,9 @@ const TodoList = () => {
 
       {/* FOOTER */}
       {/* ADD TODOLIST */}
-      {/* <View style={styles.footer}>
+      <View style={styles.footer}>
         <View style={styles.addTodo}>
-          <TouchableOpacity style={styles.checkbox}></TouchableOpacity>
+          {/* <TouchableOpacity style={styles.checkbox}></TouchableOpacity> */}
           <TextInput
             style={styles.addInput}
             placeholder="Kế hoạch gì nhờ..."
@@ -212,10 +211,10 @@ const TodoList = () => {
             onChangeText={text => setNewTask(text)}
             value={newTask}></TextInput>
         </View>
-        <TouchableOpacity style={styles.btnAdd} onPress={onCheckTodoList}>
+        <TouchableOpacity style={styles.btnAdd} onPress={onCreateWork}>
           <Text style={styles.textAdd}>Lưu</Text>
         </TouchableOpacity>
-      </View> */}
+      </View>
     </View>
   );
 };
@@ -264,7 +263,6 @@ const styles = StyleSheet.create({
     flex: 0.7,
     marginHorizontal: 20,
     marginTop: 20,
-    backgroundColor: 'red',
   },
 
   centerWhileEmty: {
@@ -384,11 +382,13 @@ const styles = StyleSheet.create({
 
   addInput: {
     height: 40,
+    paddingLeft: 15,
   },
 
   btnAdd: {
     backgroundColor: '#499EDC',
     borderRadius: 10,
+    height: 40,
   },
 
   textAdd: {

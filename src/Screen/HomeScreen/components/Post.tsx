@@ -1,9 +1,12 @@
 import {
+  Alert,
   Dimensions,
+  FlatList,
   Image,
   Pressable,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
@@ -12,10 +15,41 @@ import {Colors} from '../../../Resource/colors';
 import {Shadow} from 'react-native-shadow-2';
 import {ViewProps} from 'react-native-svg/lib/typescript/fabric/utils';
 import {DiaryModel, UserModel} from '../../../Models/Model';
-import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
+import {ID_ADRESS, getData, postData} from '../../../Service/RequestMethod';
 import {onConvertEpochtime} from '../../../Service/Service';
+import Modal from 'react-native-modal';
+import TextButton from '../../../Components/Buttons/TextButton';
+import {useAppSelector} from '../../../Redux/Hook';
+import DialogConfirmSuccess from '../../Dialog/DialogConfirmSuccess';
 
-interface PostProps extends ViewProps {
+const reasonList = [
+  {
+    _id: 1,
+    reason: 'Không tôn trọng tôn giáo',
+  },
+  {
+    _id: 2,
+    reason: 'Đả kích chính trị',
+  },
+  {
+    _id: 3,
+    reason: 'Quấy rối/ Phân biệt đối xử',
+  },
+  {
+    _id: 4,
+    reason: 'Vi phạm bản quyền',
+  },
+  {
+    _id: 5,
+    reason: 'Xúc phạm cá nhân',
+  },
+  {
+    _id: 6,
+    reason: 'Vi phạm pháp luật',
+  },
+];
+
+interface PostProps {
   diary: DiaryModel;
   onPress: (id: string) => void;
 }
@@ -23,6 +57,51 @@ interface PostProps extends ViewProps {
 const Post: React.FC<PostProps> = props => {
   const [user, setuser] = useState<UserModel>();
   const {diary, onPress} = props;
+  const [isVisibleRPort, setIsVisibleReport] = useState(false);
+  const [isVisibleDialogReason, setIsVisibleDialogReason] = useState(false);
+  const myAccount = useAppSelector(state => state.Authentication.myAccount);
+  const [isVisibleReport, setisVisibleReport] = useState(false);
+  const [reasonSelected, setReasonSelected] = useState('');
+
+  // đóng dialog báo cáo
+  const onCloseDialogReport = () => {
+    setIsVisibleReport(false);
+    setIsVisibleDialogReason(false);
+    setisVisibleReport(false);
+  };
+
+  // mở dialog nguyên do
+  const onOpenDialogReason = () => {
+    setIsVisibleReport(false);
+    setIsVisibleDialogReason(true);
+  };
+
+  // báo cáo
+  const onReportDiary = async () => {
+    try {
+      const date = Math.floor(Number(new Date().getTime() / 1000));
+      const data = {
+        idDiary: diary._id,
+        userid: myAccount._id,
+        created: date,
+        reason: reasonSelected,
+        status: true,
+      };
+      console.log(data);
+
+      const res = await postData(
+        'http://' + ID_ADRESS + ':3000/api/report/createReport',
+        data,
+      );
+      if (res.result) {
+        setIsVisibleReport(false);
+        setIsVisibleDialogReason(false);
+        setisVisibleReport(false);
+      }
+    } catch (error) {
+      console.log('failed to report diary: ', error);
+    }
+  };
 
   useEffect(() => {
     const getUser = async () => {
@@ -39,14 +118,25 @@ const Post: React.FC<PostProps> = props => {
     getUser();
   }, []);
 
-  return (
+  return diary.isavailable ? (
     <View style={styles.container}>
+      <DialogConfirmSuccess
+        isvisible={isVisibleReport}
+        txtButton="Báo cáo"
+        message="Bạn muốn báo cáo bài viết này?"
+        title="Thông báo"
+        onConfirm={() => onReportDiary()}
+        onCancel={() => onCloseDialogReport()}
+      />
+
       {/* Header */}
       <View style={styles.header}>
         {/* avatar */}
         <View style={styles.hd_avatar}>
           <Shadow style={styles.hd_shadow} distance={2} offset={[0, 5]}>
-            <Pressable style={styles.hdA_btn} onPress={() => onPress(user?._id.toString() || '')}>
+            <Pressable
+              style={styles.hdA_btn}
+              onPress={() => onPress(user?._id.toString() || '')}>
               {user?.avatar ? (
                 <Image source={{uri: user?.avatar}} style={styles.hdA_img} />
               ) : (
@@ -79,18 +169,60 @@ const Post: React.FC<PostProps> = props => {
           </Text>
         </View>
         {/* menu */}
-        <View style={styles.hd_menu}>
+        {/* cửa sổ báo cáo */}
+        <Modal
+          onBackdropPress={onCloseDialogReport}
+          isVisible={isVisibleRPort}
+          children={
+            <View style={styles.dialogContainer}>
+              <TouchableOpacity
+                style={styles.btnDialog}
+                onPress={onOpenDialogReason}>
+                <Text style={styles.txtDialog}>
+                  Báo cáo bài nhật kí của {user?.username}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          }
+        />
+        {/* cửa sổ lí do */}
+        <Modal
+          onBackdropPress={onCloseDialogReport}
+          isVisible={isVisibleDialogReason}
+          children={
+            <View style={styles.DialogReasonContainer}>
+              <FlatList
+                data={reasonList}
+                renderItem={({item}) => (
+                  <TextButton
+                    onPress={() => {
+                      onCloseDialogReport();
+                      setisVisibleReport(true);
+                      setReasonSelected(item.reason);
+                    }}
+                    style={styles.btnDialogReason}
+                    label={item.reason}
+                  />
+                )}
+                keyExtractor={item => item._id.toString()}
+              />
+            </View>
+          }
+        />
+        <TouchableOpacity
+          style={styles.hd_menu}
+          onPress={() => setIsVisibleReport(!isVisibleRPort)}>
           <Shadow distance={4} offset={[0, 3]} style={styles.hdm_shadow}>
             <ButtonIcon
               url={require('../../../Resource/images/icon_menu.png')}
             />
           </Shadow>
-        </View>
+        </TouchableOpacity>
       </View>
       {/* body */}
       <Image source={{uri: diary.diary.toString()}} style={styles.body}></Image>
     </View>
-  );
+  ) : null;
 };
 
 export default Post;
@@ -171,6 +303,8 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    marginRight: 10,
+    zIndex: 10,
   },
 
   hdm_shadow: {
@@ -190,5 +324,51 @@ const styles = StyleSheet.create({
     marginTop: 20,
     resizeMode: 'contain',
     marginBottom: 20,
+  },
+
+  dialogContainer: {
+    width: Dimensions.get('screen').width,
+    height: 40,
+    backgroundColor: Colors.WHITE,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10,
+    position: 'absolute',
+    bottom: 0,
+    marginLeft: -20,
+  },
+
+  btnDialog: {
+    width: Dimensions.get('screen').width,
+    alignItems: 'center',
+    height: 35,
+    justifyContent: 'center',
+  },
+
+  txtDialog: {
+    color: Colors.BLACK,
+    fontSize: 16,
+  },
+
+  // DialogReasonContainer
+  DialogReasonContainer: {
+    width: Dimensions.get('screen').width - 90,
+    height: Dimensions.get('screen').height / 3,
+    backgroundColor: Colors.WHITE,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 20,
+    position: 'absolute',
+    bottom: 0,
+    paddingTop: 15,
+    left: 30,
+  },
+
+  btnDialogReason: {
+    color: Colors.BLACK,
+    width: '100%',
+    marginVertical: 7,
+    fontSize: 16,
+    textAlign: 'left',
   },
 });

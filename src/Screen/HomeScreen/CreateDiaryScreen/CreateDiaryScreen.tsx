@@ -9,25 +9,25 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useEffect, useRef, useState } from 'react';
-import { styles } from './style';
+import React, {useEffect, useRef, useState} from 'react';
+import {styles} from './style';
 import ButtonIcon from '../../../Components/Buttons/ButtonIcon';
-import { Shadow } from 'react-native-shadow-2';
+import {Shadow} from 'react-native-shadow-2';
 import ItemOption from '../components/ItemOption';
 import ButtonText from '../../../Components/Buttons/ButtonText';
-import { CreateDiaryProps } from './type';
+import {CreateDiaryProps} from './type';
 import ViewShot from 'react-native-view-shot';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { firebase } from '@react-native-firebase/storage';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {firebase} from '@react-native-firebase/storage';
 import Modal from 'react-native-modal';
 import DialogOptions from '../components/DialogOptions';
 import Draggable from 'react-native-draggable';
 import ButtonDragable from '../../../Components/Buttons/ButtonDragable';
 import DialogText from '../components/DialogText';
-import { useAppSelector } from '../../../Redux/Hook';
-import { ID_ADRESS, postData } from '../../../Service/RequestMethod';
+import {useAppSelector} from '../../../Redux/Hook';
+import {ID_ADRESS, postData} from '../../../Service/RequestMethod';
 import LoadingDialog from '../../../Components/Dialogs/LoadingDialog';
-import { Colors } from '../../../Resource/colors';
+import {Colors} from '../../../Resource/colors';
 import DialogBackground from '../components/DialogBackground';
 import {
   Menu,
@@ -37,6 +37,13 @@ import {
 } from 'react-native-popup-menu';
 import DialogPrivacy from '../components/DialogPrivacy';
 import DialogConfirmSuccess from '../../Dialog/DialogConfirmSuccess';
+import DialogTime from '../components/DialogTime';
+import {
+  onConvertDay,
+  onConvertEpochtime,
+  onFormatNumber,
+} from '../../../Service/Service';
+import {TextTrackType} from 'react-native-video';
 
 const listOptions = [
   {
@@ -67,7 +74,7 @@ const listOptions = [
 ];
 
 const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
-  const { navigation } = props;
+  const {navigation} = props;
   const [status, setStatus] = useState('');
   const inputRef = useRef<TextInput>(null);
   const viewShotRef = useRef<ViewShot>(null);
@@ -91,10 +98,17 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
   const [isVisiblePrivacy, setIsVisiblePrivacy] = useState(false);
   const [privacy, setPrivacy] = useState(2);
   const [showAlert, setShowAlert] = useState(false);
+  const [isVisibleDialogTime, setisVisibleDialogTime] = useState(false);
+  const [day, setday] = useState(0);
+  const [date, setdate] = useState(0);
+  const [month, setmonth] = useState(0);
+  const [year, setyear] = useState(0);
+  const [customTime, setCustomTime] = useState(0);
+  const [isVisibleRefresh, setisVisibleRefresh] = useState(false);
 
   // chọn ảnh từ thư viện
   const getImageFromLibrary = () => {
-    launchImageLibrary({ mediaType: 'photo' }, response => {
+    launchImageLibrary({mediaType: 'photo'}, response => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.errorMessage) {
@@ -102,13 +116,8 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
       } else {
         // Hình ảnh đã được chọn thành công
         if (response.assets && response.assets[0]) {
-          const source = { uri: response.assets[0].uri };
-          onCreateOneItem(
-            <Image
-              style={{ width: 50, height: 50 }}
-              source={{ uri: source.uri }}
-            />,
-          );
+          const source = {uri: response.assets[0].uri};
+          onCreateOneItem({uri: source.uri});
         }
         // Thực hiện xử lý hình ảnh ở đây
       }
@@ -141,6 +150,10 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
     setbackgroundColor(color);
   };
 
+  // chọn thời gian
+  const onSelectTime = (selected: number) => {
+    setCustomTime(selected);
+  };
 
   // xóa một item trên diary
   const onDeleteItem = (id: Number) => {
@@ -157,11 +170,12 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
   };
 
   // tạo ra một item trên diary
-  const onCreateOneItem = (Item: React.ReactElement) => {
+  const onCreateOneItem = (Item: any) => {
     let key = Number(itemKey.length + 1);
     setItemKey([...itemKey, key]);
     const newChild = (
       <ButtonDragable
+        onChange={size => console.log(size)}
         onDelete={() => onDeleteItem(key)}
         key={key.toString()}
         isSlected={true}
@@ -174,6 +188,14 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
   };
 
   useEffect(() => {
+    const date = new Date();
+    const day = date.getDay();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    setday(day);
+    setmonth(month);
+    setyear(year);
+    setdate(date.getDate());
   }, [reRender]);
 
   // đăng bài
@@ -252,19 +274,28 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
                 setIsVisibleDialog(true);
                 setisVisibleDialogText(false);
                 setisVisibleDialogBackground(false);
+                setisVisibleDialogTime(false);
               }
               if (e.label === 'Văn bản') {
                 setIsVisibleDialog(false);
                 setisVisibleDialogText(true);
                 setisVisibleDialogBackground(false);
+                setisVisibleDialogTime(false);
               }
               if (e.label === 'Nền') {
                 setIsVisibleDialog(false);
                 setisVisibleDialogText(false);
                 setisVisibleDialogBackground(true);
+                setisVisibleDialogTime(false);
               }
               if (e.label === 'Hình ảnh') {
                 getImageFromLibrary();
+              }
+              if (e.label === 'Thời gian') {
+                setIsVisibleDialog(false);
+                setisVisibleDialogText(false);
+                setisVisibleDialogBackground(false);
+                setisVisibleDialogTime(true);
               }
             }}
             itemStyle={[status === e.label ? styles.optionActive : {}]}
@@ -291,26 +322,48 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
     setisVisibleDialogBackground(false);
   };
 
+  // đóng dialog thời gian
+  const onCancelDialogTime = () => {
+    setisVisibleDialogTime(false);
+  };
+
+  // đến trang profile
+  const onRefresh = () => {
+    setChilds([]);
+    setContent('');
+    setisVisibleRefresh(false);
+  };
+
+  // xử lí icon quyền riêng tư
+  const onHandlePrivacy = (privacy: number) => {
+    switch (privacy) {
+      case 1:
+        return require('../../../Resource/images/icon_editPrivate.png');
+      case 2:
+        return require('../../../Resource/images/icon_friends2.png');
+      case 3:
+        return require('../../../Resource/images/icon_earth.png');
+    }
+  };
+
   return (
     <View style={styles.container}>
       {/* dialog */}
       {/* dialog sticker */}
       <Modal
+        onBackdropPress={onCancelSticker}
         animationIn={'bounce'}
         isVisible={isVisibleDialog}
         children={
           <DialogOptions
-            onCreateItem={item =>
-              onCreateOneItem(
-                <Image style={{ width: 50, height: 50 }} source={item.uri} />,
-              )
-            }
+            onCreateItem={item => onCreateOneItem(item.uri)}
             onCancel={onCancelSticker}
           />
         }
       />
       {/* dialog text */}
       <Modal
+        onBackdropPress={onCancelText}
         animationIn={'bounce'}
         isVisible={isVisibleDialogText}
         children={
@@ -325,6 +378,7 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
       />
       {/* dialog background */}
       <Modal
+        onBackdropPress={onCancelBackground}
         isVisible={isVisibleDialogBackground}
         children={
           <DialogBackground
@@ -347,26 +401,47 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
         }
         isVisible={isVisiblePrivacy}
       />
+
+      {/* Dialog time  */}
+      <Modal
+        onBackdropPress={onCancelDialogTime}
+        isVisible={isVisibleDialogTime}
+        children={
+          <DialogTime
+            onChooseTime={selected => onSelectTime(selected)}
+            onCancel={onCancelDialogTime}
+          />
+        }
+      />
       {/* header */}
       <View style={styles.topComponent}>
         <View style={styles.header}>
           <View style={styles.hdLeft}>
             <Shadow style={styles.hdl_shadow} distance={2} offset={[0, 5]}>
-              <Pressable style={styles.hdl_btn}>
-                <Image source={{ uri: user.avatar }} style={styles.hdl_img} />
+              <Pressable
+                style={styles.hdl_btn}
+                onPress={() => setisVisibleRefresh(true)}>
+                <Image
+                  source={require('../../../Resource/images/icon_refresh.png')}
+                  style={styles.hdl_img}
+                />
               </Pressable>
             </Shadow>
           </View>
           <View style={styles.hdRight}>
             <ButtonIcon
               onPress={onSetPrivacy}
-              styles={styles.hdr_btnPrivate}
-              url={require('../../../Resource/images/icon_editPrivate.png')}
+              styles={[
+                privacy == 1 && styles.hdr_btnPrivate,
+                privacy == 2 && {width: 35, height: 35},
+                privacy == 3 && {width: 30, height: 30},
+              ]}
+              url={onHandlePrivacy(privacy)}
             />
             <ButtonIcon
               styles={styles.hdr_btnClose}
               url={require('../../../Resource/images/icon_add.png')}
-              onPress={onBack}
+              onPress={() => setShowAlert(true)}
             />
           </View>
         </View>
@@ -374,12 +449,151 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
       </View>
       {/* body */}
       <Pressable style={styles.body} onPress={onFocusInContent}>
-        <ViewShot style={{ backgroundColor: 'red' }} ref={viewShotRef}>
+        <ViewShot style={{backgroundColor: 'red'}} ref={viewShotRef}>
           <Shadow distance={7} offset={[5, 5]} style={styles.bodyShadow}>
             <View
-              style={[styles.customize, { backgroundColor: backgroundColor }]}>
+              style={[styles.customize, {backgroundColor: backgroundColor}]}>
+              <View style={styles.timeGroup}>
+                {/* kiểu bình thường */}
+                {customTime == 0 ? (
+                  <View style={styles.normalTimeGroup}>
+                    <Text
+                      style={[
+                        styles.normalTimeTxt,
+                        {
+                          fontFamily: font,
+                          fontSize: textSize > 20 ? 20 : textSize,
+                          color: textColor,
+                        },
+                      ]}>
+                      {onConvertDay(day)}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.normalTimeTxt,
+                        {
+                          fontFamily: font,
+                          fontSize: textSize > 20 ? 20 : textSize,
+                          color: textColor,
+                        },
+                      ]}>
+                      {' '}
+                      ngày {onFormatNumber(date)}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.normalTimeTxt,
+                        {
+                          fontFamily: font,
+                          fontSize: textSize > 20 ? 20 : textSize,
+                          color: textColor,
+                        },
+                      ]}>
+                      {' '}
+                      tháng {onFormatNumber(month)}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.normalTimeTxt,
+                        {
+                          fontFamily: font,
+                          fontSize: textSize > 20 ? 20 : textSize,
+                          color: textColor,
+                        },
+                      ]}>
+                      {' '}
+                      năm {year}
+                    </Text>
+                  </View>
+                ) : null}
+                {/* kiểu tối giản */}
+                {customTime == 1 ? (
+                  <View style={styles.simplifyTimeGroup}>
+                    <View style={styles.simplifyUp}>
+                      <Text
+                        style={[styles.simplifyTimetxt, {color: textColor}]}>
+                        {onConvertDay(day)}
+                      </Text>
+                      <Text
+                        style={[styles.simplifyTimetxt, {color: textColor}]}>
+                        {' '}
+                        ngày {onFormatNumber(date)}
+                      </Text>
+                    </View>
+                    <View style={styles.simplifyDown}>
+                      <Text
+                        style={[styles.simplifyTimetxt, {color: textColor}]}>
+                        {' '}
+                        tháng {onFormatNumber(month)}
+                      </Text>
+                      <Text
+                        style={[styles.simplifyTimetxt, {color: textColor}]}>
+                        {' '}
+                        năm {year}
+                      </Text>
+                    </View>
+                  </View>
+                ) : null}
+                {/* cách điệu */}
+                {customTime == 2 ? (
+                  <View style={styles.styleTimeGroup}>
+                    <Text style={[styles.styleDaytxt, {color: textColor}]}>
+                      {onConvertDay(day)}
+                    </Text>
+                    <View
+                      style={[
+                        styles.styleDateGroup,
+                        {backgroundColor: textColor},
+                      ]}>
+                      <Text style={styles.styleTimetxt}>
+                        Ngày {onFormatNumber(date)}
+                      </Text>
+                      <Text style={styles.styleTimetxt}>
+                        {' '}
+                        tháng {onFormatNumber(month)}
+                      </Text>
+                      <Text style={styles.styleTimetxt}>
+                        {' '}
+                        năm {onFormatNumber(year)}
+                      </Text>
+                    </View>
+                  </View>
+                ) : null}
+                {/* nghệ thuật */}
+                {customTime == 3 ? (
+                  <View style={styles.artTimeGroup}>
+                    <Text style={styles.artDateTxt}>
+                      {onFormatNumber(date)}
+                    </Text>
+                    <Text style={styles.artMonthtxt}>
+                      Tháng {onFormatNumber(month)}
+                    </Text>
+                    <Text style={styles.artYearTxt}>{year}</Text>
+                  </View>
+                ) : null}
+                {/* Đơn giản 2 */}
+                {customTime == 4 ? (
+                  <View style={styles.simpleTimeGroup2}>
+                    <View style={styles.simpleSmallGroup2}>
+                      <Text style={styles.simpleDateTxt2}>
+                        {onFormatNumber(date)}
+                      </Text>
+                      <Text style={styles.simpleMonthTxt2}>
+                        {onFormatNumber(month)}
+                      </Text>
+                      <Text style={styles.simpleYearTxt2}>{year}</Text>
+                    </View>
+                    <Text style={styles.simpleDayTxt}>{onConvertDay(day)}</Text>
+                  </View>
+                ) : null}
+              </View>
               <TextInput
-                style={{ fontFamily: font, fontSize: textSize, color: textColor }}
+                style={{
+                  fontFamily: font,
+                  fontSize: textSize,
+                  color: textColor,
+                  zIndex: 1,
+                }}
                 onChangeText={(value: string) => setContent(value)}
                 ref={inputRef}
                 multiline
@@ -392,17 +606,47 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
       </Pressable>
       {/* footer */}
       <View style={styles.footer}>
-        <ButtonText onPress={() => setShowAlert(true)} label="Lưu" />
+        <ButtonText
+          onPress={() => setisVisibleConfirmDialog(true)}
+          label="Lưu"
+        />
       </View>
 
+      {/* Xác nhận Đăng */}
       <DialogConfirmSuccess
-        message="Bạn có muốn đăng bài này không ?"
+        txtButton="Đăng"
+        message="Bạn có muốn đăng nhật kí này không ?"
         title="Thông báo!"
-        isvisible={showAlert}
+        isvisible={isVisibleConfirmDialog}
         onConfirm={onCreateDiary}
         onCancel={() => {
+          setisVisibleConfirmDialog(false);
+        }}
+      />
+
+      {/* xác nhận thoát */}
+      <DialogConfirmSuccess
+        txtButton="Thoát"
+        message="Bạn chưa lưu nhật kí ?"
+        title="Thông báo!"
+        isvisible={showAlert}
+        onConfirm={onBack}
+        onCancel={() => {
           setShowAlert(false);
-        }} />
+        }}
+      />
+
+      {/* xác nhận làm mới */}
+      <DialogConfirmSuccess
+        txtButton="Làm mới"
+        message="Bạn muốn làm mới nhật kí ?"
+        title="Thông báo!"
+        isvisible={isVisibleRefresh}
+        onConfirm={onRefresh}
+        onCancel={() => {
+          setisVisibleRefresh(false);
+        }}
+      />
     </View>
   );
 };

@@ -15,6 +15,7 @@ interface DiaryModel {
     diary: String,
     createdat: Number,
     privacy: Number,
+    isavailable: boolean,
 }
 
 interface MomentModel {
@@ -83,5 +84,28 @@ interface ResponseCommentModel {
     createdat: Number
 }
 
+interface MessageModel {
+    _id: String,
+    receiver: String,
+    content: string,
+    createdat: Number,
+    sender: String,
+    seen: boolean,
+}
 
-export type { UserModel, DiaryModel, MomentModel, FriendModel, RequestModel, TodoList, ItemTodolist, ResponseTodo, CommentsModel, LikesModel, ResponseCommentModel }
+interface ChatMessageModel {
+    friend: UserModel,
+    message: MessageModel
+}
+
+interface NotifiicationModel {
+    _id: String,
+    receiver: String,
+    sender: String,
+    content: String,
+    createdat: Number,
+    moment: String,
+    diary: String,
+}
+
+export type { UserModel, DiaryModel, MomentModel, FriendModel, RequestModel, TodoList, ItemTodolist, ResponseTodo, CommentsModel, LikesModel, ResponseCommentModel, MessageModel, ChatMessageModel, NotifiicationModel }

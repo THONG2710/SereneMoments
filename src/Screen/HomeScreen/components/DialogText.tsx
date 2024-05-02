@@ -15,7 +15,7 @@ import ButtonText from '../../../Components/Buttons/ButtonText';
 import TextButton from '../../../Components/Buttons/TextButton';
 import {assets} from '../../../../react-native.config';
 
-interface DialogTextProps extends ViewProps {
+interface DialogTextProps {
   onCancel?: () => void;
   onSelectFont: (fonts: string) => void;
   onSelectFontSize: (size: number) => void;
@@ -150,14 +150,14 @@ const DialogText: React.FC<DialogTextProps> = props => {
         />
       </View>
       {/* stroke */}
-      <View style={styles.strokeContainer}>
+      {/* <View style={styles.strokeContainer}>
         <Text style={styles.txtTitle}>Nét chữ</Text>
         <View style={styles.stroke}>
           <TextButton style={styles.txtStrokeN} label="N" />
           <TextButton style={styles.txtStrokeB} label="B" />
           <TextButton style={styles.txtStrokeI} label="I" />
         </View>
-      </View>
+      </View> */}
       {/* font */}
       <View style={styles.fontsContainer}>
         <Text style={styles.txtTitle}>Kiểu chữ</Text>
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
-    marginVertical: 20,
+    marginVertical: 40,
   },
 
   inputStyle: {
@@ -257,7 +257,9 @@ const styles = StyleSheet.create({
   },
 
   // fonts
-  fontsContainer: {},
+  fontsContainer: {
+    marginTop: -20
+  },
 
   itemFont: {
     color: Colors.BLACK,

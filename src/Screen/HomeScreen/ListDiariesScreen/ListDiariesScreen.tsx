@@ -13,9 +13,11 @@ import ButtonIcon from '../../../Components/Buttons/ButtonIcon';
 import Post from '../components/Post';
 import {ListDiarieProps} from './type';
 import {useAppDispatch, useAppSelector} from '../../../Redux/Hook';
-import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
+import {ID_ADRESS, getData, postData} from '../../../Service/RequestMethod';
 import {DiaryModel} from '../../../Models/Model';
 import FriendsComponent from '../components/FriendsComponent';
+import {SAVE_ID_TODOLIST} from '../../../Redux/Action/WorkAction';
+import DialogConfirmSuccess from '../../Dialog/DialogConfirmSuccess';
 
 const ListDiariesScreen: React.FC<ListDiarieProps> = props => {
   const {navigation} = props;
@@ -78,6 +80,11 @@ const ListDiariesScreen: React.FC<ListDiarieProps> = props => {
     navigation.navigate('ListFriends');
   };
 
+  // Di chuyển đến trang thông báo
+  const onNotifications = () => {
+    navigation.navigate('Notification');
+  };
+
   // lấy nhật kí từ database
   const getDiaries = async () => {
     const result = await getData(
@@ -86,14 +93,45 @@ const ListDiariesScreen: React.FC<ListDiarieProps> = props => {
         ':3000/api/diary/getDiariesMyFriends?id=' +
         user._id,
     );
-    if (result.diaries) {
+
+    if (result.result) {
       setListDiaries(result.diaries);
       setrefreshing(false);
     }
   };
 
+  // tạo một todolist
+  const onCreateTodolist = async () => {
+    const date = Math.floor(Number(new Date().getTime() / 1000));
+    const data = {userid: user._id, createdat: date};
+    const url = 'http://' + ID_ADRESS + ':3000/api/todolist/createToDoList';
+    const res = await postData(url, data);
+    console.log(url, data);
+    if (res.result) {
+      console.log('success');
+      dispatch(SAVE_ID_TODOLIST(res.todolist._id));
+    } else {
+      console.log('failed to create todolist');
+      const url =
+        'http://' +
+        ID_ADRESS +
+        ':3000/api/todolist/getTodolist?userid=' +
+        user._id +
+        '&createdat=' +
+        date;
+      const res = await getData(url);
+      // console.log(url);
+      if (res.result) {
+        console.log('successfull for get id');
+        console.log(res.todolist);
+        dispatch(SAVE_ID_TODOLIST(res.todolist._id));
+      }
+    }
+  };
+
   useEffect(() => {
     getDiaries();
+    onCreateTodolist();
   }, [refreshing]);
 
   // tải lại trang
@@ -112,6 +150,7 @@ const ListDiariesScreen: React.FC<ListDiarieProps> = props => {
           placeholder="Tìm kiếm..."
         />
         <ButtonIcon
+          onPress={onNotifications}
           styles={styles.header_btnICon}
           url={require('../../../Resource/images/icon_bell.png')}
         />

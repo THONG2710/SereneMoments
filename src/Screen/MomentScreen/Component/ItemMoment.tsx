@@ -26,10 +26,11 @@ import CommentDialog from '../../../Components/Dialogs/CommentDialog';
 import {useAppSelector} from '../../../Redux/Hook';
 import VideoPlayer from 'react-native-video-player';
 import {Colors} from '../../../Resource/colors';
+import {BSON} from 'realm';
 const w = Dimensions.get('window').width;
 const h = Dimensions.get('window').height;
 
-interface ItemMomentProps extends ViewProps {
+interface ItemMomentProps {
   moment: MomentModel;
   onPress: (id: string) => void;
   onMoveToProfile: (id: string) => void;
@@ -82,6 +83,7 @@ const ItemMoment: React.FC<ItemMomentProps> = props => {
         for (const like of response) {
           if (myAccount._id === like.userid) {
             setIdLiked(like._id);
+            setIsAvailableLike(true);
           }
         }
       }
@@ -107,6 +109,23 @@ const ItemMoment: React.FC<ItemMomentProps> = props => {
         setIsAvailableLike(true);
         setIdLiked(res.likes._id);
         setIsRefresh(!isRefresh);
+        const data = {
+          receiver: moment.userid,
+          sender: myAccount._id,
+          content: 'đã thích khoảnh khắc của bạn',
+          createdat: date,
+          moment: moment._id,
+          diary: new BSON.ObjectID(),
+        };
+        const response = await postData(
+          'http://' +
+            ID_ADRESS +
+            ':3000/api/notifications/createNewNotification',
+          data,
+        );
+        if (response.result) {
+          console.log('Create new notification successfully');
+        }
       }
     } else {
       const res = await postData(
@@ -138,6 +157,23 @@ const ItemMoment: React.FC<ItemMomentProps> = props => {
       if (res.result) {
         setIsRefresh(!isRefresh);
         setMyComment('');
+        const data = {
+          receiver: moment.userid,
+          sender: myAccount._id,
+          content: 'đã viết bình luận về khoảnh khắc của bạn',
+          createdat: date,
+          moment: moment._id,
+          diary: new BSON.ObjectID(),
+        };
+        const response = await postData(
+          'http://' +
+            ID_ADRESS +
+            ':3000/api/notifications/createNewNotification',
+          data,
+        );
+        if (response.result) {
+          console.log('Create new notification successfully');
+        }
       }
     } catch (error) {
       console.log('failed to post comment: ', error);
@@ -168,7 +204,7 @@ const ItemMoment: React.FC<ItemMomentProps> = props => {
         ) : (
           <View>
             <VideoPlayer
-              video={{uri: moment.content.toString()}}
+              video={{uri: moment?.content?.toString()}}
               videoWidth={Dimensions.get('screen').width}
               videoHeight={Dimensions.get('screen').height}
               thumbnail={
@@ -268,7 +304,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get('screen').width,
     height: Dimensions.get('screen').height - 120,
     backgroundColor: '#B4D4FF',
-    zIndex:-1
+    zIndex: -1,
   },
 
   //HEADER

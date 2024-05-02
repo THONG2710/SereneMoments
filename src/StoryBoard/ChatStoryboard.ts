@@ -1,4 +1,6 @@
+import { UserModel } from "../Models/Model";
+
 export type ChatParamlist = {
     Chat: undefined,
-    BoxChatScreen: undefined,
+    BoxChatScreen: { friend: UserModel },
 }

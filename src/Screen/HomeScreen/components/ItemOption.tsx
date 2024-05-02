@@ -2,7 +2,7 @@ import {Image, StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewProps, V
 import React from 'react';
 import { Colors } from '../../../Resource/colors';
 
-interface ItemOptionProps extends ViewProps {
+interface ItemOptionProps  {
     item: {_id: number; label: string; icon: any};
     itemStyle?: StyleProp<ViewStyle>;
     onPress?: (status: any) => void;

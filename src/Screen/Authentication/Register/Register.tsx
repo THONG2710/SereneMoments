@@ -1,18 +1,26 @@
-import { View, Text, Image, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  ScrollView,
+} from 'react-native';
 import React from 'react';
 import styles from './styles';
-import { RegisterProps } from './type';
-import { useEffect, useState } from 'react';
+import {RegisterProps} from './type';
+import {useEffect, useState} from 'react';
 import ButtonIcon from '../../../Components/Buttons/ButtonIcon';
-import { text } from 'stream/consumers';
+import {text} from 'stream/consumers';
 import {
   isValidPassword,
   isValidPhoneNumber,
   isValidRePassword,
 } from '../../Validations/Validate';
+import {ID_ADRESS, postData} from '../../../Service/RequestMethod';
 const Register: React.FC<RegisterProps> = props => {
-  const { navigation } = props;
-
+  const {navigation} = props;
   const [isVisible, setIsvisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorPhoneNumber, setErrorPhoneNumber] = useState('');
@@ -21,13 +29,45 @@ const Register: React.FC<RegisterProps> = props => {
   const [password, setPassword] = useState('');
   const [rePassword, setRePassword] = useState('');
   const [errorRePassword, setErrorRePassword] = useState('');
-  const onRegisterAccount = () => {
-    navigation.navigate('LoginWithAccount');
+  const [userName, setUserName] = useState('');
+
+  const onRegisterAccount = async () => {
+    if (password === rePassword) {
+      try {
+        const date = Math.floor(new Date().getTime() / 1000);
+        const data = {
+          username: userName,
+          password: password,
+          email: '',
+          avatar:
+            'https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png',
+          phonenumber: phoneNumber,
+          createdat: date,
+        };
+        const res = await postData(
+          'http://' + ID_ADRESS + ':3000/api/users/register',
+          data,
+        );
+        if (res.result) {
+          Alert.alert('', 'Đăng kí thành công', [
+            {
+              text: 'OK',
+              onPress: () => {
+                navigation.navigate('LoginWithAccount');
+              },
+            },
+          ]);
+        }
+      } catch (error) {
+        console.log('failed to register: ', error);
+      }
+    }
   };
 
   const onLogin = () => {
     navigation.goBack();
   };
+
   const onChangeVisiblePassword = () => {
     setIsvisible(!isVisible);
   };
@@ -39,7 +79,7 @@ const Register: React.FC<RegisterProps> = props => {
       <View style={styles.containerImg}>
         <Image
           style={styles.img}
-          source={require('../../../Resource/images/logo.png')}
+          source={require('../../../Resource/images/img_logo2.png')}
         />
       </View>
       <View style={styles.btnRegister}>
@@ -48,9 +88,9 @@ const Register: React.FC<RegisterProps> = props => {
           source={require('../../../Resource/images/icon_user_r.png')}
         />
         <TextInput
+          onChangeText={value => setUserName(value)}
           style={styles.txtBtn}
-          placeholder="Nhập tên"
-          secureTextEntry={true}></TextInput>
+          placeholder="Nhập tên"></TextInput>
       </View>
       <View style={styles.btnRegister}>
         <Image
@@ -58,11 +98,12 @@ const Register: React.FC<RegisterProps> = props => {
           source={require('../../../Resource/images/icon_phone.png')}
         />
         <TextInput
+          keyboardType="number-pad"
           onChangeText={text => {
             setErrorPhoneNumber(
               isValidPhoneNumber(text) == true
                 ? ''
-                : ' SDT chưa đúng định dạng',
+                : 'Số điện thoại chưa đúng định dạng',
             );
             setPhoneNumber(text);
           }}
@@ -71,7 +112,7 @@ const Register: React.FC<RegisterProps> = props => {
       </View>
       <View style={styles.btnRegister}>
         <Image
-          style={{ width: 25, height: 25, tintColor: '#59AEEF' }}
+          style={{width: 25, height: 25}}
           source={require('../../../Resource/images/icon_key.png')}
         />
         <TextInput
@@ -99,7 +140,7 @@ const Register: React.FC<RegisterProps> = props => {
       {/* <Text style={styles.txtError}>{errorPassWord}</Text> */}
       <View style={styles.btnRegister}>
         <Image
-          style={{ width: 25, height: 25, tintColor: '#59AEEF' }}
+          style={{width: 25, height: 25}}
           source={require('../../../Resource/images/icon_key.png')}
         />
         <TextInput
@@ -109,7 +150,7 @@ const Register: React.FC<RegisterProps> = props => {
                 ? ''
                 : 'Mật khẩu phải có ít nhất 8 kí tự',
             );
-            setPassword(text);
+            setRePassword(text);
           }}
           style={styles.txtBtn}
           placeholder="Nhập lại mật khẩu"

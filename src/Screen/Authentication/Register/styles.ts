@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 const styles = StyleSheet.create({
   container: {
@@ -7,14 +7,14 @@ const styles = StyleSheet.create({
   sayHello: {
     fontSize: 50,
     fontWeight: 'bold',
-    color: '#1B90B7',
+    color: '#8D6666',
     textAlign: 'center',
     marginTop: 20,
   },
   sayHello2: {
     fontSize: 30,
-    fontWeight: 'bold',
-    color: '#1B90B7',
+    fontWeight: '500',
+    color: '#8D6666',
     textAlign: 'center',
   },
   containerImg: {
@@ -22,11 +22,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   img: {
-    width: 275,
-    height: 242,
+    width: Dimensions.get('screen').width / 2,
+    height: Dimensions.get('screen').height / 4,
   },
   btnRegister: {
-    backgroundColor: 'white',
+    backgroundColor: '#E7E7E7',
     borderRadius: 30,
     marginHorizontal: 15,
     height: 50,
@@ -38,20 +38,19 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
   },
   btnLogin: {
-    backgroundColor: '#59AEEF',
+    backgroundColor: '#A87070',
     borderRadius: 30,
     marginHorizontal: 15,
     height: 50,
     flexDirection: 'row',
     alignItems: 'center',
     paddingLeft: 20,
-    marginTop: 0,
+    marginTop: 15,
     justifyContent: 'center',
   },
   imgIcon: {
     width: 25,
     height: 24,
-    tintColor: '#59AEEF',
   },
   txtBtn: {
     marginLeft: 10,
@@ -66,7 +65,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignSelf: 'center',
     marginTop: 10,
-    marginBottom: 40,
   },
   txtNote: {
     fontSize: 15,
@@ -76,22 +74,22 @@ const styles = StyleSheet.create({
   btnNote: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#1B90B7',
+    color: 'black',
     marginLeft: 5,
   },
 
   icon_eye: {
     width: 25,
     height: 25,
-    tintColor: '#59AEEF',
   },
 
-  txtError: {
-    paddingLeft: 20,
-    fontSize: 14,
-    color: 'red',
-    marginTop: 20,
-  },
+  txtError:{
+    paddingLeft:20,
+    fontSize:14,
+    color:'red',
+    marginTop:20,
+
+  }
 });
 
 export default styles;

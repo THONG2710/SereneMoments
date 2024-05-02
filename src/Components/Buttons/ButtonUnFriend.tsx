@@ -1,9 +1,9 @@
-import { ButtonProps, Pressable, StyleProp, StyleSheet, Text, TextStyle, View, ViewProps, ViewStyle } from 'react-native';
+import { ButtonProps, Pressable, StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native';
 import React from 'react';
 import { Colors } from '../../Resource/colors';
 import LinearGradient from 'react-native-linear-gradient';
 
-interface ButtonUnfriendProps extends ViewProps {
+interface ButtonUnfriendProps {
   label: string;
   buttonStyle?: StyleProp<ViewStyle>;
   labelStyle?: StyleProp<TextStyle>;

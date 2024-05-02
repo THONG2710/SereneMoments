@@ -12,7 +12,7 @@ import React from 'react';
 import ButtonIcon from '../../../Components/Buttons/ButtonIcon';
 import {Colors} from '../../../Resource/colors';
 
-interface DialogBackgroundProps extends ViewProps {
+interface DialogBackgroundProps {
   onCancel: () => void;
   onSelectBackground: (color: string) => void;
 }

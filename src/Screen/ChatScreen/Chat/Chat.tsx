@@ -9,106 +9,111 @@ import {
   Image,
   Alert,
   FlatList,
+  Dimensions,
 } from 'react-native';
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {ChatScreenProps} from './type';
-import {RealmContext, Task} from '../../../Models/Task';
-import { BSON } from 'realm';
-import {Realm} from '@realm/react'
-// import { useQuery, useRealm } from '@realm/react';
+import {RealmContext, ChatSchema} from '../../../Models/ChatSchema';
+import {BSON} from 'realm';
+import {Realm} from '@realm/react';
+import {Colors} from '../../../Resource/colors';
+import ItemChat from '../../../Components/Items/ItemChat';
+import {useAppSelector} from '../../../Redux/Hook';
+import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
+import {ChatMessageModel, UserModel} from '../../../Models/Model';
 
 const {useQuery, useRealm} = RealmContext;
 
 const Chat: React.FC<ChatScreenProps> = props => {
   const {navigation} = props;
+  const user = useAppSelector(state => state.Authentication.myAccount);
+  const [txtSerch, setTxtSerch] = useState<string>('');
+  const [listSearch, setListSearch] = useState<ChatMessageModel[]>([]);
+  const [listFull, setListFull] = useState<ChatMessageModel[]>([]);
   const realm = useRealm();
-  const tasks = useQuery(Task);
+  const [isReFresh, setisReFresh] = useState<boolean>(false);
 
-  const addTask = useCallback(() => {
-    realm.write(() => {
-      realm.create('Task', {
-        _id: new BSON.ObjectID(),
-        title: 'walk the dog',
-        description: 'bring an umbrella',
-      });
-    });
-  }, [realm]);
+  // đến trang box chat
+  const onMoveToBoxChat = (friend: UserModel) => {
+    navigation.navigate('BoxChatScreen', {friend: friend});
+  };
+
+  const message = useQuery(ChatSchema, chats => {
+    return chats
+      .filtered(
+        'sender == $0 OR receiver == $0',
+        new BSON.ObjectId(user._id.toString()),
+      )
+      .sorted('createdat', true);
+  });
+
+  // tìm kiếm
+  const onSearch = (value: string) => {
+    setTxtSerch(value);
+    if (value == '') {
+      setListSearch(listFull);
+    } else {
+      const searchFriends = listSearch.filter(item =>
+        item.friend.username.toLocaleLowerCase().includes(value),
+      );
+      setListSearch(searchFriends);
+    }
+  };
+
+  // lấy danh sách chat
+  const onGetNewChatMessage = async () => {
+    try {
+      const res = await getData(
+        'http://' +
+          ID_ADRESS +
+          ':3000/api/chatMessage/getNewMessages/' +
+          user._id,
+      );
+      if (res.result) {
+        const sort = res.messages.sort(
+          (a: ChatMessageModel, b: ChatMessageModel) =>
+            Number(b.message.createdat) - Number(a.message.createdat),
+        );
+
+        setListSearch(res.messages);
+        setListFull(res.messages);
+      }
+    } catch (error) {
+      console.log('failed to get new chat message: ' + error);
+    }
+  };
 
   useEffect(() => {
+    onGetNewChatMessage();
     realm.subscriptions.update(mutableSubs => {
-      mutableSubs.add(realm.objects(Task));
+      mutableSubs.add(realm.objects(ChatSchema));
     });
-  }, [realm]);
-
-  const pressHandler = () => {
-    Alert.alert(
-      'Xóa bạn bè',
-      'Bạn có chắc chắn muốn hủy kết bạn với người này không ?',
-      [
-        {text: 'Chấp nhận', onPress: () => console.log('Đã hủy kết bạn')},
-        {text: 'Hủy', onPress: () => console.log('...')},
-      ],
-    );
-  };
+  }, [realm, message.length, isReFresh]);
 
   return (
     <View style={styles.container}>
-      <View>
+      {/* header */}
+      <View style={styles.header}>
         <Text style={styles.text3}> Tin nhắn</Text>
+        <TextInput
+          style={styles.textInput}
+          value={txtSerch}
+          onChangeText={value => onSearch(value)}
+          placeholder="Tìm kiếm..."></TextInput>
       </View>
-      <TextInput style={styles.textInput} placeholder="Tìm kiếm..."></TextInput>
-
-      <FlatList
-        data={tasks}
-        renderItem={({item}) => (
-          <Text>{`${item.title} - ${item.description}`}</Text>
-        )}
-      />
-      <TouchableOpacity style={{backgroundColor: 'yellow'}} onPress={addTask}>
-        <Text>{'new task'}</Text>
-      </TouchableOpacity>
-      {/* <View>
-        <Text style={styles.text4}>Gần đây</Text>
+      {/* body */}
+      <View style={styles.body}>
+        <FlatList
+          data={listSearch}
+          renderItem={({item}) => (
+            <ItemChat
+              onMoveToBoxChat={() => onMoveToBoxChat(item.friend)}
+              user={item.friend}
+            />
+          )}
+          keyExtractor={item => item.friend._id.toString()}
+        />
       </View>
-      <TouchableOpacity
-        style={styles.viewButton}
-        onPress={() => navigation.navigate('BoxChatScreen')}
-        onLongPress={() => pressHandler()}>
-        <Image
-          source={require('../../../Resource/images/Ellipse3.png')}
-          // style={styles.image6}
-        ></Image>
-        <TouchableOpacity>
-          <Text style={styles.text1}>Nguyễn Ngọc Bảo Sơn</Text>
-          <Text style={styles.text2}>Xin chào</Text>
-        </TouchableOpacity>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.viewButton2}
-        onPress={() => navigation.navigate('BoxChatScreen')}>
-        <Image
-          source={require('../../../Resource/images/Ellipse3.png')}
-          // style={styles.image6}
-        ></Image>
-        <TouchableOpacity>
-          <Text style={styles.text1}>Nguyễn Ngọc Bảo Sơn</Text>
-          <Text style={styles.text2}>Xin chào</Text>
-        </TouchableOpacity>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.viewButton3}
-        onPress={() => navigation.navigate('BoxChatScreen')}>
-        <Image
-          source={require('../../../Resource/images/Ellipse3.png')}
-          // style={styles.image6}
-        ></Image>
-        <TouchableOpacity>
-          <Text style={styles.text1}>Nguyễn Ngọc Bảo Sơn</Text>
-          <Text style={styles.text2}>Xin chào</Text>
-        </TouchableOpacity>
-      </TouchableOpacity> */}
     </View>
   );
 };
@@ -120,50 +125,31 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#B4D4FF',
     alignItems: 'center',
-    //justifyContent: 'center',
+    justifyContent: 'flex-start',
+  },
+
+  header: {
+    width: '100%',
+    height: Dimensions.get('screen').height / 8,
   },
 
   textInput: {
-    position: 'absolute',
-    width: 354,
-    height: 40,
+    width: Dimensions.get('screen').width - 32,
+    marginHorizontal: 16,
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
-    top: 60,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 10,
-  },
-
-  viewButton: {
-    //left : 20,
-    flexDirection: 'row',
-    position: 'absolute',
-    width: 354,
-    height: 70,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    top: 150,
-    padding: 10,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
-    elevation: 3,
+    paddingHorizontal: 15,
   },
 
   viewButton2: {
-    //left : 20,
     flexDirection: 'row',
-    position: 'absolute',
-    width: 354,
-    height: 70,
-    backgroundColor: 'white',
+    width: Dimensions.get('screen').width - 32,
+    marginHorizontal: 16,
+    height: Dimensions.get('screen').height / 11,
+    backgroundColor: Colors.WHITE,
     borderRadius: 10,
-    top: 230,
     padding: 10,
     shadowColor: '#000',
     shadowOffset: {
@@ -173,26 +159,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
     elevation: 3,
-  },
-
-  viewButton3: {
-    //left : 20,
-    flexDirection: 'row',
-    position: 'absolute',
-    width: 354,
-    height: 70,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    top: 310,
-    padding: 10,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
-    elevation: 3,
+    marginVertical: 5,
   },
 
   text1: {
@@ -208,23 +175,18 @@ const styles = StyleSheet.create({
     fontWeight: 'normal',
     color: '#666666',
   },
+
   text3: {
-    width: 354,
-    height: 40,
-    left: 0,
+    width: Dimensions.get('screen').width,
     fontSize: 24,
     fontWeight: 'bold',
     color: 'white',
-    top: 22,
+    marginHorizontal: 15,
+    marginVertical: 10,
   },
 
-  text4: {
-    width: 354,
-    height: 40,
-    left: 0,
-    fontSize: 16,
-    fontWeight: 'normal',
-    color: 'white',
-    top: 80,
+  body: {
+    flex: 1,
+    marginTop: 15,
   },
 });

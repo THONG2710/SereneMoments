@@ -16,7 +16,7 @@ import {useAppDispatch, useAppSelector} from '../../../Redux/Hook';
 import {UserModel} from '../../../Models/Model';
 import { SAVE_MYFRIENDS } from '../../../Redux/Action/FriendsActions';
 
-interface FriendsComponentProps extends ViewProps {
+interface FriendsComponentProps  {
   onMyFriends: () => void;
   onOtherUsers: () => void;
   isRefresh: boolean;

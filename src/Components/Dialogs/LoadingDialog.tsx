@@ -3,7 +3,7 @@ import React from 'react';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import * as Progress from 'react-native-progress';
 
-interface LoadingDialogProps extends ViewProps {
+interface LoadingDialogProps{
   isVisible: boolean;
 }
 

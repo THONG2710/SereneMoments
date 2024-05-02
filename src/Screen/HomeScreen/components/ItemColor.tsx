@@ -2,7 +2,7 @@ import {Pressable, StyleSheet, Text, View, ViewProps} from 'react-native';
 import React from 'react';
 import {Colors} from '../../../Resource/colors';
 
-interface ItemColorProps extends ViewProps {
+interface ItemColorProps  {
   color: string;
   onPress: () => void;
 }

@@ -6,5 +6,6 @@ export type HomeParamlist = {
     ListFriends: undefined,
     OtherUsers: undefined,
     Profile: {idUser: string},
-    findUser: {users: UserModel[]}
+    findUser: {users: UserModel[]},
+    Notification: undefined
 }

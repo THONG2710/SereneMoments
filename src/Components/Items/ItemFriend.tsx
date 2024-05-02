@@ -11,7 +11,7 @@ import {Shadow} from 'react-native-shadow-2';
 import {Colors} from '../../Resource/colors';
 import {UserModel} from '../../Models/Model';
 
-interface ItemFriendProps extends ViewProps {
+interface ItemFriendProps{
   information: UserModel;
   onPress: (id: string) => void;
 }
@@ -32,7 +32,7 @@ const ItemFriend: React.FC<ItemFriendProps> = props => {
           />
         </View>
       </Shadow>
-      <Text style={styles.txtName}>{information.username}</Text>
+      <Text numberOfLines={1} style={styles.txtName}>{information.username}</Text>
     </Pressable>
   );
 };

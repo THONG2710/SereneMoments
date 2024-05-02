@@ -8,30 +8,28 @@ import {
   Pressable,
   FlatList,
   Dimensions,
-  Animated,
+  Modal,
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import moment from 'moment';
-import { DiariesHistorProps } from './type';
-import { Colors } from '../../../Resource/colors';
+import {DiariesHistorProps} from './type';
+import {Colors} from '../../../Resource/colors';
 import Deck_Swiper from 'react-native-deck-swiper';
-import { useAppSelector } from '../../../Redux/Hook';
-import { DiaryModel } from '../../../Models/Model';
+import {useAppSelector} from '../../../Redux/Hook';
+import {DiaryModel} from '../../../Models/Model';
 import ItemMyDiary from '../../../Components/Items/ItemMyDiary';
 
 const DiariesHistory: React.FC<DiariesHistorProps> = props => {
-  const { navigation } = props;
+  const {navigation} = props;
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(date);
   const [diaries, setDiaries] = useState<DiaryModel[]>([]);
   const myDiaries = useAppSelector(state => state.Diary.myDiary);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [diary, setDiary] = useState<DiaryModel>();
 
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [fullscreenItem, setFullscreenItem] = useState(null);  
-
- 
   // quay trở lại
   const onGoBack = () => {
     navigation.goBack();
@@ -39,8 +37,7 @@ const DiariesHistory: React.FC<DiariesHistorProps> = props => {
 
   useEffect(() => {
     setDiaries(myDiaries);
-  }, [])
-
+  }, []);
 
   return (
     // CONTAINER
@@ -52,14 +49,15 @@ const DiariesHistory: React.FC<DiariesHistorProps> = props => {
             style={styles.imgSearch}
             source={require('../../../Resource/images/icon_back3.png')}></Image>
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.btnOpenDatePicker}
           onPress={() => setOpen(true)}>
           <Text style={styles.textDate}>{date.toLocaleDateString()}</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       {/* CENTER */}
-      <DatePicker
+      {/* <DatePicker
+        aria-disabled={true}
         mode="date"
         modal
         open={open}
@@ -72,12 +70,20 @@ const DiariesHistory: React.FC<DiariesHistorProps> = props => {
         onCancel={() => {
           setOpen(false);
         }}
-      />
-      <TouchableOpacity style={styles.center} >
+      /> */}
+      <View style={styles.center}>
+        {myDiaries.length > 0 ? (
           <Deck_Swiper
             // infinite={true}
             cards={myDiaries}
-            renderCard={(diary, index) => <ItemMyDiary diary={diary}  />}
+            renderCard={(diary, index) => (
+              <Pressable
+                onPress={() => {
+                  setDiary(diary), setModalVisible(true);
+                }}>
+                <ItemMyDiary diary={diary} />
+              </Pressable>
+            )}
             onSwiped={diaryIndex => {
               console.log(diaryIndex);
             }}
@@ -85,12 +91,43 @@ const DiariesHistory: React.FC<DiariesHistorProps> = props => {
               console.log('onSwipedAll');
             }}
             cardIndex={0}
-            backgroundColor={'#4FD0E9'}
-            stackSize={3}>
-          </Deck_Swiper>
-      </TouchableOpacity>
+            backgroundColor={'#00000'}
+            stackSize={3}></Deck_Swiper>
+        ) : (
+          <Text style={{fontWeight: 'bold', fontSize: 16}}>
+            Bạn chưa có nhật ký nào
+          </Text>
+        )}
+      </View>
       {/* FOOTER */}
       <View style={styles.footer}></View>
+      <Modal
+        animationType="fade"
+        visible={modalVisible}
+        transparent={true}
+        onRequestClose={() => setModalVisible(false)}>
+        <Pressable
+          onPress={() => setModalVisible(false)}
+          style={{
+            width: Dimensions.get('screen').width,
+            height: Dimensions.get('screen').height,
+            backgroundColor: 'black',
+            marginTop: -40,
+          }}>
+          <Image
+            style={{
+              width: Dimensions.get('screen').width,
+              height: Dimensions.get('screen').height,
+              resizeMode: 'contain',
+            }}
+            source={
+              diary?.diary
+                ? {uri: diary.diary}
+                : require('../../../Resource/images/img.jpg')
+            }
+          />
+        </Pressable>
+      </Modal>
     </View>
   );
 };
@@ -101,7 +138,6 @@ const styles = StyleSheet.create({
   // CONTAINER
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   // HEADER
   header: {
@@ -149,7 +185,9 @@ const styles = StyleSheet.create({
   },
   // CENTER
   center: {
-    // flex: 1,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   imgHistory: {
@@ -159,107 +197,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
 
-
-
   columnWrapper: {},
   // FOOTER
   footer: {},
 });
-
-const History = [
-  {
-    _id: '1',
-    imgHistory: require('../../../Resource/Image2/avt.jpg'),
-    date: moment('05/03/2024', 'DD/MM/YYYY').toDate(),
-  },
-
-  {
-    _id: '2',
-    imgHistory: require('../../../Resource/Image2/avt.jpg'),
-    date: moment('05/03/2024', 'DD/MM/YYYY').toDate(),
-  },
-
-  {
-    _id: '3',
-    imgHistory: require('../../../Resource/Image2/avt.jpg'),
-    date: moment('12/03/2024', 'DD/MM/YYYY').toDate(),
-  },
-
-  {
-    _id: '4',
-    imgHistory: require('../../../Resource/Image2/avt.jpg'),
-    date: moment('26/03/2024', 'DD/MM/YYYY').toDate(),
-  },
-
-  {
-    _id: '5',
-    imgHistory: require('../../../Resource/Image2/avt.jpg'),
-    date: moment('14/03/2024', 'DD/MM/YYYY').toDate(),
-  },
-
-  {
-    _id: '6',
-    imgHistory: require('../../../Resource/Image2/avt.jpg'),
-    date: moment('05/03/2024', 'DD/MM/YYYY').toDate(),
-  },
-
-  {
-    _id: '7',
-    imgHistory: require('../../../Resource/Image2/avt.jpg'),
-    date: moment('29/03/2024', 'DD/MM/YYYY').toDate(),
-  },
-
-  {
-    _id: '8',
-    imgHistory: require('../../../Resource/Image2/avt.jpg'),
-    date: moment('17/03/2024', 'DD/MM/YYYY').toDate(),
-  },
-
-  {
-    _id: '9',
-    imgHistory: require('../../../Resource/Image2/avt.jpg'),
-    date: moment('11/03/2024', 'DD/MM/YYYY').toDate(),
-  },
-
-  {
-    _id: '10',
-    imgHistory: require('../../../Resource/Image2/avt.jpg'),
-    date: moment('04/03/2024', 'DD/MM/YYYY').toDate(),
-  },
-
-  {
-    _id: '11',
-    imgHistory: require('../../../Resource/Image2/avt.jpg'),
-    date: moment('04/03/2024', 'DD/MM/YYYY').toDate(),
-  },
-
-  {
-    _id: '12',
-    imgHistory: require('../../../Resource/Image2/avt.jpg'),
-    date: moment('04/03/2024', 'DD/MM/YYYY').toDate(),
-  },
-
-  {
-    _id: '13',
-    imgHistory: require('../../../Resource/Image2/avt.jpg'),
-    date: moment('04/03/2024', 'DD/MM/YYYY').toDate(),
-  },
-
-  {
-    _id: '14',
-    imgHistory: require('../../../Resource/Image2/avt.jpg'),
-    date: moment('04/03/2024', 'DD/MM/YYYY').toDate(),
-  },
-
-  {
-    _id: '15',
-    imgHistory: require('../../../Resource/Image2/avt.jpg'),
-    date: moment('04/03/2024', 'DD/MM/YYYY').toDate(),
-  },
-
-  {
-    _id: '16',
-    imgHistory: require('../../../Resource/Image2/avt.jpg'),
-    date: moment('04/03/2024', 'DD/MM/YYYY').toDate(),
-  },
-];

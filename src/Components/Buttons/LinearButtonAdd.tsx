@@ -10,7 +10,7 @@ import {
 import React from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 
-interface LinearButtonAddProps extends ViewProps {
+interface LinearButtonAddProps {
     label: string;
     style?: StyleProp<TextStyle>;
     onPress?: () => void;

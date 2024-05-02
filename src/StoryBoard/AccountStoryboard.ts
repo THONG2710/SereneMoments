@@ -3,8 +3,8 @@ export type AccountParamlist = {
     EditProfile: undefined,
     MomentHistor: undefined,
     MyFriends: undefined,
-    DiariesHistory: undefined
-    DetailTodoListHistory: undefined
-    TodoListHistory: undefined
-    DetailMomentHistory: undefined
+    DiariesHistory: undefined,
+    TodoList: undefined,
+    DetailMomentHistory: undefined,
+    DetailTodoListHistory: {id: string}
 }

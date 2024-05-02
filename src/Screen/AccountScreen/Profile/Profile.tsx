@@ -1,46 +1,54 @@
 import {
   Alert,
   Image,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { ProfileProps } from './type';
-import { useAppDispatch, useAppSelector } from '../../../Redux/Hook';
+import React, {useEffect, useState} from 'react';
+import {ProfileProps} from './type';
+import {useAppDispatch, useAppSelector} from '../../../Redux/Hook';
 import {
   SAVE_USER,
   SET_ISLOGGED,
 } from '../../../Redux/Action/AuthenticationActions';
-import { ID_ADRESS, getData } from '../../../Service/RequestMethod';
-import { DiaryModel, FriendModel, MomentModel } from '../../../Models/Model';
-import { getDataFromStorage, setDataToStorage } from '../../../Service/Service';
+import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
+import {
+  DiaryModel,
+  FriendModel,
+  MomentModel,
+  TodoList,
+} from '../../../Models/Model';
+import {getDataFromStorage, setDataToStorage} from '../../../Service/Service';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { SAVE_MYMOMENTS } from '../../../Redux/Action/MomentActions';
-import { SAVE_MYFRIENDS } from '../../../Redux/Action/FriendsActions';
-import { SAVE_MYDIARIES } from '../../../Redux/Action/DiaryActions';
+import {SAVE_MYMOMENTS} from '../../../Redux/Action/MomentActions';
+import {SAVE_MYFRIENDS} from '../../../Redux/Action/FriendsActions';
+import {SAVE_MYDIARIES} from '../../../Redux/Action/DiaryActions';
 import Dialog from '../../Dialog/Dialog';
+import {LoginManager} from 'react-native-fbsdk-next';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {Colors} from '../../../Resource/colors';
+import {SAVE_TODOLIST} from '../../../Redux/Action/WorkAction';
 
 const Profile: React.FC<ProfileProps> = props => {
-  const { navigation } = props;
+  const {navigation} = props;
   const useDispatch = useAppDispatch();
   const myAccount = useAppSelector(state => state.Authentication.myAccount);
   const [diaries, setdiaries] = useState<DiaryModel[]>([]);
   const [moments, setmoments] = useState<MomentModel[]>([]);
   const [friends, setfriends] = useState<FriendModel[]>([]);
-  const [showAlert, setShowAlert] = useState(false);
-
+  const [todoList, setTodoList] = useState<TodoList[]>([]); // [todoList, setTodoList
+  const [showAlert, setShowAlert] = useState<boolean>(false);
 
   // lấy nhật kí
   const getDiaries = async () => {
     try {
       const response = await getData(
         'http://' +
-        ID_ADRESS +
-        ':3000/api/diary/getDiariesByIdUser?id=' +
-        myAccount._id,
+          ID_ADRESS +
+          ':3000/api/diary/getDiariesByIdUser?id=' +
+          myAccount._id,
       );
       if (response.result) {
         setdiaries(response.diaries);
@@ -56,9 +64,9 @@ const Profile: React.FC<ProfileProps> = props => {
     try {
       const response = await getData(
         'http://' +
-        ID_ADRESS +
-        ':3000/api/moment/getMomentsById?id=' +
-        myAccount._id,
+          ID_ADRESS +
+          ':3000/api/moment/getMomentsById?id=' +
+          myAccount._id,
       );
       if (response.result) {
         setmoments(response.moments);
@@ -74,16 +82,34 @@ const Profile: React.FC<ProfileProps> = props => {
     try {
       const response = await getData(
         'http://' +
-        ID_ADRESS +
-        ':3000/api/friend/getInforFriendsById?id=' +
-        myAccount._id,
+          ID_ADRESS +
+          ':3000/api/friend/getInforFriendsById?id=' +
+          myAccount._id,
       );
       if (response.result) {
         setfriends(response.friends);
-        useDispatch(SAVE_MYFRIENDS(response.friends))
+        useDispatch(SAVE_MYFRIENDS(response.friends));
       }
     } catch (error) {
       console.log('get friends failled: ' + error);
+    }
+  };
+
+  // lấy todolist
+  const getListTodo = async () => {
+    try {
+      const res = await getData(
+        'http://' +
+          ID_ADRESS +
+          ':3000/api/todolist/getTodolistByIdUser?id=' +
+          myAccount._id,
+      );
+      if (res.result) {
+        setTodoList(res.todolist);
+        useDispatch(SAVE_TODOLIST(res.todolist));
+      }
+    } catch (error) {
+      console.log('getListTodo failled: ' + error);
     }
   };
 
@@ -97,18 +123,20 @@ const Profile: React.FC<ProfileProps> = props => {
     navigation.navigate('MyFriends');
   };
 
-  const onMoveToTodoListHistory = () => {
-    navigation.navigate('TodoListHistory');
+  //đến todo list
+  const onMoveToTodoList = () => {
+    navigation.navigate('TodoList');
   };
 
   // đến trang nhật kí của tôi
   const onMoveToMyDiary = () => {
     navigation.navigate('DiariesHistory');
-  }
+  };
   useEffect(() => {
     getDiaries();
     getMoments();
     getFriends();
+    getListTodo();
   }, []);
 
   // xử lí đăng xuất
@@ -132,43 +160,22 @@ const Profile: React.FC<ProfileProps> = props => {
       avatar: '',
       createdat: 0,
       phoneNumber: '',
+      isavailable: false,
     };
     useDispatch(SAVE_USER(user));
-    // xử lí đăng xuất
+    await LoginManager.logOut();
+    await GoogleSignin.signOut();
+    console.log('Logged out successfully!');
     const parentNavigation = navigation.getParent();
-    const grandParentNavigation = parentNavigation?.getParent();
+    const grandParentNavigation = parentNavigation?.getParent()?.getParent();
 
     if (grandParentNavigation) {
       grandParentNavigation.reset({
         index: 0,
-        routes: [{ name: 'AuthenticationNavigation' }],
+        routes: [{name: 'AuthenticationNavigation'}],
       });
     }
   };
-
-  // xác nhận đăng xuất
-  // const onConfirmLogout = () => {
-  //   Alert.alert('', 'Bạn muốn đăng xuất?', [
-  //     {
-  //       text: 'Đóng',
-  //       style: 'cancel',
-  //     },
-  //     {
-  //       text: 'Đăng xuất',
-  //       onPress: onHandleLogout,
-  //     },
-  //   ]);
-  // };
-
-  const onConfirmLogout = () => {
-    setShowAlert(true);
-  };
-
-  const handleLogout = () => {
-    onHandleLogout()
-    setShowAlert(false);
-  };
-
 
   // chỉnh sửa thông tin cá nhân
   const onEditProfile = () => {
@@ -177,7 +184,7 @@ const Profile: React.FC<ProfileProps> = props => {
 
   return (
     //CONTAINER
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       {/* HEADER */}
       <View style={styles.header}>
         <View style={styles.background}>
@@ -185,7 +192,7 @@ const Profile: React.FC<ProfileProps> = props => {
             style={styles.imgAVT}
             source={
               myAccount.avatar
-                ? { uri: myAccount.avatar }
+                ? {uri: myAccount.avatar}
                 : require('../../../Resource/images/avatar.png')
             }></Image>
         </View>
@@ -204,7 +211,9 @@ const Profile: React.FC<ProfileProps> = props => {
             style={styles.imgTitle}
             source={require('../../../Resource/images/icon_user_d.png')}></Image>
         </View>
-        <TouchableOpacity style={styles.itemContentOne} onPress={onMoveToMyDiary}>
+        <TouchableOpacity
+          style={styles.itemContentOne}
+          onPress={onMoveToMyDiary}>
           <View style={styles.itemContentLeft}>
             <Image
               style={styles.imageItem}
@@ -228,14 +237,14 @@ const Profile: React.FC<ProfileProps> = props => {
 
         <TouchableOpacity
           style={styles.itemContentTwo}
-          onPress={onMoveToTodoListHistory}>
+          onPress={onMoveToTodoList}>
           <View style={styles.itemContentLeft}>
             <Image
               style={styles.imageItem}
-              source={require('../../../Resource/images/tdo.png')}></Image>
+              source={require('../../../Resource/images/icon-list.png')}></Image>
             <Text style={styles.textItem}>Công việc</Text>
           </View>
-          <Text style={styles.notificationItem}>{moments.length}</Text>
+          <Text style={styles.notificationItem}>{todoList.length}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -247,7 +256,7 @@ const Profile: React.FC<ProfileProps> = props => {
               source={require('../../../Resource/images/icon_friends_d.png')}></Image>
             <Text style={styles.textItem}>Bạn bè</Text>
           </View>
-          <Text style={styles.notificationItem}>{friends.length}</Text>
+          <Text style={styles.notificationItem}>{friends?.length}</Text>
         </TouchableOpacity>
       </View>
       {/* CENTERBOTTOM */}
@@ -259,17 +268,42 @@ const Profile: React.FC<ProfileProps> = props => {
             source={require('../../../Resource/images/icon_setting_d.png')}></Image>
         </View>
 
-        <TouchableOpacity style={styles.itemContentOne}>
-          <View style={styles.itemContentLeft}>
-            <Image
-              style={styles.imageItem}
-              source={require('../../../Resource/images/icon_password.png')}></Image>
-            <Text style={styles.textItem}>Đặt mật khẩu</Text>
-          </View>
-        </TouchableOpacity>
+        {myAccount.password == '' ? (
+          <TouchableOpacity
+            disabled={true}
+            style={[
+              styles.itemContentOne,
+              {backgroundColor: Colors.LIGHT_GRAY},
+            ]}>
+            <View style={styles.itemContentLeft}>
+              <Image
+                style={styles.imageItem}
+                source={require('../../../Resource/images/icon_password.png')}></Image>
+              <Text style={styles.textItem}>Đặt mật khẩu</Text>
+            </View>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity disabled={true} style={styles.itemContentOne}>
+            <View
+              style={[
+                styles.itemContentLeft,
+                {backgroundColor: Colors.LIGHT_GRAY},
+              ]}>
+              <Image
+                style={styles.imageItem}
+                source={require('../../../Resource/images/icon_password.png')}></Image>
+              <Text style={styles.textItem}>Đặt mật khẩu</Text>
+            </View>
+          </TouchableOpacity>
+        )}
 
-        <TouchableOpacity style={styles.itemContentThree}>
-          <View style={styles.itemContentLeft}>
+        <TouchableOpacity
+          disabled={true}
+          style={[
+            styles.itemContentThree,
+            {backgroundColor: Colors.LIGHT_GRAY},
+          ]}>
+          <View style={[styles.itemContentLeft]}>
             <Image
               style={styles.imageItem}
               source={require('../../../Resource/images/icon_setting.png')}></Image>
@@ -288,7 +322,7 @@ const Profile: React.FC<ProfileProps> = props => {
         </View>
         <TouchableOpacity
           style={styles.itemContentOne}
-          onPress={onConfirmLogout}>
+          onPress={() => setShowAlert(true)}>
           <View style={styles.itemContentLeft}>
             <Image
               style={styles.imageItem}
@@ -297,23 +331,25 @@ const Profile: React.FC<ProfileProps> = props => {
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.itemContentThree}>
-          <View style={styles.itemContentLeft}>
+        <TouchableOpacity disabled={true} style={[styles.itemContentThree, {backgroundColor: Colors.LIGHT_GRAY}]}>
+          <View style={[styles.itemContentLeft, ]}>
             <Image
               style={styles.imageItem}
               source={require('../../../Resource/images/icon_delete.png')}></Image>
-            <Text style={[styles.textItem, { color: 'red' }]}>Xóa tài khoản</Text>
+            <Text style={[styles.textItem, {color: 'red'}]}>Xóa tài khoản</Text>
           </View>
         </TouchableOpacity>
       </View>
-
-      <Dialog message='Bạn chắc chắn muốn đăng xuất chứ'
-        title='Đăng xuất'
+      <Dialog
+        message="Bạn có muốn đăng xuất ?"
+        title="Thông báo!"
         isvisible={showAlert}
-        onConfirm={handleLogout}
-        onCancel={() => { setShowAlert(false) }}></Dialog>
-
-    </ScrollView>
+        onConfirm={onHandleLogout}
+        onCancel={() => {
+          setShowAlert(false);
+        }}
+      />
+    </View>
   );
 };
 
@@ -328,7 +364,7 @@ const styles = StyleSheet.create({
 
   header: {
     alignItems: 'center',
-    marginTop: 50,
+    marginTop: 20,
   },
 
   background: {
@@ -462,7 +498,6 @@ const styles = StyleSheet.create({
   imageItem: {
     width: 20,
     height: 20,
-    tintColor: '#fff'
   },
 
   notificationItem: {
