@@ -64,7 +64,7 @@ const BoxChatScreen: React.FC<BoxChatScreenProps> = props => {
           _id: new BSON.ObjectID(),
           receiver: new BSON.ObjectId(friend._id.toString()),
           content: message,
-          createdat: Math.floor(Number(new Date().getTime() / 1000)),
+          createdat: new Date().getTime() / 1000,
           sender: new BSON.ObjectId(user._id.toString()),
           seen: false,
           isimage: false,

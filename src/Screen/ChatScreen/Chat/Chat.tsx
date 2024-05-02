@@ -74,9 +74,8 @@ const Chat: React.FC<ChatScreenProps> = props => {
           (a: ChatMessageModel, b: ChatMessageModel) =>
             Number(b.message.createdat) - Number(a.message.createdat),
         );
-
-        setListSearch(res.messages);
-        setListFull(res.messages);
+        setListSearch(sort);
+        setListFull(sort);
       }
     } catch (error) {
       console.log('failed to get new chat message: ' + error);
@@ -88,6 +87,7 @@ const Chat: React.FC<ChatScreenProps> = props => {
     realm.subscriptions.update(mutableSubs => {
       mutableSubs.add(realm.objects(ChatSchema));
     });
+    console.log(message.length);
   }, [realm, message.length, isReFresh]);
 
   return (
