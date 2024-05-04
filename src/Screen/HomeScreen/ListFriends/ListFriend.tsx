@@ -1,4 +1,5 @@
 import {
+  Dimensions,
   Image,
   ScrollView,
   StyleSheet,
@@ -7,27 +8,30 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Dialog from '../../Dialog/Dialog';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import DialogConfirmSuccess from '../../Dialog/DialogConfirmSuccess';
 import DialogConfirmFailure from '../../Dialog/DialogConfirmFailure';
-import { ListFriendsProps } from './type';
-import { UserModel } from '../../../Models/Model';
+import {ListFriendsProps} from './type';
+import {UserModel} from '../../../Models/Model';
 import ButtonIcon from '../../../Components/Buttons/ButtonIcon';
-import { Colors } from '../../../Resource/colors';
-import { ID_ADRESS, getData } from '../../../Service/RequestMethod';
-import { useAppSelector } from '../../../Redux/Hook';
+import {Colors} from '../../../Resource/colors';
+import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
+import {useAppSelector} from '../../../Redux/Hook';
 import ButtonText from '../../../Components/Buttons/ButtonText';
 import LinearButtonAdd from '../../../Components/Buttons/LinearButtonAdd';
 import ButtonUnfriend from '../../../Components/Buttons/ButtonUnFriend';
 
 const ListFriend: React.FC<ListFriendsProps> = props => {
-  const { navigation } = props;
+  const {navigation} = props;
   const [showAlert, setShowAlert] = useState(false);
   const [friends, setFriends] = useState<UserModel[]>([]);
   const [selectedFriend, setSelectedFriend] = useState<UserModel>();
   const user = useAppSelector(state => state.Authentication.myAccount);
+  const [isVisibleSearch, setisVisibleSearch] = useState(false);
+  const [searchContent, setSearchContent] = useState('');
+  const [listFriendsFull, setListFriendsFull] = useState<UserModel[]>([]);
 
   //   quay lại
   const onGoBack = () => {
@@ -38,12 +42,13 @@ const ListFriend: React.FC<ListFriendsProps> = props => {
     try {
       const res = await getData(
         'http://' +
-        ID_ADRESS +
-        ':3000/api/friend/getInforFriendsById?id=' +
-        user._id,
+          ID_ADRESS +
+          ':3000/api/friend/getInforFriendsById?id=' +
+          user._id,
       );
       if (res) {
         setFriends(res.friends);
+        setListFriendsFull(res.friends);
       }
     } catch (error) {
       console.log('get friends failed: ' + error);
@@ -70,13 +75,26 @@ const ListFriend: React.FC<ListFriendsProps> = props => {
     setShowAlert(false);
   };
 
+  // tìm kiếm
+  const onSearch = (value: string) => {
+    setSearchContent(value);
+    if (value == '') {
+      setFriends(listFriendsFull);
+    } else {
+      const searchFriends = friends.filter(item =>
+        item.username.toLocaleLowerCase().includes(value),
+      );
+      setFriends(searchFriends);
+    }
+  };
+
   //   hiện danh sách bạn bè
   const renderItemFriend = (item: UserModel) => {
     return (
       <View key={item._id.toString()} style={styles.itemFriend}>
         <View style={styles.itemFriendLeft}>
           <View style={styles.bgrAVT}>
-            <Image style={styles.imgAvatar} source={{ uri: item.avatar }}></Image>
+            <Image style={styles.imgAvatar} source={{uri: item.avatar}}></Image>
           </View>
           <View style={styles.friend}>
             <Text style={styles.nameFriend}>{item.username}</Text>
@@ -96,24 +114,30 @@ const ListFriend: React.FC<ListFriendsProps> = props => {
     <ScrollView style={styles.container}>
       {/* HEADER */}
       <View style={styles.header}>
-        {/* <View style={styles.search}>
-          <TouchableOpacity>
-            <Image
-              style={styles.imgSearchFriend}
-              source={require('../../../Resource/Image2/search.png')}></Image>
-          </TouchableOpacity>
-          <TextInput
-            style={styles.ipSearchFriend}
-            placeholder="Tìm kiếm bạn bè"></TextInput>
-        </View> */}
         <ButtonIcon
           onPress={onGoBack}
           styles={styles.iconHead}
           url={require('../../../Resource/images/icon_back3.png')}
         />
-        <Text style={styles.headerTitle}>Bạn bè</Text>
+        {isVisibleSearch ? (
+          <View style={styles.search}>
+            <TextInput
+              value={searchContent}
+              onChangeText={value => onSearch(value)}
+              style={styles.ipSearchFriend}
+              placeholder="Tìm kiếm bạn bè"></TextInput>
+            {/* <TouchableOpacity>
+              <Image
+                style={styles.imgSearchFriend}
+                source={require('../../../Resource/Image2/search.png')}></Image>
+            </TouchableOpacity> */}
+          </View>
+        ) : (
+          <Text style={styles.headerTitle}>Bạn bè</Text>
+        )}
 
         <ButtonIcon
+          onPress={() => setisVisibleSearch(!isVisibleSearch)}
           styles={styles.iconHead}
           url={require('../../../Resource/images/icon_search3.png')}
         />
@@ -169,20 +193,17 @@ const styles = StyleSheet.create({
   search: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#E0E1E3',
-    marginTop: 10,
     borderRadius: 20,
   },
 
-  bgrAVT:
-  {
-    width:55,
-    height:55,
-    borderWidth:1,
-    justifyContent:'center',
-    alignItems:'center',
-    borderRadius:50,
-    borderColor:'#97D4EB'
+  bgrAVT: {
+    width: 55,
+    height: 55,
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 50,
+    borderColor: '#97D4EB',
   },
 
   imgSearchFriend: {
@@ -192,15 +213,18 @@ const styles = StyleSheet.create({
   },
 
   ipSearchFriend: {
-    height: 45,
+    width: (Dimensions.get('screen').width / 3) * 2,
     fontSize: 14,
+    backgroundColor: Colors.WHITE,
+    borderRadius: 10,
+    paddingHorizontal: 15,
   },
 
   btnStyle: {
     width: 70,
     height: 40,
-    justifyContent:'center',
-    alignItems:'center'
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   // CENTER

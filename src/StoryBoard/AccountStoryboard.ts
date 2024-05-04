@@ -6,5 +6,5 @@ export type AccountParamlist = {
     DiariesHistory: undefined,
     TodoList: undefined,
     DetailMomentHistory: undefined,
-    DetailTodoListHistory: undefined
+    DetailTodoListHistory: {id: string}
 }

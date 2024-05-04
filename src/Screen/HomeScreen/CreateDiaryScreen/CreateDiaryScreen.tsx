@@ -104,6 +104,7 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
   const [month, setmonth] = useState(0);
   const [year, setyear] = useState(0);
   const [customTime, setCustomTime] = useState(0);
+  const [isVisibleRefresh, setisVisibleRefresh] = useState(false);
 
   // chọn ảnh từ thư viện
   const getImageFromLibrary = () => {
@@ -116,12 +117,7 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
         // Hình ảnh đã được chọn thành công
         if (response.assets && response.assets[0]) {
           const source = {uri: response.assets[0].uri};
-          onCreateOneItem(
-            <Image
-              style={{width: 50, height: 50}}
-              source={{uri: source.uri}}
-            />,
-          );
+          onCreateOneItem({uri: source.uri});
         }
         // Thực hiện xử lý hình ảnh ở đây
       }
@@ -174,11 +170,12 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
   };
 
   // tạo ra một item trên diary
-  const onCreateOneItem = (Item: React.ReactElement) => {
+  const onCreateOneItem = (Item: any) => {
     let key = Number(itemKey.length + 1);
     setItemKey([...itemKey, key]);
     const newChild = (
       <ButtonDragable
+        onChange={size => console.log(size)}
         onDelete={() => onDeleteItem(key)}
         key={key.toString()}
         isSlected={true}
@@ -331,9 +328,11 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
   };
 
   // đến trang profile
-  const onMoveToProfile = () => {
-    navigation.getParent()?.navigate('AccountScreen')
-  }
+  const onRefresh = () => {
+    setChilds([]);
+    setContent('');
+    setisVisibleRefresh(false);
+  };
 
   // xử lí icon quyền riêng tư
   const onHandlePrivacy = (privacy: number) => {
@@ -352,21 +351,19 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
       {/* dialog */}
       {/* dialog sticker */}
       <Modal
+        onBackdropPress={onCancelSticker}
         animationIn={'bounce'}
         isVisible={isVisibleDialog}
         children={
           <DialogOptions
-            onCreateItem={item =>
-              onCreateOneItem(
-                <Image style={{width: 50, height: 50}} source={item.uri} />,
-              )
-            }
+            onCreateItem={item => onCreateOneItem(item.uri)}
             onCancel={onCancelSticker}
           />
         }
       />
       {/* dialog text */}
       <Modal
+        onBackdropPress={onCancelText}
         animationIn={'bounce'}
         isVisible={isVisibleDialogText}
         children={
@@ -381,6 +378,7 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
       />
       {/* dialog background */}
       <Modal
+        onBackdropPress={onCancelBackground}
         isVisible={isVisibleDialogBackground}
         children={
           <DialogBackground
@@ -406,6 +404,7 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
 
       {/* Dialog time  */}
       <Modal
+        onBackdropPress={onCancelDialogTime}
         isVisible={isVisibleDialogTime}
         children={
           <DialogTime
@@ -419,21 +418,30 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
         <View style={styles.header}>
           <View style={styles.hdLeft}>
             <Shadow style={styles.hdl_shadow} distance={2} offset={[0, 5]}>
-              <Pressable style={styles.hdl_btn} onPress={onMoveToProfile}>
-                <Image source={{uri: user.avatar}} style={styles.hdl_img} />
+              <Pressable
+                style={styles.hdl_btn}
+                onPress={() => setisVisibleRefresh(true)}>
+                <Image
+                  source={require('../../../Resource/images/icon_refresh.png')}
+                  style={styles.hdl_img}
+                />
               </Pressable>
             </Shadow>
           </View>
           <View style={styles.hdRight}>
             <ButtonIcon
               onPress={onSetPrivacy}
-              styles={styles.hdr_btnPrivate}
+              styles={[
+                privacy == 1 && styles.hdr_btnPrivate,
+                privacy == 2 && {width: 35, height: 35},
+                privacy == 3 && {width: 30, height: 30},
+              ]}
               url={onHandlePrivacy(privacy)}
             />
             <ButtonIcon
               styles={styles.hdr_btnClose}
               url={require('../../../Resource/images/icon_add.png')}
-              onPress={onBack}
+              onPress={() => setShowAlert(true)}
             />
           </View>
         </View>
@@ -580,7 +588,12 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
                 ) : null}
               </View>
               <TextInput
-                style={{fontFamily: font, fontSize: textSize, color: textColor}}
+                style={{
+                  fontFamily: font,
+                  fontSize: textSize,
+                  color: textColor,
+                  zIndex: 1,
+                }}
                 onChangeText={(value: string) => setContent(value)}
                 ref={inputRef}
                 multiline
@@ -593,16 +606,45 @@ const CreateDiaryScreen: React.FC<CreateDiaryProps> = props => {
       </Pressable>
       {/* footer */}
       <View style={styles.footer}>
-        <ButtonText onPress={() => setShowAlert(true)} label="Lưu" />
+        <ButtonText
+          onPress={() => setisVisibleConfirmDialog(true)}
+          label="Lưu"
+        />
       </View>
 
+      {/* Xác nhận Đăng */}
       <DialogConfirmSuccess
-        message="Bạn có muốn đăng bài này không ?"
+        txtButton="Đăng"
+        message="Bạn có muốn đăng nhật kí này không ?"
         title="Thông báo!"
-        isvisible={showAlert}
+        isvisible={isVisibleConfirmDialog}
         onConfirm={onCreateDiary}
         onCancel={() => {
+          setisVisibleConfirmDialog(false);
+        }}
+      />
+
+      {/* xác nhận thoát */}
+      <DialogConfirmSuccess
+        txtButton="Thoát"
+        message="Bạn chưa lưu nhật kí ?"
+        title="Thông báo!"
+        isvisible={showAlert}
+        onConfirm={onBack}
+        onCancel={() => {
           setShowAlert(false);
+        }}
+      />
+
+      {/* xác nhận làm mới */}
+      <DialogConfirmSuccess
+        txtButton="Làm mới"
+        message="Bạn muốn làm mới nhật kí ?"
+        title="Thông báo!"
+        isvisible={isVisibleRefresh}
+        onConfirm={onRefresh}
+        onCancel={() => {
+          setisVisibleRefresh(false);
         }}
       />
     </View>
