@@ -30,7 +30,7 @@ import {BSON} from 'realm';
 const w = Dimensions.get('window').width;
 const h = Dimensions.get('window').height;
 
-interface ItemMomentProps extends ViewProps {
+interface ItemMomentProps {
   moment: MomentModel;
   onPress: (id: string) => void;
   onMoveToProfile: (id: string) => void;

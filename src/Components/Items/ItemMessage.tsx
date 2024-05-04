@@ -14,7 +14,7 @@ import {BSON} from 'realm';
 import {Colors} from '../../Resource/colors';
 import {onConvertEpochtime} from '../../Service/Service';
 
-interface ItemMessageProps extends ViewProps {
+interface ItemMessageProps  {
   message: ChatSchema;
 }
 

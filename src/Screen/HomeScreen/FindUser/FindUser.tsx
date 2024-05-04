@@ -8,7 +8,8 @@ import {FriendModel, UserModel} from '../../../Models/Model';
 import ItemRequest from '../components/ItemRequest';
 import ItemUser from '../components/ItemUser';
 import {useAppSelector} from '../../../Redux/Hook';
-import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
+import {ID_ADRESS, getData, postData} from '../../../Service/RequestMethod';
+import ItemFind from '../components/ItemFind';
 
 const FindUser: React.FC<FindUserProps> = props => {
   const [listUser, setListUser] = useState<UserModel[]>([]);
@@ -78,10 +79,8 @@ const FindUser: React.FC<FindUserProps> = props => {
         showsVerticalScrollIndicator={false}
         data={list}
         renderItem={({item}) => (
-          <ItemUser
-            isSent={true}
-            onCancelRequest={() => {}}
-            onHandlePress={() => {}}
+          <ItemFind
+            onPress={() => navigation.navigate('Profile', {idUser: item._id})}
             user={item}
           />
         )}
@@ -123,6 +122,26 @@ const FindUser: React.FC<FindUserProps> = props => {
     }
   };
 
+  // kết bạn
+  const onAddFriend = async (friendid: string) => {
+    const requestedat = new Date().getTime();
+    const userid = user._id;
+    const status = 2;
+    const newRequest = {userid, friendid, requestedat, status};
+    const res = await postData(
+      'http://' + ID_ADRESS + ':3000/api/friend/addFriend',
+      newRequest,
+    );
+    if (res) {
+      console.log(res.ask);
+    }
+  };
+
+  // Đến trang profile
+  const onMoveToProfile = (id: string) => {
+    navigation.navigate('Profile', {idUser: id});
+  };
+
   return (
     <View style={styles.container}>
       {/* header */}
@@ -146,11 +165,7 @@ const FindUser: React.FC<FindUserProps> = props => {
             ListHeaderComponent={() => onRenderFriends(listFriends)}
             data={listUser}
             renderItem={({item}) => (
-              <ItemUser
-                onCancelRequest={() => {}}
-                onHandlePress={() => {}}
-                user={item}
-              />
+              <ItemFind user={item} onPress={id => onMoveToProfile(id)} />
             )}
             keyExtractor={item => item._id.toString()}
           />

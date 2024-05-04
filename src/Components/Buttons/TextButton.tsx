@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import React from 'react';
 
-interface TextButtonProps extends ViewProps {
+interface TextButtonProps{
   label: string;
   style?: StyleProp<TextStyle>;
   onPress?: () => void;

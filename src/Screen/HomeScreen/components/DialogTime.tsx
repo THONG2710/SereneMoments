@@ -33,7 +33,7 @@ const types = [
   },
 ];
 
-interface DialogTimeProps extends ViewProps {
+interface DialogTimeProps {
   onCancel: () => void;
   onChooseTime: (item: number) => void;
 }

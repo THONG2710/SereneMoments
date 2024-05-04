@@ -64,7 +64,7 @@ const BoxChatScreen: React.FC<BoxChatScreenProps> = props => {
           _id: new BSON.ObjectID(),
           receiver: new BSON.ObjectId(friend._id.toString()),
           content: message,
-          createdat: Math.floor(Number(new Date().getTime() / 1000)),
+          createdat: new Date().getTime() / 1000,
           sender: new BSON.ObjectId(user._id.toString()),
           seen: false,
           isimage: false,
@@ -136,7 +136,7 @@ const BoxChatScreen: React.FC<BoxChatScreenProps> = props => {
     <View style={styles.container}>
       {/* header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.navigate('Chat')}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <Image
             source={require('../../../Resource/images/btn_back.png')}></Image>
         </TouchableOpacity>

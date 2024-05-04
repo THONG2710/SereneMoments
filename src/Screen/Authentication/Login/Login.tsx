@@ -1,4 +1,4 @@
-import {View, Text, Image, TouchableOpacity, Button} from 'react-native';
+import {View, Text, Image, TouchableOpacity, Button, Alert} from 'react-native';
 import React, {ErrorInfo, useEffect} from 'react';
 import styles from './styles';
 import {LoginProps} from './type';
@@ -121,14 +121,19 @@ const Login: React.FC<LoginProps> = props => {
             createdat: response.user.createdat,
             phoneNumber: response.user.phonenumber,
           };
-          dispatch(SAVE_USER(userCurrent));
-          setDataToStorage('IS_LOGGED', true);
-          setDataToStorage('ACCOUNT', userCurrent);
-          dispatch(SET_ISLOGGED(true));
-          navigation.reset({
-            index: 0,
-            routes: [{name: 'AuthorizedNavigation'}],
-          });
+
+          if (userCurrent.available) {
+            dispatch(SAVE_USER(userCurrent));
+            setDataToStorage('IS_LOGGED', true);
+            setDataToStorage('ACCOUNT', userCurrent);
+            dispatch(SET_ISLOGGED(true));
+            navigation.reset({
+              index: 0,
+              routes: [{name: 'AuthorizedNavigation'}],
+            });
+          } else {
+            Alert.alert('', 'Tài khoản hiện tại không thể sử dụng');
+          }
         }
       }
     } catch (error) {
@@ -261,7 +266,7 @@ const Login: React.FC<LoginProps> = props => {
       </TouchableOpacity>
       <View style={styles.containerRegister}>
         <Text style={styles.txtRegister}>Bạn chưa có tài khoản ?</Text>
-        <TouchableOpacity onPress={onRegister}>
+        <TouchableOpacity disabled={true} onPress={onRegister}>
           <Text style={styles.register}>Đăng ký</Text>
         </TouchableOpacity>
       </View>

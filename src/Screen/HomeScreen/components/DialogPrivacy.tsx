@@ -10,7 +10,7 @@ import React from 'react';
 import {Colors} from '../../../Resource/colors';
 import ButtonIcon from '../../../Components/Buttons/ButtonIcon';
 
-interface DialogPrivacyProps extends ViewProps {
+interface DialogPrivacyProps {
   onCancel: () => void;
   onSetPrivacy: (privacy: number) => void;
 }

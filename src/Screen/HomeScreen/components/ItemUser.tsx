@@ -7,40 +7,40 @@ import {
   ViewProps,
 } from 'react-native';
 import React from 'react';
-import { UserModel } from '../../../Models/Model';
+import {UserModel} from '../../../Models/Model';
 import TextButton from '../../../Components/Buttons/TextButton';
-import { Colors } from '../../../Resource/colors';
+import {Colors} from '../../../Resource/colors';
 import LinearButtonAdd from '../../../Components/Buttons/LinearButtonAdd';
 import LinearButtonCancel from '../../../Components/Buttons/LinearButtonCancel';
 
-interface ItemUserProps extends ViewProps {
+interface ItemUserProps {
   user: UserModel;
-  onPress?: () => void;
+  onPress: (id: string) => void;
   isSent?: boolean;
   onHandlePress: (id: string) => void;
   onCancelRequest: () => void;
 }
 
 const ItemUser: React.FC<ItemUserProps> = props => {
-  const { user, onPress, isSent, onHandlePress, onCancelRequest } = props;
+  const {user, onPress, isSent, onHandlePress, onCancelRequest} = props;
   return (
-    <Pressable style={styles.container} onPress={onPress}>
+    <Pressable
+      style={styles.container}
+      onPress={() => onPress(user._id.toString())}>
       <View style={styles.left}>
         <View style={styles.left_imgcontainer}>
           <Image
             style={styles.left_imgAvatar}
             source={
               user.avatar
-                ? { uri: user.avatar }
+                ? {uri: user.avatar}
                 : require('../../../Resource/images/avatar.png')
             }
           />
-          
         </View>
         <Text style={styles.left_txtName}>{user.username}</Text>
       </View>
       <View>
-
         <View style={styles.right}>
           {isSent && (
             <LinearButtonCancel
@@ -83,13 +83,13 @@ const styles = StyleSheet.create({
   },
 
   left_imgcontainer: {
-    width:55,
-    height:55,
-    borderWidth:2,
-    borderRadius:30,
-    justifyContent:'center',
-    alignItems:'center',
-    borderColor:'#97D4EB'
+    width: 55,
+    height: 55,
+    borderWidth: 2,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderColor: '#97D4EB',
   },
 
   left_imgAvatar: {
@@ -114,7 +114,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     color: Colors.WHITE,
     fontWeight: 'bold',
-    
   },
 
   right_btnStyleCancel: {
@@ -124,6 +123,4 @@ const styles = StyleSheet.create({
     color: Colors.WHITE,
     fontWeight: 'bold',
   },
-
-
 });

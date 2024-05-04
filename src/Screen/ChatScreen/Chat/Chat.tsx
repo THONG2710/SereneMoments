@@ -10,6 +10,7 @@ import {
   Alert,
   FlatList,
   Dimensions,
+  RefreshControl,
 } from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import {ChatScreenProps} from './type';
@@ -72,14 +73,16 @@ const Chat: React.FC<ChatScreenProps> = props => {
       if (res.result) {
         const sort = res.messages.sort(
           (a: ChatMessageModel, b: ChatMessageModel) =>
-            Number(b.message.createdat) - Number(a.message.createdat),
+            Number(b?.message?.createdat) - Number(a?.message?.createdat),
         );
+        
         setListSearch(sort);
         setListFull(sort);
       }
     } catch (error) {
       console.log('failed to get new chat message: ' + error);
     }
+    setisReFresh(false);
   };
 
   useEffect(() => {
@@ -87,6 +90,8 @@ const Chat: React.FC<ChatScreenProps> = props => {
     realm.subscriptions.update(mutableSubs => {
       mutableSubs.add(realm.objects(ChatSchema));
     });
+    const n = message.length;
+    console.log(message[0].content);
   }, [realm, message.length, isReFresh]);
 
   return (
@@ -103,6 +108,12 @@ const Chat: React.FC<ChatScreenProps> = props => {
       {/* body */}
       <View style={styles.body}>
         <FlatList
+          refreshControl={
+            <RefreshControl
+              refreshing={isReFresh}
+              onRefresh={() => setisReFresh(true)}
+            />
+          }
           data={listSearch}
           renderItem={({item}) => (
             <ItemChat

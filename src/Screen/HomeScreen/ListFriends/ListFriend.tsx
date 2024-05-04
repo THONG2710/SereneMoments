@@ -17,11 +17,12 @@ import {ListFriendsProps} from './type';
 import {UserModel} from '../../../Models/Model';
 import ButtonIcon from '../../../Components/Buttons/ButtonIcon';
 import {Colors} from '../../../Resource/colors';
-import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
-import {useAppSelector} from '../../../Redux/Hook';
+import {ID_ADRESS, getData, postData} from '../../../Service/RequestMethod';
+import {useAppDispatch, useAppSelector} from '../../../Redux/Hook';
 import ButtonText from '../../../Components/Buttons/ButtonText';
 import LinearButtonAdd from '../../../Components/Buttons/LinearButtonAdd';
 import ButtonUnfriend from '../../../Components/Buttons/ButtonUnFriend';
+import {SAVE_MYFRIENDS} from '../../../Redux/Action/FriendsActions';
 
 const ListFriend: React.FC<ListFriendsProps> = props => {
   const {navigation} = props;
@@ -32,6 +33,8 @@ const ListFriend: React.FC<ListFriendsProps> = props => {
   const [isVisibleSearch, setisVisibleSearch] = useState(false);
   const [searchContent, setSearchContent] = useState('');
   const [listFriendsFull, setListFriendsFull] = useState<UserModel[]>([]);
+  const listFriend = useAppSelector(state => state.Friends.myFriends);
+  const dispatch = useAppDispatch();
 
   //   quay lại
   const onGoBack = () => {
@@ -66,13 +69,39 @@ const ListFriend: React.FC<ListFriendsProps> = props => {
   };
 
   //   xác nhận xóa bạn bè
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     const updatedFriends = friends.filter(
       item => item._id !== selectedFriend?._id,
     );
     setFriends(updatedFriends);
-    setSelectedFriend(undefined);
     setShowAlert(false);
+    console.log(user._id, selectedFriend?._id);
+
+    try {
+      const res = await getData(
+        'http://' +
+          ID_ADRESS +
+          ':3000/api/friend/findFriendRequest?myId=' +
+          user._id +
+          '&friendId=' +
+          selectedFriend?._id,
+      );
+      if (res.result) {
+        const response = await postData(
+          'http://' +
+            ID_ADRESS +
+            ':3000/api/friend/cancelRequest/' +
+            res.request._id,
+          {},
+        );
+        if (response.result) {
+          const list = friends.filter(item => item._id !== selectedFriend?._id);
+          dispatch(SAVE_MYFRIENDS(list));
+          console.log('delete success: ' + response);
+        }
+        setSelectedFriend(undefined);
+      }
+    } catch (error) {}
   };
 
   // tìm kiếm
@@ -149,7 +178,7 @@ const ListFriend: React.FC<ListFriendsProps> = props => {
       </View>
 
       <Dialog
-        message="Bạn có chắc chắn muốn xóa người này không"
+        message="Bạn có muốn xóa người này không ?"
         title="Xóa bạn bè !"
         isvisible={showAlert}
         onConfirm={handleConfirmDelete}

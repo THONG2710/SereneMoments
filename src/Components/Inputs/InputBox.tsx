@@ -16,7 +16,7 @@ import React from 'react';
 import {Colors} from '../../Resource/colors';
 import ButtonIcon from '../Buttons/ButtonIcon';
 
-interface InputBoxProps extends ViewProps {
+interface InputBoxProps  {
   placeholder?: string;
   containerStyle?: StyleProp<ViewStyle>;
   inputStyle?: StyleProp<ViewStyle>;

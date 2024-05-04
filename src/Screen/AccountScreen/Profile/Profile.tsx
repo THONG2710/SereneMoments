@@ -132,12 +132,13 @@ const Profile: React.FC<ProfileProps> = props => {
   const onMoveToMyDiary = () => {
     navigation.navigate('DiariesHistory');
   };
+
   useEffect(() => {
     getDiaries();
     getMoments();
     getFriends();
     getListTodo();
-  }, []);
+  }, [diaries.length, moments.length, friends.length]);
 
   // xử lí đăng xuất
   const onHandleLogout = async () => {
@@ -167,7 +168,7 @@ const Profile: React.FC<ProfileProps> = props => {
     await GoogleSignin.signOut();
     console.log('Logged out successfully!');
     const parentNavigation = navigation.getParent();
-    const grandParentNavigation = parentNavigation?.getParent();
+    const grandParentNavigation = parentNavigation?.getParent()?.getParent();
 
     if (grandParentNavigation) {
       grandParentNavigation.reset({
@@ -283,8 +284,12 @@ const Profile: React.FC<ProfileProps> = props => {
             </View>
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity style={styles.itemContentOne}>
-            <View style={styles.itemContentLeft}>
+          <TouchableOpacity disabled={true} style={styles.itemContentOne}>
+            <View
+              style={[
+                styles.itemContentLeft,
+                {backgroundColor: Colors.LIGHT_GRAY},
+              ]}>
               <Image
                 style={styles.imageItem}
                 source={require('../../../Resource/images/icon_password.png')}></Image>
@@ -293,8 +298,13 @@ const Profile: React.FC<ProfileProps> = props => {
           </TouchableOpacity>
         )}
 
-        <TouchableOpacity style={styles.itemContentThree}>
-          <View style={styles.itemContentLeft}>
+        <TouchableOpacity
+          disabled={true}
+          style={[
+            styles.itemContentThree,
+            {backgroundColor: Colors.LIGHT_GRAY},
+          ]}>
+          <View style={[styles.itemContentLeft]}>
             <Image
               style={styles.imageItem}
               source={require('../../../Resource/images/icon_setting.png')}></Image>
@@ -322,8 +332,8 @@ const Profile: React.FC<ProfileProps> = props => {
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.itemContentThree}>
-          <View style={styles.itemContentLeft}>
+        <TouchableOpacity disabled={true} style={[styles.itemContentThree, {backgroundColor: Colors.LIGHT_GRAY}]}>
+          <View style={[styles.itemContentLeft, ]}>
             <Image
               style={styles.imageItem}
               source={require('../../../Resource/images/icon_delete.png')}></Image>

@@ -46,11 +46,11 @@ const TodolistHistory: React.FC<TodoListHistoryProps> = props => {
             style={styles.imgSearch}
             source={require('../../../Resource/images/icon_back3.png')}></Image>
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={handleOpenDatePicker}
           style={styles.btnOpenDatePicker}>
           <Text style={styles.textDate}>{date.toLocaleDateString()}</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       <Text style={styles.textTitle}>Lịch sử công việc</Text>
 

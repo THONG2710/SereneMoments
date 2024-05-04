@@ -43,11 +43,11 @@ const MomentHistory: React.FC<MomentHistorProps> = props => {
             style={styles.imgSearch}
             source={require('../../../Resource/images/icon_back3.png')}></Image>
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.btnOpenDatePicker}
           onPress={() => setOpen(true)}>
           <Text style={styles.textDate}>{date.toLocaleDateString()}</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       {/* CENTER */}
       <DatePicker

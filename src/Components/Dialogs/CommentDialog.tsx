@@ -12,7 +12,7 @@ import {ID_ADRESS, getData} from '../../Service/RequestMethod';
 import {ResponseCommentModel} from '../../Models/Model';
 import ItemComment from '../Items/ItemComment';
 
-interface CommentDialogProps extends ViewProps {
+interface CommentDialogProps {
   idMoment: string;
 }
 

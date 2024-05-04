@@ -18,6 +18,7 @@ import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
 import {useAppDispatch, useAppSelector} from '../../../Redux/Hook';
 import {SAVE_MYFRIENDMOMENTS} from '../../../Redux/Action/MomentActions';
 import {namedQuery} from 'firebase/firestore';
+import moment from 'moment';
 
 const ShowMoments: React.FC<ShowMomentProps> = props => {
   const [isVisibleCommentDialog, setisVisibleCommentDialog] = useState(false);
@@ -38,7 +39,9 @@ const ShowMoments: React.FC<ShowMomentProps> = props => {
     );
     if (res.result) {
       setmoments(res.moments);
-      dispatch(SAVE_MYFRIENDMOMENTS(res.moments));
+      console.log(res.moments.length);
+
+      // dispatch(SAVE_MYFRIENDMOMENTS(res.moments));
       setIsRefresh(false);
     }
   };
@@ -100,6 +103,5 @@ export default ShowMoments;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    
   },
 });

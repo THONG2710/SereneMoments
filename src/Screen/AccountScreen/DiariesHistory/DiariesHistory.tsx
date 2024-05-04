@@ -49,14 +49,15 @@ const DiariesHistory: React.FC<DiariesHistorProps> = props => {
             style={styles.imgSearch}
             source={require('../../../Resource/images/icon_back3.png')}></Image>
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.btnOpenDatePicker}
           onPress={() => setOpen(true)}>
           <Text style={styles.textDate}>{date.toLocaleDateString()}</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       {/* CENTER */}
-      <DatePicker
+      {/* <DatePicker
+        aria-disabled={true}
         mode="date"
         modal
         open={open}
@@ -69,28 +70,34 @@ const DiariesHistory: React.FC<DiariesHistorProps> = props => {
         onCancel={() => {
           setOpen(false);
         }}
-      />
+      /> */}
       <View style={styles.center}>
-        <Deck_Swiper
-          // infinite={true}
-          cards={myDiaries}
-          renderCard={(diary, index) => (
-            <Pressable
-              onPress={() => {
-                setDiary(diary), setModalVisible(true);
-              }}>
-              <ItemMyDiary diary={diary} />
-            </Pressable>
-          )}
-          onSwiped={diaryIndex => {
-            console.log(diaryIndex);
-          }}
-          onSwipedAll={() => {
-            console.log('onSwipedAll');
-          }}
-          cardIndex={0}
-          backgroundColor={'#4FD0E9'}
-          stackSize={3}></Deck_Swiper>
+        {myDiaries.length > 0 ? (
+          <Deck_Swiper
+            // infinite={true}
+            cards={myDiaries}
+            renderCard={(diary, index) => (
+              <Pressable
+                onPress={() => {
+                  setDiary(diary), setModalVisible(true);
+                }}>
+                <ItemMyDiary diary={diary} />
+              </Pressable>
+            )}
+            onSwiped={diaryIndex => {
+              console.log(diaryIndex);
+            }}
+            onSwipedAll={() => {
+              console.log('onSwipedAll');
+            }}
+            cardIndex={0}
+            backgroundColor={'#00000'}
+            stackSize={3}></Deck_Swiper>
+        ) : (
+          <Text style={{fontWeight: 'bold', fontSize: 16}}>
+            Bạn chưa có nhật ký nào
+          </Text>
+        )}
       </View>
       {/* FOOTER */}
       <View style={styles.footer}></View>
@@ -131,7 +138,6 @@ const styles = StyleSheet.create({
   // CONTAINER
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   // HEADER
   header: {
@@ -179,7 +185,9 @@ const styles = StyleSheet.create({
   },
   // CENTER
   center: {
-    // flex: 1,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   imgHistory: {

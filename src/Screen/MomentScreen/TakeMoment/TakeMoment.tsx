@@ -245,7 +245,7 @@ const TakeMoment: React.FC<TakeMomentProps> = props => {
             style={styles.imgAVT}
             source={require('../../../Resource/images/icon_refresh.png')}></Image>
         </TouchableOpacity>
-        <View style={styles.dropdownContainer}>
+        {/* <View style={styles.dropdownContainer}>
           {data && (
             <SelectList
               boxStyles={styles.selectedList}
@@ -253,16 +253,18 @@ const TakeMoment: React.FC<TakeMomentProps> = props => {
               dropdownStyles={styles.dropdownStylesSelected}
               dropdownTextStyles={styles.textDropdownStyles}
               setSelected={(value: React.SetStateAction<string>) => {
-                getMomentByFriends(value.toString());
-                console.log(getMomentByFriends(value.toString()));
+                // getMomentByFriends(value.toString());
+                // console.log(getMomentByFriends(value.toString()));
                 
-                setSelected(value);
+                // setSelected(value);
+
               }}
+              dropdownShown={false}
               data={data}
               save={'value'}
             />
           )}
-        </View>
+        </View> */}
         <TouchableOpacity
           style={
             uriImage != ''
