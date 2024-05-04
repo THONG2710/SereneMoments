@@ -37,16 +37,11 @@ const ShowMoments: React.FC<ShowMomentProps> = props => {
         ':3000/api/moment/getFriendMoments?id=' +
         user._id,
     );
-    console.log(
-      'http://' +
-        ID_ADRESS +
-        ':3000/api/moment/getFriendMoments?id=' +
-        user._id,
-    );
-
     if (res.result) {
       setmoments(res.moments);
-      dispatch(SAVE_MYFRIENDMOMENTS(res.moments));
+      console.log(res.moments.length);
+
+      // dispatch(SAVE_MYFRIENDMOMENTS(res.moments));
       setIsRefresh(false);
     }
   };

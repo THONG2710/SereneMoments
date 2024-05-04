@@ -1,11 +1,4 @@
-import {
-  Alert,
-  FlatList,
-  RefreshControl,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {FlatList, RefreshControl, ScrollView, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {styles} from './style';
 import InputBox from '../../../Components/Inputs/InputBox';
@@ -87,15 +80,19 @@ const ListDiariesScreen: React.FC<ListDiarieProps> = props => {
 
   // lấy nhật kí từ database
   const getDiaries = async () => {
-    const result = await getData(
+    const res = await getData(
       'http://' +
         ID_ADRESS +
         ':3000/api/diary/getDiariesMyFriends?id=' +
         user._id,
     );
 
-    if (result.result) {
-      setListDiaries(result.diaries);
+    if (res.result) {
+      setListDiaries(res.diaries);
+      listDiaries.forEach(element => {
+        console.log('=========> ' + element._id);
+      });
+
       setrefreshing(false);
     }
   };
@@ -162,6 +159,7 @@ const ListDiariesScreen: React.FC<ListDiarieProps> = props => {
       </View>
       {/* list */}
       <FlatList
+        data={listDiaries}
         ListHeaderComponent={
           <FriendsComponent
             onMoveToProfile={id => onMoveToProfile(id)}
@@ -173,13 +171,28 @@ const ListDiariesScreen: React.FC<ListDiarieProps> = props => {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
-        data={listDiaries}
         showsVerticalScrollIndicator={false}
         renderItem={({item}) => (
           <Post onPress={id => onMoveToProfile(id)} diary={item} />
         )}
         keyExtractor={item => item._id.toString()}
       />
+      {/* <ScrollView>
+        <FriendsComponent
+          onMoveToProfile={id => onMoveToProfile(id)}
+          isRefresh={refreshing}
+          onOtherUsers={onOtherUsers}
+          onMyFriends={onMyFriends}
+        />
+
+        {listDiaries.map(item => (
+          <Post
+            key={item._id.toString()}
+            onPress={id => onMoveToProfile(id)}
+            diary={item}
+          />
+        ))}
+      </ScrollView> */}
     </View>
   );
 };

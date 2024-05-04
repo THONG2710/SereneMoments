@@ -73,7 +73,7 @@ const Chat: React.FC<ChatScreenProps> = props => {
       if (res.result) {
         const sort = res.messages.sort(
           (a: ChatMessageModel, b: ChatMessageModel) =>
-            Number(a.message.createdat) - Number(b.message.createdat),
+            Number(b?.message?.createdat) - Number(a?.message?.createdat),
         );
         
         setListSearch(sort);
@@ -90,7 +90,8 @@ const Chat: React.FC<ChatScreenProps> = props => {
     realm.subscriptions.update(mutableSubs => {
       mutableSubs.add(realm.objects(ChatSchema));
     });
-    console.log(message.length);
+    const n = message.length;
+    console.log(message[0].content);
   }, [realm, message.length, isReFresh]);
 
   return (
