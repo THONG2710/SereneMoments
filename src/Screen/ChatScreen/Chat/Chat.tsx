@@ -70,7 +70,6 @@ const Chat: React.FC<ChatScreenProps> = props => {
           ':3000/api/chatMessage/getNewMessages/' +
           user._id,
       );
-      
       if (res.result) {
         const sort = res.messages.sort(
           (a: ChatMessageModel, b: ChatMessageModel) =>
