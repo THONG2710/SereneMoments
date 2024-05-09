@@ -6,35 +6,115 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Dimensions} from 'react-native';
 import {SelectList} from 'react-native-dropdown-select-list';
 import {DetailMomentHistoryProps} from './type';
+import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
+import {CommentsModel, LikesModel, MomentModel} from '../../../Models/Model';
+import {useAppSelector} from '../../../Redux/Hook';
+import {onConvertEpochtime} from '../../../Service/Service';
+import CommentDialog from '../../../Components/Dialogs/CommentDialog';
+import Modal from 'react-native-modal/dist/modal';
+import VideoPlayer from 'react-native-video-player';
+import {Colors} from '../../../Resource/colors';
 
 const w = Dimensions.get('window').width;
 const h = Dimensions.get('window').height;
 
 const DetailMomentHistory: React.FC<DetailMomentHistoryProps> = props => {
-  const [showAlert, setShowAlert] = useState(false);
-
-  const [selected, setSelected] = useState('');
-  const [heart, setHeart] = useState(false);
-  const Liked = () => {
-    setHeart(!heart);
+  const {navigation} = props;
+  const {id} = props.route.params;
+  const [moment, setMoment] = useState<MomentModel>();
+  const user = useAppSelector(state => state.Authentication.myAccount);
+  const [comments, setcomments] = useState<CommentsModel[]>([]);
+  const [likes, setLikes] = useState<LikesModel[]>([]);
+  const [idLiked, setIdLiked] = useState<string>('');
+  const [myComment, setMyComment] = useState<string>('');
+  const [isAvailableLike, setIsAvailableLike] = useState<boolean>(false);
+  const [isVisibleCommentDialog, setisVisibleCommentDialog] = useState(false);
+  // quay lại
+  const onGoBack = () => {
+    navigation.goBack();
   };
-  const data = [{key: '1', value: 'Nguyễn Trường'}];
+
+  const getMoment = async () => {
+    try {
+      const res = await getData(
+        'http://' + ID_ADRESS + ':3000/api/moment/getAMoment?id=' + id,
+      );
+      if (res.result) {
+        setMoment(res.moments);
+      }
+    } catch (error) {
+      console.log('Error getting moment: ' + error);
+    }
+  };
+
+  // lấy lượt bình luận
+  const onGetComments = async () => {
+    try {
+      const res = await getData(
+        'http://' + ID_ADRESS + ':3000/api/comments/getComments/' + id,
+      );
+      if (res.result) {
+        setcomments(res.comments);
+      }
+    } catch (error) {
+      console.log('failed to get comments');
+    }
+  };
+
+  // lấy lượt thích
+  const onGetLikes = async () => {
+    try {
+      const res = await getData(
+        'http://' + ID_ADRESS + ':3000/api/likes/getLikes/' + id,
+      );
+      if (res.result) {
+        const response = res.likes;
+        setLikes(response);
+        for (const like of response) {
+          if (user._id === like.userid) {
+            setIdLiked(like._id);
+            setIsAvailableLike(true);
+          }
+        }
+      }
+    } catch (error) {
+      console.log('failed to get likes');
+    }
+  };
+
+  // đóng dialog
+  const onCancelCommentDialog = () => {
+    setisVisibleCommentDialog(false);
+  };
+
+  useEffect(() => {
+    getMoment();
+    onGetLikes();
+    onGetComments();
+  }, []);
+
   return (
     //CONTAINER
     <ScrollView style={styles.container}>
+      <Modal
+        onBackdropPress={onCancelCommentDialog}
+        isVisible={isVisibleCommentDialog}
+        children={<CommentDialog idMoment={id} />}
+      />
       {/* HEADER */}
       <View style={styles.header}>
-        <View style={styles.backgroundImage}>
+        <TouchableOpacity style={styles.backgroundImage} onPress={onGoBack}>
           <Image
             style={styles.imgAVT}
-            source={require('../../../Resource/images/avatar.png')}></Image>
-        </View>
+            source={require('../../../Resource/images/icon_back2.png')}></Image>
+        </TouchableOpacity>
 
         <View style={styles.backgroundImageMN}>
           <View>
@@ -46,17 +126,47 @@ const DetailMomentHistory: React.FC<DetailMomentHistoryProps> = props => {
       </View>
 
       {/* CENTER */}
-      <View style={styles.center}>
-        <ImageBackground
-          source={require('../../../Resource/images/img.jpg')}
-          resizeMode="cover"
-          style={styles.image}
-          imageStyle={{borderRadius: 30}}>
-          <View style={styles.backgroundTextContent}>
-            <Text style={styles.textContent}>Em người yêu cũ</Text>
+      {moment?.isimage ? (
+        <View style={styles.center}>
+          <ImageBackground
+            source={
+              moment?.content
+                ? {uri: moment.content}
+                : require('../../../Resource/images/img.jpg')
+            }
+            resizeMode="cover"
+            style={styles.image}
+            imageStyle={{borderRadius: 30}}>
+            <View style={styles.backgroundTextContent}>
+              <Text style={styles.textContent}>{moment?.caption}</Text>
+            </View>
+          </ImageBackground>
+        </View>
+      ) : (
+        <View>
+          <VideoPlayer
+            video={{uri: moment?.content?.toString()}}
+            videoWidth={Dimensions.get('screen').width}
+            videoHeight={Dimensions.get('screen').height / 2}
+            thumbnail={
+              user?.avatar
+                ? {uri: user.avatar}
+                : require('../../../Resource/images/avatar.png')
+            }
+            endThumbnail={
+              user?.avatar
+                ? {uri: user.avatar}
+                : require('../../../Resource/images/avatar.png')
+            }
+            disableControlsAutoHide={true}
+            style={styles.videoStyle}
+          />
+          <View style={styles.backgroundTextContentVideo}>
+            <Text style={styles.textContent}>{moment?.caption}</Text>
           </View>
-        </ImageBackground>
-      </View>
+        </View>
+      )}
+
       {/* FOOTER */}
       <View style={styles.footer}>
         <View style={styles.poster}>
@@ -64,13 +174,18 @@ const DetailMomentHistory: React.FC<DetailMomentHistoryProps> = props => {
             <View style={styles.backgroundImage}>
               <Image
                 style={styles.imgAVT}
-                source={require('../../../Resource/images/avatar.png')}></Image>
+                source={
+                  user.avatar
+                    ? {uri: user.avatar}
+                    : require('../../../Resource/images/avatar.png')
+                }></Image>
             </View>
-            <Text style={styles.textPoster}>Trường sad boy</Text>
+            <Text style={styles.textPoster}>{user.username}</Text>
           </View>
           <View style={styles.timePoster}>
-            <Text style={styles.textTime}>15:30</Text>
-            <Text style={styles.textTime}>21/01/2024</Text>
+            <Text style={styles.textTime}>
+              {onConvertEpochtime(Number(moment?.createdat))}
+            </Text>
           </View>
         </View>
 
@@ -78,17 +193,25 @@ const DetailMomentHistory: React.FC<DetailMomentHistoryProps> = props => {
           <View style={styles.interactLeft}>
             <Image
               style={styles.imgInteract}
-              source={require('../../../Resource/Image2/hearted.png')}></Image>
-            <Text style={styles.textInteract}>30</Text>
+              source={
+                idLiked != ''
+                  ? require('../../../Resource/images/icon_heart.png')
+                  : require('../../../Resource/images/icon_like.png')
+              }></Image>
+            <Text style={styles.textInteract}>{likes.length}</Text>
           </View>
           <Image
             style={styles.line}
             source={require('../../../Resource/images/Line.png')}></Image>
 
-          <View style={styles.interactRight}>
-            {/* <Image style={styles.imgInteract} source={{ uri: COMMENT }}></Image> */}
-            <Text style={styles.textInteract}>64</Text>
-          </View>
+          <TouchableOpacity
+            style={styles.interactRight}
+            onPress={() => setisVisibleCommentDialog(true)}>
+            <Image
+              style={styles.imgInteract}
+              source={require('../../../Resource/images/icon_comment.png')}></Image>
+            <Text style={styles.textInteract}>{comments.length}</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </ScrollView>
@@ -114,10 +237,10 @@ const styles = StyleSheet.create({
   },
 
   backgroundImage: {
-    width: 42,
-    height: 42,
+    width: 30,
+    height: 30,
     backgroundColor: 'white',
-    borderRadius: 21,
+    borderRadius: 5,
     shadowColor: 'black',
     shadowOpacity: 0.5,
     elevation: 15, // chỉ dùng cho Android
@@ -164,8 +287,8 @@ const styles = StyleSheet.create({
   },
 
   imgAVT: {
-    width: 40,
-    height: 40,
+    width: 25,
+    height: 25,
     borderRadius: 20,
   },
 
@@ -331,5 +454,25 @@ const styles = StyleSheet.create({
   imgSend: {
     width: 25,
     height: 25,
+  },
+
+  // video
+  videoStyle: {
+    borderRadius: 20,
+    width: Dimensions.get('screen').width,
+    height: Dimensions.get('screen').height / 2 + 30,
+    backgroundColor: Colors.WHITE,
+    marginLeft: 5,
+  },
+
+  backgroundTextContentVideo: {
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    marginBottom: 20,
+    marginHorizontal: 15,
+    borderRadius: 30,
+    paddingHorizontal: 10,
+    position: 'absolute',
+    width: '100%',
+    top: 10,
   },
 });

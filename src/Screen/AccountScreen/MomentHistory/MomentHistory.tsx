@@ -16,6 +16,7 @@ import moment from 'moment';
 import {MomentHistorProps} from './type';
 import {Colors} from '../../../Resource/colors';
 import {useAppSelector} from '../../../Redux/Hook';
+import ItemMyMoment from '../../../Components/Items/ItemMyMoment';
 
 const MomentHistory: React.FC<MomentHistorProps> = props => {
   const {navigation} = props;
@@ -29,9 +30,9 @@ const MomentHistory: React.FC<MomentHistorProps> = props => {
     navigation.goBack();
   };
 
-  const onMoveDetailMomentHistory = () => {
-    navigation.navigate('DetailMomentHistory')
-  }
+  const onMoveDetailMomentHistory = (id: string) => {
+    navigation.navigate('DetailMomentHistory', {id: id});
+  };
 
   return (
     // CONTAINER
@@ -65,37 +66,14 @@ const MomentHistory: React.FC<MomentHistorProps> = props => {
         }}
       />
       <View style={styles.center}>
-        {/* <FlatList
-          data={History}
-          renderItem={({item}) => {
-            if (item.date.toDateString() === selectedDate.toDateString()) {
-              return (
-                <TouchableOpacity key={item._id} style={styles.itemHistory}>
-                  <Image style={styles.imgHistory} source={item.imgHistory} />
-                </TouchableOpacity>
-              );
-            }
-            return null;
-          }}
-          keyExtractor={item => item._id}
-          numColumns={3}
-        /> */}
         <FlatList
           numColumns={3}
           data={moments}
           renderItem={({item}) => (
-            <TouchableOpacity onPress={onMoveDetailMomentHistory}
-              key={item._id.toString()}
-              style={styles.itemHistory}>
-              <Image
-                style={styles.imgHistory}
-                source={
-                  item.content
-                    ? {uri: item.content}
-                    : require('../../../Resource/images/img.jpg')
-                }
-              />
-            </TouchableOpacity>
+            <ItemMyMoment
+              moment={item}
+              onPress={() => onMoveDetailMomentHistory(item._id.toString())}
+            />
           )}
           keyExtractor={item => item._id.toString()}
         />
