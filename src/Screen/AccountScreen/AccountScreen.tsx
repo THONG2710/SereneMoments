@@ -9,6 +9,7 @@ import MomentHistory from './MomentHistory/MomentHistory';
 import MyFriend from './MyFriends/MyFriend';
 import DiariesHistory from './DiariesHistory/DiariesHistory';
 // import TodolistHistory from './TodolistHistory/TodolistHistory';
+import TodolistHistory from './TodoListHistory/TodolistHistory';
 import DetailMomentHistory from './DetailMomentHistory/DetailMomentHistory';
 import DetailTodoListHistory from './DetailTodoListHistory/DetailTodoListHistory';
 
