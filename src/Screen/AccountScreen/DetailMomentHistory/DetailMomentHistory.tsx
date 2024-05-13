@@ -1,4 +1,5 @@
 import {
+  Alert,
   Image,
   ImageBackground,
   KeyboardAvoidingView,
@@ -36,6 +37,7 @@ const DetailMomentHistory: React.FC<DetailMomentHistoryProps> = props => {
   const [myComment, setMyComment] = useState<string>('');
   const [isAvailableLike, setIsAvailableLike] = useState<boolean>(false);
   const [isVisibleCommentDialog, setisVisibleCommentDialog] = useState(false);
+  const [isVisibleMenu, setisVisibleMenu] = useState<boolean>(false);
   // quay lại
   const onGoBack = () => {
     navigation.goBack();
@@ -94,6 +96,36 @@ const DetailMomentHistory: React.FC<DetailMomentHistoryProps> = props => {
     setisVisibleCommentDialog(false);
   };
 
+  const onConfirmDelete = () => {
+    setisVisibleMenu(false);
+    Alert.alert('Thông báo', 'Bạn muốn xóa khoảnh khắc này?', [
+      {
+        onPress: () => onDelete(),
+        text: 'Xóa',
+      },
+      {
+        text: 'Hủy',
+        style: 'cancel',
+      },
+    ]);
+  };
+
+  const onDelete = async () => {
+    try {
+      const res = await getData(
+        'http://' + ID_ADRESS + ':3000/api/moment/deleteMoment/' + id,
+      );
+      if (res.result) {
+        Alert.alert('Thông báo', 'Xóa thành công', [
+          {
+            onPress: () => navigation.goBack(),
+            text: 'OK',
+          },
+        ]);
+      }
+    } catch (error) {}
+  };
+
   useEffect(() => {
     getMoment();
     onGetLikes();
@@ -108,6 +140,23 @@ const DetailMomentHistory: React.FC<DetailMomentHistoryProps> = props => {
         isVisible={isVisibleCommentDialog}
         children={<CommentDialog idMoment={id} />}
       />
+
+      <Modal
+        animationIn={'fadeIn'}
+        animationOut={'fadeOutDown'}
+        onBackdropPress={() => setisVisibleMenu(false)}
+        isVisible={isVisibleMenu}
+        children={
+          <View style={styles.dialogMenu}>
+            <TouchableOpacity style={styles.btn} onPress={onConfirmDelete}>
+              <Text style={[styles.txt]}>Xóa</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.btn}>
+              <Text style={styles.txt}>Chỉnh sửa</Text>
+            </TouchableOpacity>
+          </View>
+        }
+      />
       {/* HEADER */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backgroundImage} onPress={onGoBack}>
@@ -117,11 +166,11 @@ const DetailMomentHistory: React.FC<DetailMomentHistoryProps> = props => {
         </TouchableOpacity>
 
         <View style={styles.backgroundImageMN}>
-          <View>
+          <TouchableOpacity onPress={() => setisVisibleMenu(true)}>
             <Image
               style={styles.imgMN}
               source={require('../../../Resource/images/icon_menu.png')}></Image>
-          </View>
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -474,5 +523,24 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     top: 10,
+  },
+
+  dialogMenu: {
+    backgroundColor: Colors.WHITE,
+    width: '30%',
+    height: Dimensions.get('screen').height / 10,
+    marginTop: -Dimensions.get('screen').height / 1.55,
+    marginLeft: Dimensions.get('screen').width / 1.65,
+    borderRadius: 10,
+  },
+
+  btn: {
+    alignItems: 'center',
+    height: 35,
+    justifyContent: 'center',
+  },
+
+  txt: {
+    color: Colors.BLACK,
   },
 });

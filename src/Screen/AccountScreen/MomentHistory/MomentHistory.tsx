@@ -8,31 +8,59 @@ import {
   Pressable,
   FlatList,
   Dimensions,
+  RefreshControl,
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button} from 'react-native-paper';
 import moment from 'moment';
 import {MomentHistorProps} from './type';
 import {Colors} from '../../../Resource/colors';
 import {useAppSelector} from '../../../Redux/Hook';
 import ItemMyMoment from '../../../Components/Items/ItemMyMoment';
+import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
+import {MomentModel} from '../../../Models/Model';
+import {useDispatch} from 'react-redux';
 
 const MomentHistory: React.FC<MomentHistorProps> = props => {
   const {navigation} = props;
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(date);
-  const moments = useAppSelector(state => state.Moment.myMoments);
+  const [moments, setMoments] = useState<MomentModel[]>([]);
+  const myAccount = useAppSelector(state => state.Authentication.myAccount);
+  const [refresh, setRefresh] = useState(false);
 
   // quay lại
   const onGoBack = () => {
     navigation.goBack();
   };
 
+  // lấy khoảnh khắc
+  const getMoments = async () => {
+    try {
+      const response = await getData(
+        'http://' +
+          ID_ADRESS +
+          ':3000/api/moment/getMomentsById?id=' +
+          myAccount._id,
+      );
+      if (response.result) {
+        setMoments(response.moments);
+        setRefresh(false);
+      }
+    } catch (error) {
+      console.log('get moment failled: ' + error);
+    }
+  };
+
   const onMoveDetailMomentHistory = (id: string) => {
     navigation.navigate('DetailMomentHistory', {id: id});
   };
+
+  useEffect(() => {
+    getMoments();
+  }, [refresh]);
 
   return (
     // CONTAINER
@@ -67,6 +95,12 @@ const MomentHistory: React.FC<MomentHistorProps> = props => {
       />
       <View style={styles.center}>
         <FlatList
+          refreshControl={
+            <RefreshControl
+              refreshing={refresh}
+              onRefresh={() => setRefresh(!refresh)}
+            />
+          }
           numColumns={3}
           data={moments}
           renderItem={({item}) => (
