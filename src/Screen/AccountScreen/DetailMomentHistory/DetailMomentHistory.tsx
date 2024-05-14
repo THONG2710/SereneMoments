@@ -14,7 +14,7 @@ import React, {useEffect, useState} from 'react';
 import {Dimensions} from 'react-native';
 import {SelectList} from 'react-native-dropdown-select-list';
 import {DetailMomentHistoryProps} from './type';
-import {ID_ADRESS, getData} from '../../../Service/RequestMethod';
+import {ID_ADRESS, getData, postData} from '../../../Service/RequestMethod';
 import {CommentsModel, LikesModel, MomentModel} from '../../../Models/Model';
 import {useAppSelector} from '../../../Redux/Hook';
 import {onConvertEpochtime} from '../../../Service/Service';
@@ -22,6 +22,7 @@ import CommentDialog from '../../../Components/Dialogs/CommentDialog';
 import Modal from 'react-native-modal/dist/modal';
 import VideoPlayer from 'react-native-video-player';
 import {Colors} from '../../../Resource/colors';
+import ButtonText from '../../../Components/Buttons/ButtonText';
 
 const w = Dimensions.get('window').width;
 const h = Dimensions.get('window').height;
@@ -38,7 +39,10 @@ const DetailMomentHistory: React.FC<DetailMomentHistoryProps> = props => {
   const [isAvailableLike, setIsAvailableLike] = useState<boolean>(false);
   const [isVisibleCommentDialog, setisVisibleCommentDialog] = useState(false);
   const [isVisibleMenu, setisVisibleMenu] = useState<boolean>(false);
-  // quay lại
+  const [newContent, setNewContent] = useState('');
+  const [isEdit, setIsEdit] = useState(false);
+  const [isRefresh, setisRefresh] = useState(false);
+
   const onGoBack = () => {
     navigation.goBack();
   };
@@ -50,13 +54,13 @@ const DetailMomentHistory: React.FC<DetailMomentHistoryProps> = props => {
       );
       if (res.result) {
         setMoment(res.moments);
+        setNewContent(res.moments.caption);
       }
     } catch (error) {
       console.log('Error getting moment: ' + error);
     }
   };
 
-  // lấy lượt bình luận
   const onGetComments = async () => {
     try {
       const res = await getData(
@@ -70,7 +74,6 @@ const DetailMomentHistory: React.FC<DetailMomentHistoryProps> = props => {
     }
   };
 
-  // lấy lượt thích
   const onGetLikes = async () => {
     try {
       const res = await getData(
@@ -91,7 +94,6 @@ const DetailMomentHistory: React.FC<DetailMomentHistoryProps> = props => {
     }
   };
 
-  // đóng dialog
   const onCancelCommentDialog = () => {
     setisVisibleCommentDialog(false);
   };
@@ -126,11 +128,70 @@ const DetailMomentHistory: React.FC<DetailMomentHistoryProps> = props => {
     } catch (error) {}
   };
 
+  const onEdit = () => {
+    setIsEdit(true);
+    setisVisibleMenu(false);
+  };
+
+  const onUpdate = async () => {
+    try {
+      if (moment?.caption != newContent) {
+        const data = {
+          id: moment?._id,
+          caption: newContent,
+        };
+        const res = await postData(
+          'http://' + ID_ADRESS + ':3000/api/moment/updateMoment',
+          data,
+        );
+        if (res.result) {
+          setNewContent(res.moment.caption);
+          Alert.alert('Thông báo', 'Cập nhật thành công');
+          setIsEdit(false);
+
+          console.log(res.moment.caption);
+        }
+      } else {
+        setIsEdit(false);
+      }
+    } catch (error) {}
+  };
+
+  // const onHandleLikeMoment = async () => {
+  //   const date = Math.floor(new Date().getTime() / 1000);
+  //   if (!isAvailableLike) {
+  //     const data = {
+  //       userid: user._id,
+  //       momentid: moment?._id,
+  //       createdat: date,
+  //     };
+  //     const res = await postData(
+  //       'http://' + ID_ADRESS + ':3000/api/likes/postLike',
+  //       data,
+  //     );
+  //     if (res.result) {
+  //       setIsAvailableLike(true);
+  //       setIdLiked(res.likes._id);
+  //       setisRefresh(!isRefresh);
+  //     }
+  //   } else {
+  //     const res = await postData(
+  //       'http://' + ID_ADRESS + ':3000/api/likes/updateLike/' + idLiked,
+  //       {},
+  //     );
+  //     if (res.result) {
+  //       setIsAvailableLike(false);
+  //       setIdLiked('');
+  //       setisRefresh(!isRefresh);
+  //     }
+  //   }
+  // };
+
   useEffect(() => {
     getMoment();
     onGetLikes();
     onGetComments();
-  }, []);
+  }, [isEdit, isRefresh]);
 
   return (
     //CONTAINER
@@ -151,7 +212,7 @@ const DetailMomentHistory: React.FC<DetailMomentHistoryProps> = props => {
             <TouchableOpacity style={styles.btn} onPress={onConfirmDelete}>
               <Text style={[styles.txt]}>Xóa</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.btn}>
+            <TouchableOpacity style={styles.btn} onPress={onEdit}>
               <Text style={styles.txt}>Chỉnh sửa</Text>
             </TouchableOpacity>
           </View>
@@ -164,6 +225,8 @@ const DetailMomentHistory: React.FC<DetailMomentHistoryProps> = props => {
             style={styles.imgAVT}
             source={require('../../../Resource/images/icon_back2.png')}></Image>
         </TouchableOpacity>
+
+        {isEdit ? <ButtonText label="Lưu" onPress={onUpdate} /> : null}
 
         <View style={styles.backgroundImageMN}>
           <TouchableOpacity onPress={() => setisVisibleMenu(true)}>
@@ -187,7 +250,15 @@ const DetailMomentHistory: React.FC<DetailMomentHistoryProps> = props => {
             style={styles.image}
             imageStyle={{borderRadius: 30}}>
             <View style={styles.backgroundTextContent}>
-              <Text style={styles.textContent}>{moment?.caption}</Text>
+              {isEdit ? (
+                <TextInput
+                  style={styles.textContent}
+                  value={newContent}
+                  onChangeText={value => setNewContent(value)}
+                />
+              ) : (
+                <Text style={styles.textContent}>{moment?.caption}</Text>
+              )}
             </View>
           </ImageBackground>
         </View>
@@ -211,7 +282,15 @@ const DetailMomentHistory: React.FC<DetailMomentHistoryProps> = props => {
             style={styles.videoStyle}
           />
           <View style={styles.backgroundTextContentVideo}>
-            <Text style={styles.textContent}>{moment?.caption}</Text>
+            {isEdit ? (
+              <TextInput
+                style={styles.textContent}
+                value={newContent}
+                onChangeText={value => setNewContent(value)}
+              />
+            ) : (
+              <Text style={styles.textContent}>{moment?.caption}</Text>
+            )}
           </View>
         </View>
       )}
@@ -239,7 +318,7 @@ const DetailMomentHistory: React.FC<DetailMomentHistoryProps> = props => {
         </View>
 
         <View style={styles.interact}>
-          <View style={styles.interactLeft}>
+          <TouchableOpacity style={styles.interactLeft}>
             <Image
               style={styles.imgInteract}
               source={
@@ -248,7 +327,7 @@ const DetailMomentHistory: React.FC<DetailMomentHistoryProps> = props => {
                   : require('../../../Resource/images/icon_like.png')
               }></Image>
             <Text style={styles.textInteract}>{likes.length}</Text>
-          </View>
+          </TouchableOpacity>
           <Image
             style={styles.line}
             source={require('../../../Resource/images/Line.png')}></Image>
