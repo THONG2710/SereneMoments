@@ -157,35 +157,7 @@ const DetailMomentHistory: React.FC<DetailMomentHistoryProps> = props => {
     } catch (error) {}
   };
 
-  // const onHandleLikeMoment = async () => {
-  //   const date = Math.floor(new Date().getTime() / 1000);
-  //   if (!isAvailableLike) {
-  //     const data = {
-  //       userid: user._id,
-  //       momentid: moment?._id,
-  //       createdat: date,
-  //     };
-  //     const res = await postData(
-  //       'http://' + ID_ADRESS + ':3000/api/likes/postLike',
-  //       data,
-  //     );
-  //     if (res.result) {
-  //       setIsAvailableLike(true);
-  //       setIdLiked(res.likes._id);
-  //       setisRefresh(!isRefresh);
-  //     }
-  //   } else {
-  //     const res = await postData(
-  //       'http://' + ID_ADRESS + ':3000/api/likes/updateLike/' + idLiked,
-  //       {},
-  //     );
-  //     if (res.result) {
-  //       setIsAvailableLike(false);
-  //       setIdLiked('');
-  //       setisRefresh(!isRefresh);
-  //     }
-  //   }
-  // };
+
 
   useEffect(() => {
     getMoment();
